@@ -1,0 +1,8 @@
+# Normalise line endings so a fresh clone on any platform produces byte-identical
+# files — the reproducibility contract in DELIVERABLES.md depends on it.
+* text=auto eol=lf
+
+*.png binary
+*.pdf binary
+*.duckdb binary
+*.parquet binary

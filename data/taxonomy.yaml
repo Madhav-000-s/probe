@@ -1,0 +1,832 @@
+# probe — competency taxonomy v1
+#
+# 50 nodes across two role families (backend engineering, data/ML). The rubric
+# compiler maps job-description and resume text ONTO these ids; it never
+# invents one. Stable ids are what make item parameters reusable across
+# candidates and results comparable across runs.
+#
+# `concepts` is the load-bearing field. It is simultaneously:
+#   * the vocabulary rubric anchors are written in ("names quorum reads"),
+#     which is how content is separated from style; and
+#   * the channel through which a simulated candidate's hidden ability becomes
+#     observable — a stronger candidate names more of these, and the grader
+#     recovers ability by reading the answer, never by consulting theta*.
+#
+# Ordering within `concepts` matters: earlier entries are the ones a merely
+# competent answer reaches for, later ones separate strong from excellent.
+
+version: v1
+
+nodes:
+  # ------------------------------------------------------------- distributed
+  - id: distributed_systems.consistency
+    label: Consistency models
+    family: backend
+    probe_families: [scenario, tradeoff, debug]
+    default_required_level: 4
+    jd_keywords: [distributed, consistency, replication, cap]
+    concepts:
+      - eventual consistency
+      - read-your-writes
+      - monotonic reads
+      - linearizability
+      - quorum reads
+      - causal consistency
+      - stale read window
+      - external consistency
+
+  - id: distributed_systems.partitioning
+    label: Partitioning and sharding
+    family: backend
+    probe_families: [scenario, tradeoff, past_project]
+    default_required_level: 4
+    jd_keywords: [sharding, partition, scale, hash ring]
+    concepts:
+      - hash partitioning
+      - range partitioning
+      - hot partition
+      - consistent hashing
+      - rebalancing cost
+      - partition key selection
+      - cross-partition transactions
+      - virtual nodes
+
+  - id: distributed_systems.replication
+    label: Replication strategies
+    family: backend
+    probe_families: [scenario, tradeoff, debug]
+    default_required_level: 3
+    jd_keywords: [replication, replica, failover, leader]
+    concepts:
+      - leader-follower replication
+      - replication lag
+      - synchronous replication
+      - failover promotion
+      - split brain
+      - multi-leader conflict resolution
+      - read replica routing
+      - write amplification
+
+  - id: distributed_systems.consensus
+    label: Consensus and coordination
+    family: backend
+    probe_families: [tradeoff, scenario]
+    default_required_level: 3
+    jd_keywords: [consensus, raft, paxos, coordination, zookeeper]
+    concepts:
+      - leader election
+      - quorum majority
+      - raft log replication
+      - term numbers
+      - fencing tokens
+      - distributed lock lease
+      - membership change safety
+      - linearizable reads via read index
+
+  - id: distributed_systems.failure_modes
+    label: Distributed failure modes
+    family: backend
+    probe_families: [debug, scenario]
+    default_required_level: 4
+    jd_keywords: [reliability, failure, timeout, partial failure]
+    concepts:
+      - network partition
+      - partial failure
+      - cascading failure
+      - gray failure
+      - timeout versus failure ambiguity
+      - clock skew
+      - thundering herd
+      - metastable failure
+
+  # ---------------------------------------------------------------- databases
+  - id: databases.indexing
+    label: Index design
+    family: backend
+    probe_families: [debug, tradeoff, scenario]
+    default_required_level: 4
+    jd_keywords: [sql, index, postgres, mysql, query]
+    concepts:
+      - b-tree index
+      - composite index column order
+      - covering index
+      - index selectivity
+      - write amplification from indexes
+      - partial index
+      - index-only scan
+      - bloat and vacuum
+
+  - id: databases.transactions
+    label: Transactions and isolation
+    family: backend
+    probe_families: [scenario, tradeoff, debug]
+    default_required_level: 4
+    jd_keywords: [transaction, acid, isolation, locking]
+    concepts:
+      - read committed
+      - repeatable read
+      - serializable isolation
+      - phantom read
+      - write skew
+      - optimistic concurrency control
+      - deadlock detection
+      - snapshot isolation
+
+  - id: databases.query_optimization
+    label: Query optimisation
+    family: backend
+    probe_families: [debug, scenario]
+    default_required_level: 3
+    jd_keywords: [query, performance, slow query, explain]
+    concepts:
+      - execution plan
+      - sequential scan versus index scan
+      - join order
+      - hash join
+      - cardinality estimate
+      - statistics staleness
+      - n+1 query pattern
+      - predicate pushdown
+
+  - id: databases.schema_design
+    label: Schema design
+    family: backend
+    probe_families: [tradeoff, past_project, scenario]
+    default_required_level: 3
+    jd_keywords: [schema, data model, normalisation, modeling]
+    concepts:
+      - normalisation
+      - denormalisation for read paths
+      - foreign key constraints
+      - nullable column semantics
+      - surrogate versus natural keys
+      - soft delete
+      - temporal versioning
+      - polymorphic association pitfalls
+
+  - id: databases.migrations
+    label: Schema migrations
+    family: backend
+    probe_families: [scenario, past_project]
+    default_required_level: 3
+    jd_keywords: [migration, zero downtime, deploy, schema change]
+    concepts:
+      - backwards compatible migration
+      - expand and contract
+      - online schema change
+      - lock duration
+      - dual write
+      - backfill batching
+      - rollback plan
+      - migration idempotency
+
+  # -------------------------------------------------------------- concurrency
+  - id: concurrency.threading
+    label: Threading and parallelism
+    family: backend
+    probe_families: [debug, tradeoff]
+    default_required_level: 3
+    jd_keywords: [thread, concurrency, parallel, worker]
+    concepts:
+      - thread pool sizing
+      - context switch cost
+      - cpu bound versus io bound
+      - work stealing
+      - false sharing
+      - thread starvation
+      - blocking call in event loop
+      - bounded queue backpressure
+
+  - id: concurrency.async_io
+    label: Asynchronous I/O
+    family: backend
+    probe_families: [scenario, debug]
+    default_required_level: 3
+    jd_keywords: [async, asyncio, event loop, non-blocking]
+    concepts:
+      - event loop
+      - coroutine scheduling
+      - await point
+      - blocking the loop
+      - concurrency limit semaphore
+      - task cancellation
+      - structured concurrency
+      - backpressure propagation
+
+  - id: concurrency.locking
+    label: Locking and coordination
+    family: backend
+    probe_families: [tradeoff, debug]
+    default_required_level: 3
+    jd_keywords: [lock, mutex, synchronisation]
+    concepts:
+      - mutual exclusion
+      - lock granularity
+      - lock ordering
+      - read-write lock
+      - lock contention
+      - lock-free algorithm
+      - compare-and-swap
+      - convoy effect
+
+  - id: concurrency.race_conditions
+    label: Race conditions
+    family: backend
+    probe_families: [debug, scenario]
+    default_required_level: 4
+    jd_keywords: [race, concurrency bug, atomic]
+    concepts:
+      - check-then-act
+      - atomic compare and set
+      - happens-before relationship
+      - idempotency key
+      - double submit
+      - lost update
+      - time-of-check to time-of-use
+      - memory visibility
+
+  # -------------------------------------------------------------- api design
+  - id: api_design.rest_semantics
+    label: HTTP and REST semantics
+    family: backend
+    probe_families: [tradeoff, scenario]
+    default_required_level: 3
+    jd_keywords: [api, rest, http, endpoint]
+    concepts:
+      - resource modelling
+      - status code semantics
+      - safe versus unsafe methods
+      - content negotiation
+      - conditional requests etag
+      - hypermedia links
+      - partial update semantics
+      - error response shape
+
+  - id: api_design.versioning
+    label: API versioning and compatibility
+    family: backend
+    probe_families: [tradeoff, past_project]
+    default_required_level: 3
+    jd_keywords: [api, versioning, backwards compatible, contract]
+    concepts:
+      - breaking versus additive change
+      - url versioning
+      - header versioning
+      - deprecation window
+      - consumer-driven contract
+      - default value evolution
+      - schema registry
+      - sunset policy
+
+  - id: api_design.idempotency
+    label: Idempotency and retries
+    family: backend
+    probe_families: [scenario, debug]
+    default_required_level: 4
+    jd_keywords: [idempotent, retry, payment, exactly once]
+    concepts:
+      - idempotency key
+      - at-least-once delivery
+      - deduplication window
+      - request fingerprint
+      - side-effect isolation
+      - retry storm
+      - stored response replay
+      - exactly-once illusion
+
+  - id: api_design.pagination
+    label: Pagination and large result sets
+    family: backend
+    probe_families: [tradeoff, debug]
+    default_required_level: 2
+    jd_keywords: [pagination, cursor, api]
+    concepts:
+      - offset pagination
+      - cursor pagination
+      - stable sort key
+      - deep page cost
+      - page drift on concurrent writes
+      - total count cost
+      - keyset pagination
+      - streaming response
+
+  # ----------------------------------------------------------------- caching
+  - id: caching.invalidation
+    label: Cache invalidation
+    family: backend
+    probe_families: [scenario, debug, tradeoff]
+    default_required_level: 4
+    jd_keywords: [cache, redis, invalidation, ttl]
+    concepts:
+      - time to live
+      - write-through
+      - write-behind
+      - cache-aside
+      - stale-while-revalidate
+      - versioned cache key
+      - stampede protection
+      - negative caching
+
+  - id: caching.topology
+    label: Cache topology
+    family: backend
+    probe_families: [tradeoff, scenario]
+    default_required_level: 3
+    jd_keywords: [cache, cdn, memcached, redis cluster]
+    concepts:
+      - local versus shared cache
+      - cache coherence across nodes
+      - cdn edge caching
+      - hit ratio
+      - eviction policy lru
+      - memory pressure
+      - hot key sharding
+      - tiered cache
+
+  # ---------------------------------------------------------------- messaging
+  - id: messaging.queues
+    label: Queues and stream processing
+    family: backend
+    probe_families: [scenario, past_project, tradeoff]
+    default_required_level: 3
+    jd_keywords: [queue, kafka, sqs, event, stream]
+    concepts:
+      - producer consumer decoupling
+      - consumer group
+      - partition ordering guarantee
+      - offset management
+      - dead letter queue
+      - visibility timeout
+      - replay from offset
+      - compaction
+
+  - id: messaging.delivery_semantics
+    label: Delivery semantics
+    family: backend
+    probe_families: [tradeoff, debug]
+    default_required_level: 4
+    jd_keywords: [delivery, exactly once, at least once, event]
+    concepts:
+      - at-most-once
+      - at-least-once
+      - effectively-once via idempotency
+      - transactional outbox
+      - consumer offset commit ordering
+      - duplicate detection
+      - ordering versus throughput tradeoff
+      - poison message handling
+
+  - id: messaging.backpressure
+    label: Backpressure and flow control
+    family: backend
+    probe_families: [debug, scenario]
+    default_required_level: 3
+    jd_keywords: [backpressure, throughput, lag, queue depth]
+    concepts:
+      - queue depth as signal
+      - consumer lag
+      - bounded buffer
+      - load shedding
+      - rate limiting upstream
+      - autoscaling on lag
+      - little's law
+      - buffer bloat
+
+  # ------------------------------------------------------------ observability
+  - id: observability.logging
+    label: Logging
+    family: backend
+    probe_families: [tradeoff, debug]
+    default_required_level: 2
+    jd_keywords: [logging, logs, observability]
+    concepts:
+      - structured logging
+      - correlation id
+      - log level discipline
+      - cardinality of log fields
+      - sampling high volume logs
+      - pii redaction
+      - retention cost
+      - log-based alerting fragility
+
+  - id: observability.metrics
+    label: Metrics and alerting
+    family: backend
+    probe_families: [scenario, tradeoff]
+    default_required_level: 3
+    jd_keywords: [metrics, prometheus, alert, sli, slo]
+    concepts:
+      - counter versus gauge versus histogram
+      - percentile latency
+      - averages hide tail latency
+      - cardinality explosion
+      - service level objective
+      - error budget
+      - alert on symptoms not causes
+      - golden signals
+
+  - id: observability.tracing
+    label: Distributed tracing
+    family: backend
+    probe_families: [scenario, debug]
+    default_required_level: 3
+    jd_keywords: [tracing, opentelemetry, span, distributed]
+    concepts:
+      - span and trace id
+      - context propagation
+      - sampling strategy
+      - tail-based sampling
+      - critical path analysis
+      - span attributes
+      - trace-log correlation
+      - instrumentation overhead
+
+  - id: observability.debugging
+    label: Production debugging
+    family: backend
+    probe_families: [debug, past_project]
+    default_required_level: 4
+    jd_keywords: [debugging, incident, production, troubleshoot]
+    concepts:
+      - reproduce before fixing
+      - bisecting the change set
+      - differential diagnosis
+      - hypothesis then instrument
+      - reading the actual error
+      - narrowing the blast radius
+      - heap and thread dump
+      - correlating deploy with regression
+
+  # ------------------------------------------------------------- reliability
+  - id: reliability.retries
+    label: Retries and timeouts
+    family: backend
+    probe_families: [scenario, debug, tradeoff]
+    default_required_level: 4
+    jd_keywords: [retry, timeout, resilience, circuit breaker]
+    concepts:
+      - exponential backoff
+      - jitter
+      - retry budget
+      - circuit breaker
+      - timeout budget per hop
+      - retry amplification
+      - idempotent retry safety
+      - bulkhead isolation
+
+  - id: reliability.rate_limiting
+    label: Rate limiting
+    family: backend
+    probe_families: [tradeoff, scenario]
+    default_required_level: 3
+    jd_keywords: [rate limit, throttle, quota]
+    concepts:
+      - token bucket
+      - leaky bucket
+      - sliding window counter
+      - per-tenant quota
+      - distributed limiter state
+      - 429 and retry-after
+      - fair queueing
+      - burst allowance
+
+  - id: reliability.capacity_planning
+    label: Capacity planning
+    family: backend
+    probe_families: [scenario, past_project]
+    default_required_level: 3
+    jd_keywords: [capacity, scale, load test, headroom]
+    concepts:
+      - peak versus average load
+      - headroom target
+      - load testing methodology
+      - utilisation and queueing delay
+      - horizontal versus vertical scaling
+      - saturation point
+      - cost per request
+      - failure domain sizing
+
+  # ---------------------------------------------------------------- security
+  - id: security.authn_authz
+    label: Authentication and authorisation
+    family: backend
+    probe_families: [scenario, tradeoff]
+    default_required_level: 3
+    jd_keywords: [auth, oauth, jwt, permissions, security]
+    concepts:
+      - authentication versus authorisation
+      - token expiry and refresh
+      - jwt signature validation
+      - scope and least privilege
+      - session revocation
+      - role versus attribute based access
+      - confused deputy
+      - server-side authorisation checks
+
+  - id: security.input_validation
+    label: Input validation and injection
+    family: backend
+    probe_families: [debug, scenario]
+    default_required_level: 4
+    jd_keywords: [security, validation, injection, sanitise]
+    concepts:
+      - parameterised queries
+      - allowlist validation
+      - output encoding
+      - untrusted input boundary
+      - deserialisation risk
+      - path traversal
+      - ssrf
+      - schema validation at the edge
+
+  - id: security.secrets_management
+    label: Secrets management
+    family: backend
+    probe_families: [tradeoff, past_project]
+    default_required_level: 2
+    jd_keywords: [secrets, vault, credentials, kms]
+    concepts:
+      - secrets out of source control
+      - rotation policy
+      - short-lived credentials
+      - envelope encryption
+      - least privilege iam role
+      - audit logging of access
+      - secret sprawl
+      - break-glass procedure
+
+  # -------------------------------------------------------------- algorithms
+  - id: algorithms.complexity
+    label: Complexity analysis
+    family: backend
+    probe_families: [tradeoff, debug]
+    default_required_level: 3
+    jd_keywords: [algorithm, complexity, performance, big o]
+    concepts:
+      - asymptotic complexity
+      - amortised analysis
+      - space time tradeoff
+      - constant factors matter in practice
+      - worst versus average case
+      - cache locality effects
+      - complexity of the actual bottleneck
+      - input size regime
+
+  - id: algorithms.data_structures
+    label: Data structure selection
+    family: backend
+    probe_families: [scenario, tradeoff]
+    default_required_level: 3
+    jd_keywords: [data structure, algorithm, hashmap, tree]
+    concepts:
+      - hash map versus tree map
+      - heap for top-k
+      - bloom filter
+      - trie for prefix search
+      - lru via linked hash map
+      - contiguous versus linked layout
+      - immutable persistent structures
+      - union find
+
+  - id: systems.memory_model
+    label: Memory and resource behaviour
+    family: backend
+    probe_families: [debug, scenario]
+    default_required_level: 2
+    jd_keywords: [memory, gc, leak, resource]
+    concepts:
+      - heap versus stack
+      - garbage collection pause
+      - memory leak versus retention
+      - file descriptor exhaustion
+      - off-heap allocation
+      - copy on write
+      - oom killer
+      - allocation churn
+
+  # ----------------------------------------------------------------- testing
+  - id: testing.strategy
+    label: Testing strategy
+    family: backend
+    probe_families: [tradeoff, past_project]
+    default_required_level: 3
+    jd_keywords: [testing, test, quality, coverage]
+    concepts:
+      - test pyramid
+      - unit versus integration boundary
+      - test doubles and fakes
+      - flaky test triage
+      - coverage as a floor not a goal
+      - contract tests
+      - deterministic test data
+      - failure injection tests
+
+  - id: testing.property_based
+    label: Property-based and generative testing
+    family: backend
+    probe_families: [scenario, tradeoff]
+    default_required_level: 2
+    jd_keywords: [property test, hypothesis, fuzz, generative]
+    concepts:
+      - invariant identification
+      - generator design
+      - shrinking a counterexample
+      - round-trip property
+      - metamorphic property
+      - oracle problem
+      - seed reproducibility
+      - fuzzing the parser
+
+  - id: code_quality.refactoring
+    label: Refactoring and code health
+    family: backend
+    probe_families: [past_project, tradeoff]
+    default_required_level: 2
+    jd_keywords: [refactor, maintainability, code quality, legacy]
+    concepts:
+      - behaviour-preserving change
+      - characterisation tests first
+      - strangler fig migration
+      - seam identification
+      - incremental over big bang
+      - coupling versus cohesion
+      - deleting dead code
+      - refactor separate from feature commit
+
+  - id: delivery.ci_cd
+    label: Continuous integration and delivery
+    family: backend
+    probe_families: [past_project, scenario]
+    default_required_level: 2
+    jd_keywords: [ci, cd, pipeline, deploy, release]
+    concepts:
+      - pipeline as gate
+      - fast feedback loop
+      - canary release
+      - blue-green deploy
+      - feature flag decoupling deploy from release
+      - rollback readiness
+      - reproducible build
+      - artefact promotion
+
+  # -------------------------------------------------------------------- ml
+  - id: ml.feature_engineering
+    label: Feature engineering
+    family: data_ml
+    probe_families: [scenario, past_project, tradeoff]
+    default_required_level: 3
+    jd_keywords: [feature, machine learning, model, ml]
+    concepts:
+      - feature scaling
+      - categorical encoding
+      - interaction features
+      - feature store consistency
+      - train-serve skew
+      - temporal feature windows
+      - missing value strategy
+      - feature drift monitoring
+
+  - id: ml.model_evaluation
+    label: Model evaluation
+    family: data_ml
+    probe_families: [tradeoff, debug, scenario]
+    default_required_level: 4
+    jd_keywords: [evaluation, metric, model, ml, accuracy]
+    concepts:
+      - precision recall tradeoff
+      - roc auc versus pr auc
+      - class imbalance
+      - calibration of probabilities
+      - baseline comparison
+      - metric aligned to decision
+      - confidence interval on the metric
+      - slice-level evaluation
+
+  - id: ml.experiment_design
+    label: Experiment design
+    family: data_ml
+    probe_families: [scenario, tradeoff]
+    default_required_level: 4
+    jd_keywords: [experiment, a/b test, ml, evaluation]
+    concepts:
+      - randomisation unit
+      - statistical power
+      - multiple comparisons
+      - guardrail metrics
+      - novelty effect
+      - sample ratio mismatch
+      - pre-registration of hypothesis
+      - holdout contamination
+
+  - id: ml.data_leakage
+    label: Data leakage
+    family: data_ml
+    probe_families: [debug, scenario]
+    default_required_level: 4
+    jd_keywords: [leakage, validation, ml, overfitting]
+    concepts:
+      - target leakage
+      - train test contamination
+      - temporal leakage
+      - group leakage across splits
+      - preprocessing fit on full data
+      - leakage via id features
+      - too-good-to-be-true metric
+      - leakage audit procedure
+
+  - id: ml.serving_latency
+    label: Model serving
+    family: data_ml
+    probe_families: [scenario, tradeoff]
+    default_required_level: 3
+    jd_keywords: [serving, inference, latency, deploy model]
+    concepts:
+      - batch versus online inference
+      - model quantisation
+      - request batching
+      - warm start and cold start
+      - feature fetch latency
+      - shadow deployment
+      - model versioning
+      - fallback to heuristic
+
+  # --------------------------------------------------------------- data eng
+  - id: data_eng.pipeline_orchestration
+    label: Pipeline orchestration
+    family: data_ml
+    probe_families: [scenario, past_project]
+    default_required_level: 3
+    jd_keywords: [pipeline, airflow, etl, orchestration, dbt]
+    concepts:
+      - dag dependency modelling
+      - idempotent task design
+      - backfill semantics
+      - partition-aware processing
+      - retry and alerting policy
+      - late arriving data
+      - checkpointing
+      - lineage tracking
+
+  - id: data_eng.data_quality
+    label: Data quality
+    family: data_ml
+    probe_families: [debug, scenario, tradeoff]
+    default_required_level: 3
+    jd_keywords: [data quality, validation, pipeline, monitoring]
+    concepts:
+      - schema contract enforcement
+      - null and range assertions
+      - freshness sla
+      - row count anomaly detection
+      - referential integrity check
+      - silent corruption
+      - quarantine bad records
+      - upstream ownership
+
+  - id: data_eng.warehouse_modeling
+    label: Warehouse modelling
+    family: data_ml
+    probe_families: [tradeoff, past_project]
+    default_required_level: 2
+    jd_keywords: [warehouse, dimensional, snowflake, bigquery, modeling]
+    concepts:
+      - star schema
+      - slowly changing dimension
+      - fact table grain
+      - incremental materialisation
+      - partitioning and clustering
+      - wide table denormalisation
+      - surrogate key generation
+      - semantic layer
+
+  - id: stats.inference
+    label: Statistical inference
+    family: data_ml
+    probe_families: [tradeoff, scenario]
+    default_required_level: 3
+    jd_keywords: [statistics, inference, significance, confidence]
+    concepts:
+      - sampling variability
+      - confidence interval interpretation
+      - p-value interpretation
+      - bootstrap resampling
+      - effect size versus significance
+      - regression to the mean
+      - variance reduction
+      - bayesian versus frequentist framing
+
+  - id: stats.causal_reasoning
+    label: Causal reasoning
+    family: data_ml
+    probe_families: [scenario, debug]
+    default_required_level: 3
+    jd_keywords: [causal, confounding, observational, inference]
+    concepts:
+      - correlation versus causation
+      - confounding variable
+      - selection bias
+      - simpson's paradox
+      - instrumental variable
+      - difference in differences
+      - counterfactual framing
+      - collider bias

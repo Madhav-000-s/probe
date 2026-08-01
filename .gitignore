@@ -1,0 +1,79 @@
+# --- project planning docs (kept local, not published) ---
+.claude/
+.claude
+architecture.md
+plan.md
+deliverables.md
+ARCHITECTURE.md
+PLAN.md
+DELIVERABLES.md
+
+# --- python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib60/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# --- virtualenvs / tooling ---
+.venv/
+venv/
+env/
+ENV/
+.python-version
+.uv/
+uv.lock.bak
+
+# --- test / coverage ---
+.pytest_cache/
+.hypothesis/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+.nox/
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+
+# --- notebooks ---
+.ipynb_checkpoints/
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+desktop.ini
+.idea/
+.vscode/
+*.swp
+
+# --- secrets ---
+.env
+.env.*
+!.env.example
+
+# --- generated run artefacts ---
+# Committed traces live in traces/committed/ (see Makefile); scratch runs do not.
+traces/scratch/
+traces/*.duckdb
+traces/*.duckdb.wal
+!traces/committed/*.duckdb
+analysis/results/scratch/
+*.log

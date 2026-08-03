@@ -53,7 +53,7 @@ class Policy(ABC):
         bank: QuestionBank,
     ) -> Decision: ...
 
-    def reset(self) -> None:
+    def reset(self) -> None:  # noqa: B027 - optional hook, deliberately not abstract
         """Called once per interview. Stateless arms need not override."""
 
     # ------------------------------------------------------------- helpers

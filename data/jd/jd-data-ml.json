@@ -1,0 +1,16 @@
+{
+  "id": "jd-data-ml",
+  "title": "Machine Learning Engineer",
+  "seniority": "senior",
+  "text": "We are hiring a senior Machine Learning Engineer to work on systems that are already in production and already load-bearing. You will own services end to end: design, ship, operate, and answer the pager for them.\n\nYou will be expected to reason carefully about data leakage \u2014 leakage, validation, ml.\n\nYou will be expected to reason carefully about statistical inference \u2014 statistics, inference, significance.\n\nYou will be expected to reason carefully about feature engineering \u2014 feature, machine learning, model.\n\nYou will be expected to reason carefully about model evaluation \u2014 evaluation, metric, model.\n\nYou will be expected to reason carefully about data quality \u2014 data quality, validation, pipeline.\n\nYou will be expected to reason carefully about experiment design \u2014 experiment, a/b test, ml.\n\nYou will be expected to reason carefully about causal reasoning \u2014 causal, confounding, observational.\n\nYou will be expected to reason carefully about pipeline orchestration \u2014 pipeline, airflow, etl.\n\nWe care much more about how you think through an unfamiliar problem than about which frameworks appear on your CV. Expect the interview to be technical and specific.",
+  "required": [
+    "ml.data_leakage",
+    "stats.inference",
+    "ml.feature_engineering",
+    "ml.model_evaluation",
+    "data_eng.data_quality",
+    "ml.experiment_design",
+    "stats.causal_reasoning",
+    "data_eng.pipeline_orchestration"
+  ]
+}

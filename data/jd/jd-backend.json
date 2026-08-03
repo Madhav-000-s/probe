@@ -1,0 +1,20 @@
+{
+  "id": "jd-backend",
+  "title": "Backend Engineer",
+  "seniority": "senior",
+  "text": "We are hiring a senior Backend Engineer to work on systems that are already in production and already load-bearing. You will own services end to end: design, ship, operate, and answer the pager for them.\n\nYou will be expected to reason carefully about memory and resource behaviour \u2014 memory, gc, leak.\n\nYou will be expected to reason carefully about pagination and large result sets \u2014 pagination, cursor, api.\n\nYou will be expected to reason carefully about data structure selection \u2014 data structure, algorithm, hashmap.\n\nYou will be expected to reason carefully about schema migrations \u2014 migration, zero downtime, deploy.\n\nYou will be expected to reason carefully about transactions and isolation \u2014 transaction, acid, isolation.\n\nYou will be expected to reason carefully about http and rest semantics \u2014 api, rest, http.\n\nYou will be expected to reason carefully about refactoring and code health \u2014 refactor, maintainability, code quality.\n\nYou will be expected to reason carefully about locking and coordination \u2014 lock, mutex, synchronisation.\n\nYou will be expected to reason carefully about logging \u2014 logging, logs, observability.\n\nYou will be expected to reason carefully about consistency models \u2014 distributed, consistency, replication.\n\nYou will be expected to reason carefully about cache invalidation \u2014 cache, redis, invalidation.\n\nYou will be expected to reason carefully about backpressure and flow control \u2014 backpressure, throughput, lag.\n\nWe care much more about how you think through an unfamiliar problem than about which frameworks appear on your CV. Expect the interview to be technical and specific.",
+  "required": [
+    "systems.memory_model",
+    "api_design.pagination",
+    "algorithms.data_structures",
+    "databases.migrations",
+    "databases.transactions",
+    "api_design.rest_semantics",
+    "code_quality.refactoring",
+    "concurrency.locking",
+    "observability.logging",
+    "distributed_systems.consistency",
+    "caching.invalidation",
+    "messaging.backpressure"
+  ]
+}

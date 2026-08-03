@@ -26,7 +26,17 @@ LEVEL_THRESHOLDS: dict[int, int] = {1: 0, 2: 1, 3: 2, 4: 4, 5: 6}
 
 #: Authoring defaults, deliberately uniform. Any structure in the fitted
 #: parameters therefore comes from the data rather than from the seed.
-DEFAULT_A = 1.0
+#:
+#: The discrimination started at 1.0 and the Phase 1 fidelity gate rejected it:
+#: against the population's actual ability spread (SD ~1.0), an item that flat
+#: correlates only rho~0.46 with ability, so no amount of good simulation could
+#: have cleared the 0.60 bar. 1.9 is what a *concept-anchored* five-point item
+#: should behave like -- naming which ideas each level requires is exactly what
+#: buys discrimination over a holistic "rate the answer 1-5" rubric. Phase 3
+#: replaces both parameters with maximum-likelihood fits; these only have to be
+#: a defensible starting point rather than an arbitrary one.
+#: See results-log.md, 2026-08-03.
+DEFAULT_A = 1.9
 DEFAULT_B = [-1.5, -0.5, 0.5, 1.5]
 
 _STEMS: dict[ProbeFamily, str] = {

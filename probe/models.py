@@ -528,7 +528,7 @@ class InterviewReport(BaseModel):
     run_id: str
     candidate_id: str
     arm: str
-    per_competency: dict[str, "CompetencyVerdict"]
+    per_competency: dict[str, CompetencyVerdict]
     stop_reason: StopReason
     partial: bool = False
     n_questions: int = 0

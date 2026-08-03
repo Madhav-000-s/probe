@@ -1,0 +1,3846 @@
+{
+  "questions": [
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "eventual consistency"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "eventual consistency",
+            "read-your-writes"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "eventual consistency",
+            "read-your-writes",
+            "monotonic reads",
+            "linearizability"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "eventual consistency",
+            "read-your-writes",
+            "monotonic reads",
+            "linearizability",
+            "quorum reads",
+            "causal consistency"
+          ]
+        }
+      ],
+      "competency_id": "distributed_systems.consistency",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "distributed_systems.consistency::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Consistency models is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "read-your-writes"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "read-your-writes",
+            "monotonic reads"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "read-your-writes",
+            "monotonic reads",
+            "linearizability",
+            "quorum reads"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "read-your-writes",
+            "monotonic reads",
+            "linearizability",
+            "quorum reads",
+            "causal consistency",
+            "stale read window"
+          ]
+        }
+      ],
+      "competency_id": "distributed_systems.consistency",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "distributed_systems.consistency::1::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around consistency models. Concretely: the numbers reconcile in staging but not in production \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "monotonic reads"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "monotonic reads",
+            "linearizability"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "monotonic reads",
+            "linearizability",
+            "quorum reads",
+            "causal consistency"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "monotonic reads",
+            "linearizability",
+            "quorum reads",
+            "causal consistency",
+            "stale read window",
+            "external consistency"
+          ]
+        }
+      ],
+      "competency_id": "distributed_systems.consistency",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "distributed_systems.consistency::2::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at consistency models: the fix that worked last quarter made it worse this time. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "read committed"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "read committed",
+            "repeatable read"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "read committed",
+            "repeatable read",
+            "serializable isolation",
+            "phantom read"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "read committed",
+            "repeatable read",
+            "serializable isolation",
+            "phantom read",
+            "write skew",
+            "optimistic concurrency control"
+          ]
+        }
+      ],
+      "competency_id": "databases.transactions",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "databases.transactions::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Transactions and isolation is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "repeatable read"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "repeatable read",
+            "serializable isolation"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "repeatable read",
+            "serializable isolation",
+            "phantom read",
+            "write skew"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "repeatable read",
+            "serializable isolation",
+            "phantom read",
+            "write skew",
+            "optimistic concurrency control",
+            "deadlock detection"
+          ]
+        }
+      ],
+      "competency_id": "databases.transactions",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "databases.transactions::1::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around transactions and isolation. Concretely: the numbers reconcile in staging but not in production \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "serializable isolation"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "serializable isolation",
+            "phantom read"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "serializable isolation",
+            "phantom read",
+            "write skew",
+            "optimistic concurrency control"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "serializable isolation",
+            "phantom read",
+            "write skew",
+            "optimistic concurrency control",
+            "deadlock detection",
+            "snapshot isolation"
+          ]
+        }
+      ],
+      "competency_id": "databases.transactions",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "databases.transactions::2::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at transactions and isolation: the fix that worked last quarter made it worse this time. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "backwards compatible migration"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "backwards compatible migration",
+            "expand and contract"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "backwards compatible migration",
+            "expand and contract",
+            "online schema change",
+            "lock duration"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "backwards compatible migration",
+            "expand and contract",
+            "online schema change",
+            "lock duration",
+            "dual write",
+            "backfill batching"
+          ]
+        }
+      ],
+      "competency_id": "databases.migrations",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "databases.migrations::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Schema migrations is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "expand and contract"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "expand and contract",
+            "online schema change"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "expand and contract",
+            "online schema change",
+            "lock duration",
+            "dual write"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "expand and contract",
+            "online schema change",
+            "lock duration",
+            "dual write",
+            "backfill batching",
+            "rollback plan"
+          ]
+        }
+      ],
+      "competency_id": "databases.migrations",
+      "expected_seconds": 90.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "databases.migrations::1::past_project",
+      "parent_question_id": null,
+      "probe_family": "past_project",
+      "text": "Tell me about a time schema migrations mattered in something you built. In particular: the numbers reconcile in staging but not in production."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "online schema change"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "online schema change",
+            "lock duration"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "online schema change",
+            "lock duration",
+            "dual write",
+            "backfill batching"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "online schema change",
+            "lock duration",
+            "dual write",
+            "backfill batching",
+            "rollback plan",
+            "migration idempotency"
+          ]
+        }
+      ],
+      "competency_id": "databases.migrations",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "databases.migrations::2::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Schema migrations is implicated in a live problem: the fix that worked last quarter made it worse this time. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "mutual exclusion"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "mutual exclusion",
+            "lock granularity"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "mutual exclusion",
+            "lock granularity",
+            "lock ordering",
+            "read-write lock"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "mutual exclusion",
+            "lock granularity",
+            "lock ordering",
+            "read-write lock",
+            "lock contention",
+            "lock-free algorithm"
+          ]
+        }
+      ],
+      "competency_id": "concurrency.locking",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "concurrency.locking::0::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around locking and coordination. Concretely: latency on the p99 has tripled since Tuesday's deploy \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "lock granularity"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "lock granularity",
+            "lock ordering"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "lock granularity",
+            "lock ordering",
+            "read-write lock",
+            "lock contention"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "lock granularity",
+            "lock ordering",
+            "read-write lock",
+            "lock contention",
+            "lock-free algorithm",
+            "compare-and-swap"
+          ]
+        }
+      ],
+      "competency_id": "concurrency.locking",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "concurrency.locking::1::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at locking and coordination: the numbers reconcile in staging but not in production. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "lock ordering"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "lock ordering",
+            "read-write lock"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "lock ordering",
+            "read-write lock",
+            "lock contention",
+            "lock-free algorithm"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "lock ordering",
+            "read-write lock",
+            "lock contention",
+            "lock-free algorithm",
+            "compare-and-swap",
+            "convoy effect"
+          ]
+        }
+      ],
+      "competency_id": "concurrency.locking",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "concurrency.locking::2::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around locking and coordination. Concretely: the fix that worked last quarter made it worse this time \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "resource modelling"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "resource modelling",
+            "status code semantics"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "resource modelling",
+            "status code semantics",
+            "safe versus unsafe methods",
+            "content negotiation"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "resource modelling",
+            "status code semantics",
+            "safe versus unsafe methods",
+            "content negotiation",
+            "conditional requests etag",
+            "hypermedia links"
+          ]
+        }
+      ],
+      "competency_id": "api_design.rest_semantics",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "api_design.rest_semantics::0::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around hTTP and REST semantics. Concretely: latency on the p99 has tripled since Tuesday's deploy \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "status code semantics"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "status code semantics",
+            "safe versus unsafe methods"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "status code semantics",
+            "safe versus unsafe methods",
+            "content negotiation",
+            "conditional requests etag"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "status code semantics",
+            "safe versus unsafe methods",
+            "content negotiation",
+            "conditional requests etag",
+            "hypermedia links",
+            "partial update semantics"
+          ]
+        }
+      ],
+      "competency_id": "api_design.rest_semantics",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "api_design.rest_semantics::1::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. HTTP and REST semantics is implicated in a live problem: the numbers reconcile in staging but not in production. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "safe versus unsafe methods"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "safe versus unsafe methods",
+            "content negotiation"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "safe versus unsafe methods",
+            "content negotiation",
+            "conditional requests etag",
+            "hypermedia links"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "safe versus unsafe methods",
+            "content negotiation",
+            "conditional requests etag",
+            "hypermedia links",
+            "partial update semantics",
+            "error response shape"
+          ]
+        }
+      ],
+      "competency_id": "api_design.rest_semantics",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "api_design.rest_semantics::2::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around hTTP and REST semantics. Concretely: the fix that worked last quarter made it worse this time \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "offset pagination"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "offset pagination",
+            "cursor pagination"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "offset pagination",
+            "cursor pagination",
+            "stable sort key",
+            "deep page cost"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "offset pagination",
+            "cursor pagination",
+            "stable sort key",
+            "deep page cost",
+            "page drift on concurrent writes",
+            "total count cost"
+          ]
+        }
+      ],
+      "competency_id": "api_design.pagination",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "api_design.pagination::0::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around pagination and large result sets. Concretely: latency on the p99 has tripled since Tuesday's deploy \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "cursor pagination"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "cursor pagination",
+            "stable sort key"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "cursor pagination",
+            "stable sort key",
+            "deep page cost",
+            "page drift on concurrent writes"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "cursor pagination",
+            "stable sort key",
+            "deep page cost",
+            "page drift on concurrent writes",
+            "total count cost",
+            "keyset pagination"
+          ]
+        }
+      ],
+      "competency_id": "api_design.pagination",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "api_design.pagination::1::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at pagination and large result sets: the numbers reconcile in staging but not in production. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "stable sort key"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "stable sort key",
+            "deep page cost"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "stable sort key",
+            "deep page cost",
+            "page drift on concurrent writes",
+            "total count cost"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "stable sort key",
+            "deep page cost",
+            "page drift on concurrent writes",
+            "total count cost",
+            "keyset pagination",
+            "streaming response"
+          ]
+        }
+      ],
+      "competency_id": "api_design.pagination",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "api_design.pagination::2::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around pagination and large result sets. Concretely: the fix that worked last quarter made it worse this time \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "time to live"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "time to live",
+            "write-through"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "time to live",
+            "write-through",
+            "write-behind",
+            "cache-aside"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "time to live",
+            "write-through",
+            "write-behind",
+            "cache-aside",
+            "stale-while-revalidate",
+            "versioned cache key"
+          ]
+        }
+      ],
+      "competency_id": "caching.invalidation",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "caching.invalidation::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Cache invalidation is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "write-through"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "write-through",
+            "write-behind"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "write-through",
+            "write-behind",
+            "cache-aside",
+            "stale-while-revalidate"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "write-through",
+            "write-behind",
+            "cache-aside",
+            "stale-while-revalidate",
+            "versioned cache key",
+            "stampede protection"
+          ]
+        }
+      ],
+      "competency_id": "caching.invalidation",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "caching.invalidation::1::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at cache invalidation: the numbers reconcile in staging but not in production. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "write-behind"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "write-behind",
+            "cache-aside"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "write-behind",
+            "cache-aside",
+            "stale-while-revalidate",
+            "versioned cache key"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "write-behind",
+            "cache-aside",
+            "stale-while-revalidate",
+            "versioned cache key",
+            "stampede protection",
+            "negative caching"
+          ]
+        }
+      ],
+      "competency_id": "caching.invalidation",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "caching.invalidation::2::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around cache invalidation. Concretely: the fix that worked last quarter made it worse this time \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "queue depth as signal"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "queue depth as signal",
+            "consumer lag"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "queue depth as signal",
+            "consumer lag",
+            "bounded buffer",
+            "load shedding"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "queue depth as signal",
+            "consumer lag",
+            "bounded buffer",
+            "load shedding",
+            "rate limiting upstream",
+            "autoscaling on lag"
+          ]
+        }
+      ],
+      "competency_id": "messaging.backpressure",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "messaging.backpressure::0::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at backpressure and flow control: latency on the p99 has tripled since Tuesday's deploy. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "consumer lag"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "consumer lag",
+            "bounded buffer"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "consumer lag",
+            "bounded buffer",
+            "load shedding",
+            "rate limiting upstream"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "consumer lag",
+            "bounded buffer",
+            "load shedding",
+            "rate limiting upstream",
+            "autoscaling on lag",
+            "little's law"
+          ]
+        }
+      ],
+      "competency_id": "messaging.backpressure",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "messaging.backpressure::1::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Backpressure and flow control is implicated in a live problem: the numbers reconcile in staging but not in production. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "bounded buffer"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "bounded buffer",
+            "load shedding"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "bounded buffer",
+            "load shedding",
+            "rate limiting upstream",
+            "autoscaling on lag"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "bounded buffer",
+            "load shedding",
+            "rate limiting upstream",
+            "autoscaling on lag",
+            "little's law",
+            "buffer bloat"
+          ]
+        }
+      ],
+      "competency_id": "messaging.backpressure",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "messaging.backpressure::2::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at backpressure and flow control: the fix that worked last quarter made it worse this time. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "structured logging"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "structured logging",
+            "correlation id"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "structured logging",
+            "correlation id",
+            "log level discipline",
+            "cardinality of log fields"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "structured logging",
+            "correlation id",
+            "log level discipline",
+            "cardinality of log fields",
+            "sampling high volume logs",
+            "pii redaction"
+          ]
+        }
+      ],
+      "competency_id": "observability.logging",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "observability.logging::0::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around logging. Concretely: latency on the p99 has tripled since Tuesday's deploy \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "correlation id"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "correlation id",
+            "log level discipline"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "correlation id",
+            "log level discipline",
+            "cardinality of log fields",
+            "sampling high volume logs"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "correlation id",
+            "log level discipline",
+            "cardinality of log fields",
+            "sampling high volume logs",
+            "pii redaction",
+            "retention cost"
+          ]
+        }
+      ],
+      "competency_id": "observability.logging",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "observability.logging::1::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at logging: the numbers reconcile in staging but not in production. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "log level discipline"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "log level discipline",
+            "cardinality of log fields"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "log level discipline",
+            "cardinality of log fields",
+            "sampling high volume logs",
+            "pii redaction"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "log level discipline",
+            "cardinality of log fields",
+            "sampling high volume logs",
+            "pii redaction",
+            "retention cost",
+            "log-based alerting fragility"
+          ]
+        }
+      ],
+      "competency_id": "observability.logging",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "observability.logging::2::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around logging. Concretely: the fix that worked last quarter made it worse this time \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "hash map versus tree map"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "hash map versus tree map",
+            "heap for top-k"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "hash map versus tree map",
+            "heap for top-k",
+            "bloom filter",
+            "trie for prefix search"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "hash map versus tree map",
+            "heap for top-k",
+            "bloom filter",
+            "trie for prefix search",
+            "lru via linked hash map",
+            "contiguous versus linked layout"
+          ]
+        }
+      ],
+      "competency_id": "algorithms.data_structures",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "algorithms.data_structures::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Data structure selection is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "heap for top-k"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "heap for top-k",
+            "bloom filter"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "heap for top-k",
+            "bloom filter",
+            "trie for prefix search",
+            "lru via linked hash map"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "heap for top-k",
+            "bloom filter",
+            "trie for prefix search",
+            "lru via linked hash map",
+            "contiguous versus linked layout",
+            "immutable persistent structures"
+          ]
+        }
+      ],
+      "competency_id": "algorithms.data_structures",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "algorithms.data_structures::1::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around data structure selection. Concretely: the numbers reconcile in staging but not in production \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "bloom filter"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "bloom filter",
+            "trie for prefix search"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "bloom filter",
+            "trie for prefix search",
+            "lru via linked hash map",
+            "contiguous versus linked layout"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "bloom filter",
+            "trie for prefix search",
+            "lru via linked hash map",
+            "contiguous versus linked layout",
+            "immutable persistent structures",
+            "union find"
+          ]
+        }
+      ],
+      "competency_id": "algorithms.data_structures",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "algorithms.data_structures::2::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Data structure selection is implicated in a live problem: the fix that worked last quarter made it worse this time. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "heap versus stack"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "heap versus stack",
+            "garbage collection pause"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "heap versus stack",
+            "garbage collection pause",
+            "memory leak versus retention",
+            "file descriptor exhaustion"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "heap versus stack",
+            "garbage collection pause",
+            "memory leak versus retention",
+            "file descriptor exhaustion",
+            "off-heap allocation",
+            "copy on write"
+          ]
+        }
+      ],
+      "competency_id": "systems.memory_model",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "systems.memory_model::0::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at memory and resource behaviour: latency on the p99 has tripled since Tuesday's deploy. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "garbage collection pause"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "garbage collection pause",
+            "memory leak versus retention"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "garbage collection pause",
+            "memory leak versus retention",
+            "file descriptor exhaustion",
+            "off-heap allocation"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "garbage collection pause",
+            "memory leak versus retention",
+            "file descriptor exhaustion",
+            "off-heap allocation",
+            "copy on write",
+            "oom killer"
+          ]
+        }
+      ],
+      "competency_id": "systems.memory_model",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "systems.memory_model::1::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Memory and resource behaviour is implicated in a live problem: the numbers reconcile in staging but not in production. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "memory leak versus retention"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "memory leak versus retention",
+            "file descriptor exhaustion"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "memory leak versus retention",
+            "file descriptor exhaustion",
+            "off-heap allocation",
+            "copy on write"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "memory leak versus retention",
+            "file descriptor exhaustion",
+            "off-heap allocation",
+            "copy on write",
+            "oom killer",
+            "allocation churn"
+          ]
+        }
+      ],
+      "competency_id": "systems.memory_model",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "systems.memory_model::2::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at memory and resource behaviour: the fix that worked last quarter made it worse this time. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "behaviour-preserving change"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "behaviour-preserving change",
+            "characterisation tests first"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "behaviour-preserving change",
+            "characterisation tests first",
+            "strangler fig migration",
+            "seam identification"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "behaviour-preserving change",
+            "characterisation tests first",
+            "strangler fig migration",
+            "seam identification",
+            "incremental over big bang",
+            "coupling versus cohesion"
+          ]
+        }
+      ],
+      "competency_id": "code_quality.refactoring",
+      "expected_seconds": 90.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "code_quality.refactoring::0::past_project",
+      "parent_question_id": null,
+      "probe_family": "past_project",
+      "text": "Tell me about a time refactoring and code health mattered in something you built. In particular: latency on the p99 has tripled since Tuesday's deploy."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "characterisation tests first"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "characterisation tests first",
+            "strangler fig migration"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "characterisation tests first",
+            "strangler fig migration",
+            "seam identification",
+            "incremental over big bang"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "characterisation tests first",
+            "strangler fig migration",
+            "seam identification",
+            "incremental over big bang",
+            "coupling versus cohesion",
+            "deleting dead code"
+          ]
+        }
+      ],
+      "competency_id": "code_quality.refactoring",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "code_quality.refactoring::1::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around refactoring and code health. Concretely: the numbers reconcile in staging but not in production \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "strangler fig migration"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "strangler fig migration",
+            "seam identification"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "strangler fig migration",
+            "seam identification",
+            "incremental over big bang",
+            "coupling versus cohesion"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "strangler fig migration",
+            "seam identification",
+            "incremental over big bang",
+            "coupling versus cohesion",
+            "deleting dead code",
+            "refactor separate from feature commit"
+          ]
+        }
+      ],
+      "competency_id": "code_quality.refactoring",
+      "expected_seconds": 90.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "code_quality.refactoring::2::past_project",
+      "parent_question_id": null,
+      "probe_family": "past_project",
+      "text": "Tell me about a time refactoring and code health mattered in something you built. In particular: the fix that worked last quarter made it worse this time."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "feature scaling"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "feature scaling",
+            "categorical encoding"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "feature scaling",
+            "categorical encoding",
+            "interaction features",
+            "feature store consistency"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "feature scaling",
+            "categorical encoding",
+            "interaction features",
+            "feature store consistency",
+            "train-serve skew",
+            "temporal feature windows"
+          ]
+        }
+      ],
+      "competency_id": "ml.feature_engineering",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.feature_engineering::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Feature engineering is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "categorical encoding"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "categorical encoding",
+            "interaction features"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "categorical encoding",
+            "interaction features",
+            "feature store consistency",
+            "train-serve skew"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "categorical encoding",
+            "interaction features",
+            "feature store consistency",
+            "train-serve skew",
+            "temporal feature windows",
+            "missing value strategy"
+          ]
+        }
+      ],
+      "competency_id": "ml.feature_engineering",
+      "expected_seconds": 90.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.feature_engineering::1::past_project",
+      "parent_question_id": null,
+      "probe_family": "past_project",
+      "text": "Tell me about a time feature engineering mattered in something you built. In particular: the numbers reconcile in staging but not in production."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "interaction features"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "interaction features",
+            "feature store consistency"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "interaction features",
+            "feature store consistency",
+            "train-serve skew",
+            "temporal feature windows"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "interaction features",
+            "feature store consistency",
+            "train-serve skew",
+            "temporal feature windows",
+            "missing value strategy",
+            "feature drift monitoring"
+          ]
+        }
+      ],
+      "competency_id": "ml.feature_engineering",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.feature_engineering::2::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around feature engineering. Concretely: the fix that worked last quarter made it worse this time \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "precision recall tradeoff"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "precision recall tradeoff",
+            "roc auc versus pr auc"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "precision recall tradeoff",
+            "roc auc versus pr auc",
+            "class imbalance",
+            "calibration of probabilities"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "precision recall tradeoff",
+            "roc auc versus pr auc",
+            "class imbalance",
+            "calibration of probabilities",
+            "baseline comparison",
+            "metric aligned to decision"
+          ]
+        }
+      ],
+      "competency_id": "ml.model_evaluation",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.model_evaluation::0::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around model evaluation. Concretely: latency on the p99 has tripled since Tuesday's deploy \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "roc auc versus pr auc"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "roc auc versus pr auc",
+            "class imbalance"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "roc auc versus pr auc",
+            "class imbalance",
+            "calibration of probabilities",
+            "baseline comparison"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "roc auc versus pr auc",
+            "class imbalance",
+            "calibration of probabilities",
+            "baseline comparison",
+            "metric aligned to decision",
+            "confidence interval on the metric"
+          ]
+        }
+      ],
+      "competency_id": "ml.model_evaluation",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.model_evaluation::1::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at model evaluation: the numbers reconcile in staging but not in production. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "class imbalance"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "class imbalance",
+            "calibration of probabilities"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "class imbalance",
+            "calibration of probabilities",
+            "baseline comparison",
+            "metric aligned to decision"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "class imbalance",
+            "calibration of probabilities",
+            "baseline comparison",
+            "metric aligned to decision",
+            "confidence interval on the metric",
+            "slice-level evaluation"
+          ]
+        }
+      ],
+      "competency_id": "ml.model_evaluation",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.model_evaluation::2::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Model evaluation is implicated in a live problem: the fix that worked last quarter made it worse this time. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "randomisation unit"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "randomisation unit",
+            "statistical power"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "randomisation unit",
+            "statistical power",
+            "multiple comparisons",
+            "guardrail metrics"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "randomisation unit",
+            "statistical power",
+            "multiple comparisons",
+            "guardrail metrics",
+            "novelty effect",
+            "sample ratio mismatch"
+          ]
+        }
+      ],
+      "competency_id": "ml.experiment_design",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.experiment_design::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Experiment design is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "statistical power"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "statistical power",
+            "multiple comparisons"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "statistical power",
+            "multiple comparisons",
+            "guardrail metrics",
+            "novelty effect"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "statistical power",
+            "multiple comparisons",
+            "guardrail metrics",
+            "novelty effect",
+            "sample ratio mismatch",
+            "pre-registration of hypothesis"
+          ]
+        }
+      ],
+      "competency_id": "ml.experiment_design",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.experiment_design::1::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around experiment design. Concretely: the numbers reconcile in staging but not in production \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "multiple comparisons"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "multiple comparisons",
+            "guardrail metrics"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "multiple comparisons",
+            "guardrail metrics",
+            "novelty effect",
+            "sample ratio mismatch"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "multiple comparisons",
+            "guardrail metrics",
+            "novelty effect",
+            "sample ratio mismatch",
+            "pre-registration of hypothesis",
+            "holdout contamination"
+          ]
+        }
+      ],
+      "competency_id": "ml.experiment_design",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.experiment_design::2::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Experiment design is implicated in a live problem: the fix that worked last quarter made it worse this time. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "target leakage"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "target leakage",
+            "train test contamination"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "target leakage",
+            "train test contamination",
+            "temporal leakage",
+            "group leakage across splits"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "target leakage",
+            "train test contamination",
+            "temporal leakage",
+            "group leakage across splits",
+            "preprocessing fit on full data",
+            "leakage via id features"
+          ]
+        }
+      ],
+      "competency_id": "ml.data_leakage",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.data_leakage::0::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at data leakage: latency on the p99 has tripled since Tuesday's deploy. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "train test contamination"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "train test contamination",
+            "temporal leakage"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "train test contamination",
+            "temporal leakage",
+            "group leakage across splits",
+            "preprocessing fit on full data"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "train test contamination",
+            "temporal leakage",
+            "group leakage across splits",
+            "preprocessing fit on full data",
+            "leakage via id features",
+            "too-good-to-be-true metric"
+          ]
+        }
+      ],
+      "competency_id": "ml.data_leakage",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.data_leakage::1::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Data leakage is implicated in a live problem: the numbers reconcile in staging but not in production. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "temporal leakage"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "temporal leakage",
+            "group leakage across splits"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "temporal leakage",
+            "group leakage across splits",
+            "preprocessing fit on full data",
+            "leakage via id features"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "temporal leakage",
+            "group leakage across splits",
+            "preprocessing fit on full data",
+            "leakage via id features",
+            "too-good-to-be-true metric",
+            "leakage audit procedure"
+          ]
+        }
+      ],
+      "competency_id": "ml.data_leakage",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "ml.data_leakage::2::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at data leakage: the fix that worked last quarter made it worse this time. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "dag dependency modelling"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "dag dependency modelling",
+            "idempotent task design"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "dag dependency modelling",
+            "idempotent task design",
+            "backfill semantics",
+            "partition-aware processing"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "dag dependency modelling",
+            "idempotent task design",
+            "backfill semantics",
+            "partition-aware processing",
+            "retry and alerting policy",
+            "late arriving data"
+          ]
+        }
+      ],
+      "competency_id": "data_eng.pipeline_orchestration",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "data_eng.pipeline_orchestration::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Pipeline orchestration is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "idempotent task design"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "idempotent task design",
+            "backfill semantics"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "idempotent task design",
+            "backfill semantics",
+            "partition-aware processing",
+            "retry and alerting policy"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "idempotent task design",
+            "backfill semantics",
+            "partition-aware processing",
+            "retry and alerting policy",
+            "late arriving data",
+            "checkpointing"
+          ]
+        }
+      ],
+      "competency_id": "data_eng.pipeline_orchestration",
+      "expected_seconds": 90.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "data_eng.pipeline_orchestration::1::past_project",
+      "parent_question_id": null,
+      "probe_family": "past_project",
+      "text": "Tell me about a time pipeline orchestration mattered in something you built. In particular: the numbers reconcile in staging but not in production."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "backfill semantics"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "backfill semantics",
+            "partition-aware processing"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "backfill semantics",
+            "partition-aware processing",
+            "retry and alerting policy",
+            "late arriving data"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "backfill semantics",
+            "partition-aware processing",
+            "retry and alerting policy",
+            "late arriving data",
+            "checkpointing",
+            "lineage tracking"
+          ]
+        }
+      ],
+      "competency_id": "data_eng.pipeline_orchestration",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "data_eng.pipeline_orchestration::2::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Pipeline orchestration is implicated in a live problem: the fix that worked last quarter made it worse this time. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "schema contract enforcement"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "schema contract enforcement",
+            "null and range assertions"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "schema contract enforcement",
+            "null and range assertions",
+            "freshness sla",
+            "row count anomaly detection"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "schema contract enforcement",
+            "null and range assertions",
+            "freshness sla",
+            "row count anomaly detection",
+            "referential integrity check",
+            "silent corruption"
+          ]
+        }
+      ],
+      "competency_id": "data_eng.data_quality",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "data_eng.data_quality::0::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at data quality: latency on the p99 has tripled since Tuesday's deploy. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "null and range assertions"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "null and range assertions",
+            "freshness sla"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "null and range assertions",
+            "freshness sla",
+            "row count anomaly detection",
+            "referential integrity check"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "null and range assertions",
+            "freshness sla",
+            "row count anomaly detection",
+            "referential integrity check",
+            "silent corruption",
+            "quarantine bad records"
+          ]
+        }
+      ],
+      "competency_id": "data_eng.data_quality",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "data_eng.data_quality::1::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Data quality is implicated in a live problem: the numbers reconcile in staging but not in production. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "freshness sla"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "freshness sla",
+            "row count anomaly detection"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "freshness sla",
+            "row count anomaly detection",
+            "referential integrity check",
+            "silent corruption"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "freshness sla",
+            "row count anomaly detection",
+            "referential integrity check",
+            "silent corruption",
+            "quarantine bad records",
+            "upstream ownership"
+          ]
+        }
+      ],
+      "competency_id": "data_eng.data_quality",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "data_eng.data_quality::2::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around data quality. Concretely: the fix that worked last quarter made it worse this time \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "sampling variability"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "sampling variability",
+            "confidence interval interpretation"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "sampling variability",
+            "confidence interval interpretation",
+            "p-value interpretation",
+            "bootstrap resampling"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "sampling variability",
+            "confidence interval interpretation",
+            "p-value interpretation",
+            "bootstrap resampling",
+            "effect size versus significance",
+            "regression to the mean"
+          ]
+        }
+      ],
+      "competency_id": "stats.inference",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "stats.inference::0::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around statistical inference. Concretely: latency on the p99 has tripled since Tuesday's deploy \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "confidence interval interpretation"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "confidence interval interpretation",
+            "p-value interpretation"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "confidence interval interpretation",
+            "p-value interpretation",
+            "bootstrap resampling",
+            "effect size versus significance"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "confidence interval interpretation",
+            "p-value interpretation",
+            "bootstrap resampling",
+            "effect size versus significance",
+            "regression to the mean",
+            "variance reduction"
+          ]
+        }
+      ],
+      "competency_id": "stats.inference",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "stats.inference::1::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Statistical inference is implicated in a live problem: the numbers reconcile in staging but not in production. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "p-value interpretation"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "p-value interpretation",
+            "bootstrap resampling"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "p-value interpretation",
+            "bootstrap resampling",
+            "effect size versus significance",
+            "regression to the mean"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "p-value interpretation",
+            "bootstrap resampling",
+            "effect size versus significance",
+            "regression to the mean",
+            "variance reduction",
+            "bayesian versus frequentist framing"
+          ]
+        }
+      ],
+      "competency_id": "stats.inference",
+      "expected_seconds": 75.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "stats.inference::2::tradeoff",
+      "parent_question_id": null,
+      "probe_family": "tradeoff",
+      "text": "Talk me through the trade-offs you weigh around statistical inference. Concretely: the fix that worked last quarter made it worse this time \u2014 what would push you one way or the other?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "correlation versus causation"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "correlation versus causation",
+            "confounding variable"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "correlation versus causation",
+            "confounding variable",
+            "selection bias",
+            "simpson's paradox"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "correlation versus causation",
+            "confounding variable",
+            "selection bias",
+            "simpson's paradox",
+            "instrumental variable",
+            "difference in differences"
+          ]
+        }
+      ],
+      "competency_id": "stats.causal_reasoning",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "stats.causal_reasoning::0::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Causal reasoning is implicated in a live problem: latency on the p99 has tripled since Tuesday's deploy. Walk me through how you would think about it."
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "confounding variable"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "confounding variable",
+            "selection bias"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "confounding variable",
+            "selection bias",
+            "simpson's paradox",
+            "instrumental variable"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "confounding variable",
+            "selection bias",
+            "simpson's paradox",
+            "instrumental variable",
+            "difference in differences",
+            "counterfactual framing"
+          ]
+        }
+      ],
+      "competency_id": "stats.causal_reasoning",
+      "expected_seconds": 120.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "stats.causal_reasoning::1::debug",
+      "parent_question_id": null,
+      "probe_family": "debug",
+      "text": "A service is misbehaving and the evidence points at causal reasoning: the numbers reconcile in staging but not in production. How do you narrow it down?"
+    },
+    {
+      "anchors": [
+        {
+          "descriptor": "Names none of the relevant ideas, or answers a different question.",
+          "level": 1,
+          "required_concepts": []
+        },
+        {
+          "descriptor": "Names one relevant idea but does not connect it to the situation.",
+          "level": 2,
+          "required_concepts": [
+            "selection bias"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas and applies at least one of them correctly.",
+          "level": 3,
+          "required_concepts": [
+            "selection bias",
+            "simpson's paradox"
+          ]
+        },
+        {
+          "descriptor": "Names the core ideas plus a second-order consideration, and reasons about the interaction.",
+          "level": 4,
+          "required_concepts": [
+            "selection bias",
+            "simpson's paradox",
+            "instrumental variable",
+            "difference in differences"
+          ]
+        },
+        {
+          "descriptor": "Covers the full concept set including the failure modes, and states what would change the answer.",
+          "level": 5,
+          "required_concepts": [
+            "selection bias",
+            "simpson's paradox",
+            "instrumental variable",
+            "difference in differences",
+            "counterfactual framing",
+            "collider bias"
+          ]
+        }
+      ],
+      "competency_id": "stats.causal_reasoning",
+      "expected_seconds": 110.0,
+      "grm": {
+        "a": 1.9,
+        "b": [
+          -1.5,
+          -0.5,
+          0.5,
+          1.5
+        ],
+        "calibrated": false,
+        "quarantine_reason": null,
+        "quarantined": false
+      },
+      "id": "stats.causal_reasoning::2::scenario",
+      "parent_question_id": null,
+      "probe_family": "scenario",
+      "text": "You are on call. Causal reasoning is implicated in a live problem: the fix that worked last quarter made it worse this time. Walk me through how you would think about it."
+    }
+  ],
+  "taxonomy_version": "v1",
+  "version": "v1-starter"
+}

@@ -20,6 +20,7 @@ from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
 
+from probe.grader import flags
 from probe.models import Grade, GradeFlag, LLMRole, Question, Transcript
 from probe.runtime.llm import LLMRequest
 from probe.runtime.retry import ParseOutcome, ParseResult, structured_call
@@ -97,12 +98,28 @@ class LLMGrader(Grader):
 
     name = "llm"
 
-    def __init__(self, client, *, style_separation: bool = True, max_repairs: int = 1) -> None:
+    def __init__(
+        self,
+        client,
+        *,
+        style_separation: bool = True,
+        max_repairs: int = 1,
+        resume_claims: dict[str, list[str]] | None = None,
+    ) -> None:
         self.client = client
         #: When False, the grader prompt drops the content-only instruction.
         #: This is the fairness intervention: before/after drift is one flag.
         self.style_separation = style_separation
         self.max_repairs = max_repairs
+        #: Competency -> claims the resume made about it. Lets the grader raise
+        #: ``resume_contradiction`` when the transcript disagrees with the
+        #: paper. This is resume text, which the interview plane is entitled
+        #: to; it is not ground truth.
+        self.resume_claims = resume_claims or {}
+        #: Deterministic flags raised before the model is consulted, tallied so
+        #: the robustness suite can separate "the classifier caught it" from
+        #: "the grader noticed it".
+        self.pregrader_hits = 0
 
     def _prompt(self, question: Question, answer: str, transcript: Transcript) -> str:
         prompt = build_grade_prompt(question, answer, transcript)
@@ -119,6 +136,12 @@ class LLMGrader(Grader):
     def grade(
         self, question: Question, answer: str, transcript: Transcript, *, seed: int = 0
     ) -> GradeOutcome:
+        # Layer 2 of the injection stack runs first and without a model, so its
+        # verdict cannot be argued away by whatever the answer says next.
+        pregrader = flags.classify(answer)
+        if pregrader:
+            self.pregrader_hits += 1
+
         request = LLMRequest(
             role=LLMRole.GRADE,
             prompt=self._prompt(question, answer, transcript),
@@ -128,6 +151,8 @@ class LLMGrader(Grader):
                 "question_id": question.id,
                 "competency_id": question.competency_id,
                 "answer": answer,
+                "concept_pool": list(question.anchor(5).required_concepts),
+                "resume_claims": self.resume_claims.get(question.competency_id, []),
                 "style_separation": self.style_separation,
                 "n_prior_turns": len(transcript.turns),
             },
@@ -142,8 +167,12 @@ class LLMGrader(Grader):
             degraded=lambda: degraded_grade(question, answer),
             max_repairs=self.max_repairs,
         )
+        grade = result.value
+        if grade is not None and pregrader:
+            merged = sorted(set(grade.flags) | set(pregrader), key=lambda f: f.value)
+            grade = grade.model_copy(update={"flags": merged})
         return GradeOutcome(
-            grade=result.value,
+            grade=grade,
             outcome=result.outcome,
             attempts=result.attempts,
             errors=tuple(result.errors),

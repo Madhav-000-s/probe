@@ -27,7 +27,7 @@ from probe.rubric.taxonomy import load_taxonomy  # noqa: E402
 from probe.runtime.candidate import AnswerResult, StubCandidate  # noqa: E402
 from probe.runtime.llm import FakeLLM  # noqa: E402
 from probe.runtime.loop import InterviewLoop  # noqa: E402
-from probe.runtime.tracing import TraceStore, TracedClient  # noqa: E402
+from probe.runtime.tracing import TracedClient, TraceStore  # noqa: E402
 
 CRASH_CODE = 137  # what a SIGKILL looks like from the outside
 

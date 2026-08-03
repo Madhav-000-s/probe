@@ -17,7 +17,14 @@ from probe.policy.base import Ask, Decision, Policy, Stop
 class FixedPolicy(Policy):
     name = "fixed"
 
-    def __init__(self, rubric: Rubric, questions_per_competency: int = 1) -> None:
+    #: Depth of the script per competency. Three, not one: a one-deep script
+    #: exhausts itself before a twelve-question budget does, and an arm that
+    #: stops early because it ran out of script has not "reached confidence
+    #: sooner" — it has been handed a shorter interview. Matching the bank's
+    #: depth keeps the budget the binding constraint for every arm.
+    DEFAULT_DEPTH = 3
+
+    def __init__(self, rubric: Rubric, questions_per_competency: int = DEFAULT_DEPTH) -> None:
         self.rubric = rubric
         self.questions_per_competency = questions_per_competency
         self._script: list[str] | None = None
@@ -64,4 +71,9 @@ class FixedPolicy(Policy):
                     eig=None,
                     reason=f"script position {self._script.index(qid)}",
                 )
-        return Stop(StopReason.BANK_EXHAUSTED, "fixed script complete")
+        detail = (
+            "fixed script complete"
+            if self._script
+            else f"bank {bank.version} has no items for any rubric competency"
+        )
+        return Stop(StopReason.BANK_EXHAUSTED, detail)

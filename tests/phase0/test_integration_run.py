@@ -18,7 +18,7 @@ from probe.report.render import render_report
 from probe.runtime.candidate import StubCandidate
 from probe.runtime.llm import FakeLLM
 from probe.runtime.loop import InterviewLoop
-from probe.runtime.tracing import TraceStore, TracedClient, new_run_id
+from probe.runtime.tracing import TracedClient, TraceStore, new_run_id
 
 
 def _run(rubric, bank, config, store, run_id="int-1"):

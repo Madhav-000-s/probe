@@ -32,7 +32,7 @@ from probe.policy.fixed import FixedPolicy
 from probe.runtime.candidate import AnswerResult, AnswerSource
 from probe.runtime.llm import FakeLLM
 from probe.runtime.loop import InterviewLoop
-from probe.runtime.tracing import TraceStore, TracedClient
+from probe.runtime.tracing import TracedClient
 
 #: Deliberately weird values. If any of these substrings shows up in a prompt
 #: it is because ground truth leaked, not because a float coincided.

@@ -6,6 +6,7 @@ with the grid posterior and the graded-response likelihood, which is where the
 numerical verification lives.
 """
 
+from probe.belief.grid import THETA_GRID, GridBelief
 from probe.belief.state import BeliefState, PriorOnlyBelief
 
-__all__ = ["BeliefState", "PriorOnlyBelief"]
+__all__ = ["BeliefState", "GridBelief", "PriorOnlyBelief", "THETA_GRID"]

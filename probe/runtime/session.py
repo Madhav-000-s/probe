@@ -15,7 +15,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from probe.belief.state import BeliefState, PriorOnlyBelief
+from probe.belief.grid import GridBelief
+from probe.belief.state import BeliefState
 from probe.config import ExperimentConfig
 from probe.grader.base import LLMGrader
 from probe.jd import JobDescription, seniority_level
@@ -85,14 +86,23 @@ def build_interview(
         role_title=spec.jd.title,
         seniority_level=seniority_level(spec.jd.seniority),
         seed=spec.seed,
+        # Only compile competencies the bank can actually probe. Quarantined
+        # items are already excluded from `live()`, so a competency whose only
+        # items were quarantined by calibration correctly drops out here too.
+        available_competencies={q.competency_id for q in bank.live()},
     )
 
-    belief: BeliefState = (belief_factory or PriorOnlyBelief)(rubric)
+    # Every arm shares the same estimator. Only *selection* differs between
+    # arms; the posterior that produces the report and the recovery number is
+    # identical machinery in all four. Giving the belief-free arms a weaker
+    # estimator would make them lose on inference rather than on question
+    # choice, which is not the experiment.
+    belief: BeliefState = (belief_factory or GridBelief)(rubric)
 
     return InterviewLoop(
         rubric=rubric,
         bank=bank,
-        policy=make_policy(spec.arm, rubric, config, traced),
+        policy=make_policy(spec.arm, rubric, config, traced, seed=spec.seed),
         belief=belief,
         grader=LLMGrader(
             traced,

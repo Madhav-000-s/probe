@@ -68,6 +68,9 @@ class RubricCompiler:
         #: than swallowed — a rising count means the extraction prompt has
         #: started drifting off the fixed vocabulary.
         self.rejected_ids: list[str] = []
+        #: Ids that are in the taxonomy and relevant to the role, but which the
+        #: question bank has no items for.
+        self.unprobeable_ids: list[str] = []
 
     def compile(
         self,
@@ -79,7 +82,19 @@ class RubricCompiler:
         seniority_level: int = 4,
         seed: int = 0,
         max_competencies: int = 14,
+        available_competencies: set[str] | None = None,
     ) -> Rubric:
+        """Compile a rubric.
+
+        ``available_competencies`` restricts the result to competencies the
+        question bank can actually probe. Without it the compiler happily
+        emits an interview plan containing things no question exists for:
+        those competencies are then reported as "unprobed" with the prior
+        interval intact, they count against every arm's resolved fraction
+        identically, and they dilute every efficiency number by a constant
+        nobody notices. An interview plan you have no questions for is not a
+        plan.
+        """
         request = LLMRequest(
             role=LLMRole.RUBRIC_COMPILE,
             prompt=self._prompt(jd_text, resume, role_title),
@@ -101,7 +116,12 @@ class RubricCompiler:
         )
         raw = result.value or self._degraded(jd_text, seniority_level)
         return self._to_rubric(
-            raw, candidate_id, resume, role_title, max_competencies=max_competencies
+            raw,
+            candidate_id,
+            resume,
+            role_title,
+            max_competencies=max_competencies,
+            available_competencies=available_competencies,
         )
 
     # ---------------------------------------------------------------- prompt
@@ -160,11 +180,19 @@ class RubricCompiler:
         resume: str,
         role_title: str,
         max_competencies: int,
+        available_competencies: set[str] | None = None,
     ) -> Rubric:
         competencies: list[Competency] = []
+        self.unprobeable_ids = []
         for item in raw.competencies:
             if not self.taxonomy.has(item.id):
                 self.rejected_ids.append(item.id)
+                continue
+            if available_competencies is not None and item.id not in available_competencies:
+                # Relevant to the role, but the bank cannot ask about it.
+                # Recorded rather than dropped silently: a growing list here
+                # means the bank has fallen behind the roles being hired for.
+                self.unprobeable_ids.append(item.id)
                 continue
             node = self.taxonomy.get(item.id)
 

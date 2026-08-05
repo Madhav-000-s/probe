@@ -120,3 +120,93 @@ number the plan actually wants from it — agreement across *different* grader
 seeds — is test-retest variance, and it belongs to the Phase 4 reliability
 suite. A separate test asserts seed-to-seed variance is non-zero, because a
 grader with none would make that suite vacuous.
+
+---
+
+## 2026-08-05 — Phase 2: the EIG arm wins on information and loses on the stop rule
+
+The numerical core is verified: graded-response categories against
+hand-computed fixtures to 1e-9, posterior coverage inside the 78–82% band over
+500 synthetic runs, analytic EIG against a 20k-sample Monte-Carlo estimate on
+50 random states to within 0.02 nats. Those are not the interesting part of
+this phase.
+
+### The first directional result
+
+Ten honest personas, budget 12, everything except the arm held identical.
+
+| arm | resolved (SD < tau) | mean posterior SD | recovery rho | n probed |
+|---|---|---|---|---|
+| `fixed` | 13.9% | 0.731 | 0.722 | 100 |
+| `heuristic` | 12.1% | 0.693 | 0.729 | 100 |
+| `eig` | **2.5%** | **0.688** | 0.717 | 92 |
+
+The ordering on mean posterior SD is the one the project predicts:
+`eig` < `heuristic` < `fixed`. The ordering on *resolved fraction* is exactly
+backwards.
+
+### Why, precisely
+
+Both are true simultaneously, and the tension is real rather than a bug.
+Entropy-greedy selection maximises nats; the confidence stop rule counts
+threshold crossings. Those are different objectives, and against tau = 0.55
+with a = 1.9 items the gap is arithmetic:
+
+| starting state | prior SD | questions to cross tau = 0.55 |
+|---|---|---|
+| resume-evidenced competency | 0.60 | **1** |
+| resume-silent competency | 1.15 | **3** |
+
+A breadth-first script buys roughly three threshold crossings for every one a
+widest-first policy buys — while extracting less total information. `eig` goes
+where the entropy is, which is exactly where crossings are most expensive.
+
+This is the "eig lost — what broke?" case, and it goes in the main text of the
+report rather than an appendix. It is also the reason PLAN.md sets tau
+empirically in Phase 3 rather than guessing it: at tau = 0.55 no arm reaches
+confidence within budget at all, so questions-to-confidence is fully censored
+and cannot discriminate between arms. The Phase 2 gate therefore asserts the
+continuous metric (mean posterior SD at fixed budget — the accuracy-vs-budget
+curve in scalar form) and pins the threshold-count inversion in its own test,
+so that if a later change reverses it the suite says so instead of letting the
+write-up go stale.
+
+### Three bugs found on the way, in increasing order of embarrassment
+
+**Credible intervals were biased by half a grid step.** ``cumsum(pmf)[i]`` is
+the probability of falling at or below the **right edge** of bin `i`, but the
+interval was interpolating against bin *centres*. Every interval in every
+report was shifted, and it would have surfaced much later as a calibration
+failure with no obvious cause. Caught by comparing an 80% interval against the
+analytic +-1.2816.
+
+**The EIG arm had no idea tau existed.** The interview stops when every
+required competency is under tau, so a competency already under it contributes
+nothing to termination — yet pure entropy-greedy selection will happily keep
+mining it because it is still the widest thing on the board. The candidate set
+now excludes resolved competencies. This is alignment with the stop rule, not
+an optimisation.
+
+**The rubric contained competencies the bank could not ask about.** The
+compiler emitted 14 required competencies; the bank had items for 8. The other
+6 sat at their prior interval for the whole interview, reported cleanly as
+"unprobed", counting against every arm identically and diluting every
+efficiency number by a constant. The compiler now takes the bank's coverage
+and records what it had to drop. An interview plan you have no questions for
+is not a plan.
+
+Also: every item in the bank had identical GRM parameters, so no item was more
+informative than another about a given candidate and adaptive selection had
+nothing to select on beyond which competency to probe. Items within a
+competency now span a difficulty range, which is ordinary test construction —
+an author writes an approachable question, a middling one and a hard one — and
+is what calibration would recover anyway.
+
+### What this does not yet show
+
+The `eig` margin on mean posterior SD is 0.043 nats-equivalent (0.688 vs
+0.731), with n = 10 personas and no confidence interval. That is a direction,
+not a result, and the phase gate asks for nothing more. Phase 3 calibrates the
+bank, scales the population to 60 with a held-out split, and freezes tau; Phase
+4 attaches bootstrap intervals. If the margin does not survive that, the
+report says so.

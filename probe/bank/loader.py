@@ -39,6 +39,19 @@ LEVEL_THRESHOLDS: dict[int, int] = {1: 0, 2: 1, 3: 2, 4: 4, 5: 6}
 DEFAULT_A = 1.9
 DEFAULT_B = [-1.5, -0.5, 0.5, 1.5]
 
+#: Difficulty offsets applied across the items within one competency.
+#:
+#: Ordinary test construction, not a tuning knob: a bank whose items are all
+#: pitched at the same difficulty can only measure candidates near that point,
+#: and anyone authoring a set of questions on one topic naturally writes an
+#: approachable one, a middling one and a hard one. The first version of this
+#: bank gave every item identical parameters, which meant no item was more
+#: informative than another about a given candidate and adaptive selection had
+#: nothing to select on beyond which competency to probe. Phase 3 replaces
+#: these with maximum-likelihood fits; the spread only has to be present and
+#: principled, not exact.
+DIFFICULTY_OFFSETS = (-0.75, 0.0, 0.75, 0.35)
+
 _STEMS: dict[ProbeFamily, str] = {
     ProbeFamily.SCENARIO: (
         "You are on call. {label} is implicated in a live problem: {hook}. "
@@ -118,13 +131,14 @@ def build_question(
         ProbeFamily.DEBUG: 120.0,
         ProbeFamily.PAST_PROJECT: 90.0,
     }[family]
+    shift = DIFFICULTY_OFFSETS[index % len(DIFFICULTY_OFFSETS)]
     return Question(
         id=f"{competency_id}::{index}::{family.value}",
         competency_id=competency_id,
         probe_family=family,
         text=text,
         anchors=anchors,
-        grm=GRMParams(a=DEFAULT_A, b=list(DEFAULT_B)),
+        grm=GRMParams(a=DEFAULT_A, b=[b + shift for b in DEFAULT_B]),
         expected_seconds=expected_seconds if expected_seconds is not None else base,
     )
 

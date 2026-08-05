@@ -132,6 +132,7 @@ class SimLLM:
             LLMRole.BLIND_RATE: self._blind_rate,
             LLMRole.FLAG_CLASSIFY: self._flag_classify,
             LLMRole.PERSONA_ANSWER: self._persona_answer,
+            LLMRole.POLICY_CHOOSE: self._policy_choose,
         }.get(request.role)
         if handler is None:
             raise NotImplementedError(
@@ -338,6 +339,90 @@ class SimLLM:
                 "drawn_level": level,
                 "n_concepts": plan.n_concepts,
                 "n_distractors": len(plan.distractors),
+            }
+        )
+
+    # -------------------------------------------------------- policy chooser
+
+    #: Weights for the heuristic arm's offline chooser. These are not
+    #: placeholders. The heuristic arm is the competitor the whole claim rests
+    #: on, and a competitor that picks badly makes the headline result
+    #: worthless. Each term is something a thoughtful interviewer would
+    #: actually weigh.
+    CHOOSER_WEIGHTS = {
+        #: Prefer competencies the role genuinely needs.
+        "required_level": 0.90,
+        #: Strongly prefer something never asked about — breadth first.
+        "never_asked": 2.20,
+        #: Diminishing returns on a competency already covered.
+        "per_prior_question": -1.10,
+        #: Dig where the answers were weak; that is where one more question
+        #: might still change the decision.
+        "low_score": 0.85,
+        #: A flagged answer is worth following up.
+        "flagged": 0.70,
+        #: The resume being silent is not evidence either way.
+        "resume_silent": 0.55,
+        #: Vary the probe family.
+        "family_repeat": -1.30,
+    }
+
+    def _policy_choose(self, request: LLMRequest, rng: random.Random) -> str:
+        """A genuinely reasonable next-question heuristic, with no belief state.
+
+        This is what the ``eig`` arm has to beat. It sees exactly what the
+        prompt describes — the rubric, the transcript, the shortlist — and
+        nothing else. In particular it has no posterior, no entropy and no
+        notion of expected information: that asymmetry *is* the experiment.
+        """
+        w = self.CHOOSER_WEIGHTS
+        candidates: list[dict[str, Any]] = list(request.context.get("candidates", []))
+        history: list[dict[str, Any]] = list(request.context.get("history", []))
+        if not candidates:
+            return json.dumps({"question_id": "", "reason": "no candidates"})
+
+        asked: dict[str, list[int]] = {}
+        flagged: set[str] = set()
+        for turn in history:
+            asked.setdefault(turn["competency_id"], [])
+            if turn.get("score") is not None:
+                asked[turn["competency_id"]].append(int(turn["score"]))
+            if turn.get("flags"):
+                flagged.add(turn["competency_id"])
+        recent_families = [t.get("family") for t in history[-3:]]
+
+        best, best_score = None, -1e9
+        for cand in candidates:
+            cid = cand["competency_id"]
+            scores = asked.get(cid)
+            n_prior = len(asked.get(cid, [])) if cid in asked else 0
+
+            value = w["required_level"] * (int(cand.get("required_level", 3)) - 3)
+            if cid not in asked:
+                value += w["never_asked"]
+            else:
+                value += w["per_prior_question"] * n_prior
+                if scores:
+                    mean = sum(scores) / len(scores)
+                    value += w["low_score"] * max(0.0, 3.0 - mean)
+            if cid in flagged:
+                value += w["flagged"]
+            if cand.get("resume_silent"):
+                value += w["resume_silent"]
+            value += w["family_repeat"] * recent_families.count(cand.get("family"))
+
+            # Deterministic tie-break on id keeps the arm reproducible.
+            if value > best_score or (value == best_score and cand["id"] < best["id"]):
+                best, best_score = cand, value
+
+        return json.dumps(
+            {
+                "question_id": best["id"],
+                "reason": (
+                    f"{best['competency_id']} at required level "
+                    f"{best.get('required_level')}, "
+                    f"{'not yet asked' if best['competency_id'] not in asked else 'worth another pass'}"
+                ),
             }
         )
 

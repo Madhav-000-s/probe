@@ -1,0 +1,26 @@
+# Frozen after the Phase 3 gate. Changes require a dated entry in
+# results-log.md and a re-run of every number computed under the old values.
+tau: 0.8
+epsilon: 0.01
+repeat_family_lambda: 0.08
+budgets:
+  max_questions: 12
+  max_tokens: 60000
+  max_wallclock_seconds: 900.0
+  max_followups: 3
+max_competencies: 6
+bank_version: v2
+population_version: v2
+taxonomy_version: v1
+seed_set:
+- 20260807
+calibration_fraction: 0.6
+usd_per_mtok_in: 0.8
+usd_per_mtok_out: 4.0
+frozen: true
+change_log:
+- date: '2026-08-07'
+  change: froze tau=0.8, epsilon=0.01, budget=12
+  justification: tau chosen so the fixed arm reaches confidence on 66.7% of honest
+    calibration personas at budget 12 (target ~70%); swept post hoc over final posteriors
+    on the calibration split only

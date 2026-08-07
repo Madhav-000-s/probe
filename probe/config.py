@@ -93,6 +93,16 @@ class ExperimentConfig:
     #: Weight on the repeat-family penalty in the policy objective.
     repeat_family_lambda: float = 0.08
     budgets: Budgets = field(default_factory=Budgets)
+    #: How many competencies the compiler puts in a rubric.
+    #:
+    #: This is an experimental design parameter, not a detail. At 14 against a
+    #: 12-question budget the interview cannot even ask one question per
+    #: competency: several are never probed, sit at their prior interval
+    #: forever, and no value of tau can ever mark them resolved — which is
+    #: exactly what made the first tau sweep return 0% at every candidate
+    #: threshold. Six is what a focused senior technical interview actually
+    #: covers, and it leaves roughly two questions per competency.
+    max_competencies: int = 6
     bank_version: str = "v0"
     population_version: str = "v0"
     taxonomy_version: str = "v1"
@@ -136,6 +146,7 @@ class ExperimentConfig:
                 "max_wallclock_seconds": self.budgets.max_wallclock_seconds,
                 "max_followups": self.budgets.max_followups,
             },
+            "max_competencies": self.max_competencies,
             "bank_version": self.bank_version,
             "population_version": self.population_version,
             "taxonomy_version": self.taxonomy_version,

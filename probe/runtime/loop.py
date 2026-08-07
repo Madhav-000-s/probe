@@ -16,12 +16,14 @@ from __future__ import annotations
 import time
 from dataclasses import dataclass, field
 
+from probe.bank.followup import FollowUpSpec, build_followup, should_follow_up
 from probe.belief.state import BeliefState
 from probe.config import ExperimentConfig
 from probe.grader.base import Grader
 from probe.models import (
     CompetencyVerdict,
     InterviewReport,
+    Question,
     QuestionBank,
     Rubric,
     RunRecord,
@@ -34,6 +36,10 @@ from probe.runtime.budgets import BudgetTracker
 from probe.runtime.candidate import AnswerSource
 from probe.runtime.stop import StopRule
 from probe.runtime.tracing import TraceStore
+
+#: Marker embedded in generated follow-up ids, so a resumed run can tell a
+#: follow-up from a bank item by inspection.
+FOLLOWUP_MARKER = "followup"
 
 
 @dataclass
@@ -66,6 +72,7 @@ class InterviewLoop:
         style_separation: bool = True,
         followups_enabled: bool = True,
         grader_model: str = "sim-grader",
+        followup_generator=None,
     ) -> None:
         self.rubric = rubric
         self.bank = bank
@@ -82,6 +89,7 @@ class InterviewLoop:
         self.style_separation = style_separation
         self.followups_enabled = followups_enabled
         self.grader_model = grader_model
+        self.followup_generator = followup_generator
 
         self.budget = BudgetTracker(budgets=config.budgets)
         self.stop_rule = StopRule(config)
@@ -164,7 +172,7 @@ class InterviewLoop:
             self.transcript.turns.append(turn)
             self.budget.charge_question(turn.elapsed_seconds, turn.tokens_used)
             if turn.grade is not None:
-                self.belief.update(self.bank.get(turn.question_id), turn.grade.score)
+                self.belief.update(self._question_for(turn), turn.grade.score)
         self.notes.append(f"resumed after turn {turns[-1].turn_idx}")
         return turns[-1].turn_idx
 
@@ -184,9 +192,67 @@ class InterviewLoop:
             if decision.eig is not None and decision.eig < self.config.epsilon:
                 return StopReason.NO_INFORMATIVE_QUESTION
 
-            self._run_turn(decision, turn_idx=n_asked)
+            turn = self._run_turn(decision, turn_idx=n_asked)
+            self._maybe_follow_up(turn, decision)
 
-    def _run_turn(self, decision: Ask, turn_idx: int) -> None:
+    def _question_for(self, turn: Turn) -> Question:
+        """Recover the Question a persisted turn used.
+
+        Generated follow-ups are not in the bank, so a resumed run has to
+        rebuild them. Their ids encode the parent and their parameters are a
+        deterministic shrinkage of the parent's, which means the reconstruction
+        is exact rather than approximate — the resumed posterior is identical
+        to the uninterrupted one, which the Phase 0 resumability test asserts.
+        """
+        if FOLLOWUP_MARKER not in turn.question_id:
+            return self.bank.get(turn.question_id)
+        parent_id, _, suffix = turn.question_id.rpartition(f"::{FOLLOWUP_MARKER}")
+        parent = self.bank.get(parent_id)
+        spec = FollowUpSpec(text=turn.question_text or "follow-up")
+        return build_followup(parent, spec, int(suffix or 1))
+
+    def _maybe_follow_up(self, turn: Turn, decision: Ask) -> None:
+        """Ask a targeted follow-up when the answer left genuine ambiguity.
+
+        Triggered by evasiveness or a still-wide posterior, never merely by a
+        low score: a confidently-wrong answer needs no follow-up, and following
+        up on every weak answer turns an interview into an interrogation while
+        spending budget on candidates who are already well measured.
+        """
+        if self.followup_generator is None or not self.followups_enabled:
+            return
+        if turn.grade is None:
+            return
+
+        question = decision.question
+        if question.is_followup:
+            return  # never chain follow-ups onto follow-ups
+
+        flags = list(turn.grade.flags)
+        if not should_follow_up(
+            self.belief.sd(turn.competency_id), flags, self.budget.followups_available()
+        ):
+            return
+        if self.budget.exceeded() is not None:
+            return
+
+        named = {s.text.lower() for s in turn.grade.evidence_spans}
+        unnamed = [
+            c for c in question.anchor(5).required_concepts if c.lower() not in named
+        ]
+        followup = self.followup_generator.generate(
+            question, turn.answer, self.transcript, unnamed
+        )
+        if followup is None:
+            return
+
+        self.budget.charge_followup()
+        self._run_turn(
+            Ask(question=followup, eig=None, reason=f"follow-up to {question.id}"),
+            turn_idx=len(self.transcript.turns),
+        )
+
+    def _run_turn(self, decision: Ask, turn_idx: int) -> Turn:
         question = decision.question
 
         answered = self.candidate.answer(question, self.transcript)
@@ -225,6 +291,7 @@ class InterviewLoop:
             # Persist before the next turn starts. This ordering is the whole
             # resumability guarantee.
             self.store.upsert_turn(turn)
+        return turn
 
     # ---------------------------------------------------------------- report
 

@@ -210,3 +210,111 @@ not a result, and the phase gate asks for nothing more. Phase 3 calibrates the
 bank, scales the population to 60 with a held-out split, and freezes tau; Phase
 4 attaches bootstrap intervals. If the margin does not survive that, the
 report says so.
+
+> **Retracted 2026-08-07.** Every number in this entry was computed against a
+> rubric of fourteen competencies on a twelve-question budget, which Phase 3
+> established is a mis-specification. See the entry below for the re-run.
+
+---
+
+## 2026-08-07 — Phase 3: calibration, the freeze, and a retraction
+
+### The retraction first
+
+PLAN.md's cross-phase rule 3 says frozen means frozen: change a constant and
+every number computed under the old value is re-run or retracted. The first
+time that rule was invoked it cost the headline finding of the previous phase,
+which is presumably the point of writing it down in advance.
+
+Setting tau empirically exposed the problem. The sweep returned 0% at *every*
+candidate threshold from 0.40 to 0.90, which is not a tau problem — it means
+the fixed arm never resolved a full rubric under any threshold. The cause was
+rubric size: the compiler emitted fourteen competencies against a
+twelve-question budget, so several were never asked about at all, sat at their
+prior interval for the whole interview, and made "all required competencies
+resolved" unreachable by construction. Rubric size is now a frozen constant at
+six, which is what a focused senior technical interview actually covers and
+leaves roughly two questions per competency.
+
+Re-running Phase 2's directional sweep under the corrected design reverses it:
+
+| arm | resolved (SD < tau) | mean posterior SD | recovery rho |
+|---|---|---|---|
+| `fixed` | 23.3% | 0.579 | 0.804 |
+| `heuristic` | 26.7% | 0.588 | 0.781 |
+| `eig` | **31.7%** | 0.582 | **0.819** |
+
+So the "entropy-greedy selection loses on threshold count" finding is
+withdrawn. The arithmetic behind it was real — a resume-evidenced competency
+crosses tau in one question and a resume-silent one takes three — but it only
+dominated because the budget was too thin to reach most of the rubric, which
+turned the comparison into a test of coverage rather than of selection. Under a
+rubric the budget can actually cover, `eig` resolves the most and recovers
+ability best.
+
+The corrected reading is narrower than the original claim in one respect, and
+the test suite now pins that too: on *mean posterior SD* the three arms are
+indistinguishable (0.579 / 0.588 / 0.582 on ten personas, no CI). The eig
+arm's advantage is in **where** it spends questions, not in extracting more
+total information. Phase 4 attaches bootstrap intervals and will say whether
+even the resolved-fraction gap survives.
+
+### Calibration
+
+200 items administered to all 36 calibration-split personas — 7,200 graded
+responses, zero unrecoverable — then fitted by marginal maximum likelihood with
+EM. MML rather than anything using `theta_star`: calibrating against ground
+truth is something no real calibration can do, and it would quietly inflate
+every recovery number downstream. A test asserts the fitter's signature cannot
+even accept ability.
+
+| quantity | value |
+|---|---|
+| items fitted | 200 |
+| quarantined | 22 (11.0%) |
+| mean fitted `a` (live items) | 1.92 |
+| median fitted `a` | 1.78 |
+| responses per item | 36 |
+| correlation matrix | 50 competencies, mean abs rho 0.208, max 0.683 |
+
+The authoring default was `a = 1.9` and the fitted mean came back at 1.92,
+which is the cheapest available evidence that the fitter is not inventing.
+Quarantine reasons are dominated by thresholds running outside the measurable
+range and by discrimination blowing past 6.0 — both what thin data does, and
+both handled by refusing the item rather than by trusting it.
+
+**A wrong diagnosis worth recording.** The synthetic recovery gate failed at
+first with what looked like systematic upward bias on `a` (true 1.40 fitted
+1.66, true 2.30 fitted 2.57). Swapping the M-step from Nelder-Mead to L-BFGS-B
+changed the estimates not at all. Measuring properly showed the error shrinks
+with sample size and flips sign with the seed — sampling noise, not bias. The
+gate now runs at 2500 respondents, which is a statement about the *estimator*
+rather than about this project's 36-respondent calibration sample, and a
+separate test asserts the mean error across seeds is under 0.10 because
+over-estimating discrimination is the direction that would flatter every
+downstream efficiency number.
+
+### The freeze
+
+| constant | value | how it was set |
+|---|---|---|
+| `tau` | 0.80 | fixed arm resolves 63.3% of honest calibration personas at budget 12 (target ~70%) |
+| `epsilon` | 0.01 | EIG floor, unchanged |
+| budget | 12 questions | from the plan |
+| rubric size | 6 competencies | so the budget can cover the rubric |
+| bank | v2 (calibrated) | 200 items, 22 quarantined |
+| population | v2 | 60 personas, 36/24 split, 20% adversarial |
+| seed | 20260807 | |
+
+tau was swept on the **calibration split only**, over final posteriors from
+interviews run with tau unreachable so none of them terminated early. Choosing
+a constant by looking at the split you later report against is the circularity
+the held-out design exists to prevent.
+
+### Throughput
+
+48 interviews across four arms, eight-way concurrency: 6.5 s wall clock, 447
+interviews/minute under the offline backend. The concurrency test asserts the
+failure that actually matters — fifty parallel runs producing fifty traces with
+no turns crossing between them — because interleaved traces look perfectly
+plausible afterwards and would poison every metric silently.

@@ -217,7 +217,8 @@ def test_registry_knows_which_arms_need_a_posterior():
     assert needs_grid_belief("eig")
     assert not needs_grid_belief("fixed")
     assert not needs_grid_belief("heuristic")
-    assert set(ARMS) == {"fixed", "heuristic", "eig"}
+    assert needs_grid_belief("eig+corr")
+    assert set(ARMS) == {"fixed", "heuristic", "eig", "eig+corr"}
 
 
 def test_heuristic_arm_requires_a_client(lopsided_rubric, cfg):

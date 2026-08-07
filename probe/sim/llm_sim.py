@@ -133,6 +133,7 @@ class SimLLM:
             LLMRole.FLAG_CLASSIFY: self._flag_classify,
             LLMRole.PERSONA_ANSWER: self._persona_answer,
             LLMRole.POLICY_CHOOSE: self._policy_choose,
+            LLMRole.FOLLOWUP_GEN: self._followup_gen,
         }.get(request.role)
         if handler is None:
             raise NotImplementedError(
@@ -423,6 +424,26 @@ class SimLLM:
                     f"{best.get('required_level')}, "
                     f"{'not yet asked' if best['competency_id'] not in asked else 'worth another pass'}"
                 ),
+            }
+        )
+
+    # ---------------------------------------------------------- follow-ups
+
+    _FOLLOWUP_STEMS = (
+        "You did not mention {concept}. Where does that fit here?",
+        "What role does {concept} play in the situation you described?",
+        "Say more about {concept} specifically — how would it change your approach?",
+        "You skipped over {concept}. Is that deliberate?",
+    )
+
+    def _followup_gen(self, request: LLMRequest, rng: random.Random) -> str:
+        unnamed = list(request.context.get("unnamed_concepts", []))
+        concept = unnamed[0] if unnamed else "the part you left out"
+        return json.dumps(
+            {
+                "text": rng.choice(self._FOLLOWUP_STEMS).format(concept=concept),
+                "targets_concepts": unnamed[:2],
+                "rationale": f"answer omitted {len(unnamed)} anchor concepts",
             }
         )
 

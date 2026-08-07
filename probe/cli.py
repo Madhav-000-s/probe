@@ -10,20 +10,26 @@ from __future__ import annotations
 import json
 from dataclasses import replace
 
+import numpy as np
 import typer
 from rich.console import Console
 
 from probe import __version__
 from probe.bank.generate import bank_summary, full_bank, starter_bank
 from probe.bank.loader import load_bank, save_bank
-from probe.config import DEFAULT_TRACE_DB, ExperimentConfig, ensure_dirs
+from probe.belief.calibration import calibrate_bank
+from probe.belief.correlation import estimate_correlation
+from probe.config import DEFAULT_TRACE_DB, EXPERIMENT_CONFIG_PATH, ExperimentConfig, ensure_dirs
+from probe.experiment import CORRELATION_PATH, SweepPlan, run_sweep
 from probe.jd import default_jds, load_jd, save_jd
 from probe.models import Behavior
+from probe.policy.registry import ARMS
 from probe.report.render import render_report
 from probe.rubric.taxonomy import load_taxonomy
 from probe.runtime.llm import get_client
 from probe.runtime.session import InterviewSpec, build_interview
 from probe.runtime.tracing import TracedClient, TraceStore
+from probe.sim.administer import administer
 from probe.sim.fidelity import run_fidelity_gate
 from probe.sim.persona import (
     PersonaGenerator,
@@ -123,6 +129,149 @@ def bank_show(version: str = typer.Option("v1-starter")) -> None:
     console.print(json.dumps(bank_summary(load_bank(version)), indent=2))
 
 
+@bank_app.command("calibrate")
+def bank_calibrate(
+    raw_version: str = typer.Option("v2-raw", help="Uncalibrated bank to fit."),
+    new_version: str = typer.Option("v2", help="Version tag for the fitted bank."),
+    population: str = typer.Option("v2", help="Population to calibrate against."),
+    seed: int = typer.Option(20260807),
+) -> None:
+    """Fit GRM item parameters on the calibration split and emit a new bank.
+
+    Split hygiene is enforced here, not assumed: only calibration-split
+    personas are administered, and the correlation matrix estimated alongside
+    records that it came from them. An eval-split persona reaching this code
+    path would make the held-out design a fiction.
+    """
+    ensure_dirs()
+    personas, meta = load_population(population)
+    calibration = [p for p in personas if p.split == "calibration"]
+    if not calibration:
+        console.print("[red]population has no calibration split[/red]")
+        raise typer.Exit(code=2)
+
+    bank = load_bank(raw_version)
+    client = get_client("sim", seed=seed)
+
+    console.print(
+        f"administering {len(bank)} items to {len(calibration)} calibration personas "
+        f"({len(bank) * len(calibration):,} responses)…"
+    )
+    administration = administer(calibration, bank, client, seed=seed)
+    console.print(
+        f"  graded {administration.n_graded:,}, "
+        f"unrecoverable {administration.n_unrecoverable}"
+    )
+
+    fitted, report = calibrate_bank(bank, administration.responses, new_version=new_version)
+    path = save_bank(fitted)
+    console.print(f"[green]wrote[/green] {path}")
+    console.print(json.dumps(report.summary(), indent=2))
+
+    competency_ids = sorted({q.competency_id for q in bank.questions})
+    correlation = estimate_correlation(
+        administration.score_matrix(competency_ids),
+        competency_ids,
+        provenance="calibration",
+    )
+    correlation.save(CORRELATION_PATH)
+    off_diagonal = correlation.matrix[~np.eye(len(competency_ids), dtype=bool)]
+    console.print(
+        f"[green]wrote[/green] {CORRELATION_PATH}\n"
+        f"  correlation over {len(competency_ids)} competencies from "
+        f"{correlation.n_respondents} calibration personas\n"
+        f"  mean |rho| = {float(np.abs(off_diagonal).mean()):.3f}, "
+        f"max = {float(off_diagonal.max()):.3f}"
+    )
+
+    if report.quarantined:
+        console.print(f"\nquarantined {len(report.quarantined)} item(s):")
+        for qid in report.quarantined[:10]:
+            console.print(f"  {qid}: {report.fits[qid].reason}")
+
+
+@app.command("freeze")
+def freeze_constants(
+    tau: float = typer.Option(..., help="Posterior SD threshold for confidence."),
+    epsilon: float = typer.Option(0.01, help="EIG floor."),
+    bank_version: str = typer.Option("v2"),
+    population: str = typer.Option("v2"),
+    budget: int = typer.Option(12),
+    seed: int = typer.Option(20260807),
+    justification: str = typer.Option(..., help="Why these values; goes in the change log."),
+) -> None:
+    """Write experiment-config.yaml and mark the constants frozen.
+
+    After this, tau, epsilon, budgets, bank version, population version and
+    seeds change only with a dated entry in results-log.md, and any published
+    number computed under the old values is re-run or retracted.
+    """
+    from dataclasses import replace as dc_replace
+
+    existing = ExperimentConfig.load()
+    config = dc_replace(
+        existing,
+        tau=tau,
+        epsilon=epsilon,
+        bank_version=bank_version,
+        population_version=population,
+        seed_set=[seed],
+        budgets=dc_replace(existing.budgets, max_questions=budget),
+        frozen=True,
+    )
+    config.dump(
+        change_log=[
+            {
+                "date": "2026-08-07",
+                "change": f"froze tau={tau}, epsilon={epsilon}, budget={budget}",
+                "justification": justification,
+            }
+        ]
+    )
+    console.print(f"[green]froze[/green] constants -> {EXPERIMENT_CONFIG_PATH}")
+    console.print(json.dumps(config.provenance, indent=2))
+
+
+@app.command("calibrate-tau")
+def calibrate_tau(
+    population: str = typer.Option("v2"),
+    bank_version: str = typer.Option("v2"),
+    budget: int = typer.Option(12),
+    target: float = typer.Option(0.70, help="Fraction of calibration personas to resolve."),
+    seed: int = typer.Option(20260807),
+) -> None:
+    """Find the tau at which the fixed arm reaches confidence on ~target of
+    honest calibration personas at the given budget.
+
+    Set on the *calibration* split, never the eval split — picking a constant
+    using the data you will later report against is the circularity this
+    project is at pains to avoid.
+    """
+    from probe.tuning import sweep_tau
+
+    personas, _meta = load_population(population)
+    # Honest calibration personas only. Tau describes when an interview has
+    # learned enough about a cooperative candidate; anchoring it on bluffers
+    # and dodgers would set the threshold by how hard the adversarial subset is
+    # to measure, which is a different question and one Phase 5 owns.
+    calibration = [
+        p for p in personas if p.split == "calibration" and p.behavior is Behavior.HONEST
+    ]
+    bank = load_bank(bank_version)
+
+    table, chosen = sweep_tau(
+        calibration, bank, get_client("sim", seed=seed), budget=budget, target=target, seed=seed
+    )
+    console.print(f"{'tau':>6}  {'resolved fully':>14}  {'mean SD':>8}")
+    for tau, fraction, mean_sd in table:
+        marker = "  <-- chosen" if tau == chosen else ""
+        console.print(f"{tau:6.2f}  {fraction:13.1%}  {mean_sd:8.3f}{marker}")
+    console.print(
+        f"\n[green]tau = {chosen:.2f}[/green] puts the fixed arm nearest "
+        f"{target:.0%} at budget {budget} on the calibration split"
+    )
+
+
 # --------------------------------------------------------------- population
 
 
@@ -148,8 +297,11 @@ def population_generate(
 
     behaviors = [Behavior.HONEST]
     if adversarial:
-        # ~25% adversarial: three honest slots for every one of the six others.
-        behaviors = [Behavior.HONEST] * 3 + [
+        # ~25% adversarial. The cycle is round-robin, so the honest count is
+        # what sets the ratio: 18 honest slots against the six adversarial
+        # behaviours gives 18/24 = 75% honest. (Three honest slots gives 33%,
+        # which is how the first version of this ended up at 65% adversarial.)
+        behaviors = [Behavior.HONEST] * 18 + [
             Behavior.BLUFFER,
             Behavior.TERSE,
             Behavior.RAMBLER,
@@ -216,6 +368,73 @@ def population_fidelity(
 
 
 # ----------------------------------------------------------------------- run
+
+
+@app.command("experiment")
+def experiment_run(
+    arms: str = typer.Option("", help="Comma-separated arms; default is all four."),
+    styles: str = typer.Option("", help="Comma-separated styles; default is the main sweep."),
+    split: str = typer.Option("eval", help="eval | calibration | all"),
+    backend: str = typer.Option("sim", help="sim | fake | anthropic"),
+    population: str = typer.Option("", help="Defaults to the frozen population."),
+    bank_version: str = typer.Option("", help="Defaults to the frozen bank."),
+    traces: str = typer.Option(str(DEFAULT_TRACE_DB)),
+    concurrency: int = typer.Option(8),
+    style_separation: bool = typer.Option(True),
+    followups: bool = typer.Option(True),
+    suffix: str = typer.Option("", help="Label appended to run ids for ablations."),
+    limit: int = typer.Option(0, help="Cap personas, for smoke runs."),
+    seed: int = typer.Option(0, help="Defaults to the frozen seed."),
+    yes: bool = typer.Option(False, "--yes", help="Skip the cost confirmation."),
+) -> None:
+    """Re-run the interview sweep from scratch, printing a cost estimate first.
+
+    A sweep that silently costs three figures is a bad surprise; one that tells
+    you first is a decision. Under the offline backend the estimate is zero and
+    the prompt is skipped.
+    """
+    ensure_dirs()
+    config = ExperimentConfig.load()
+    plan = SweepPlan(
+        arms=tuple(a.strip() for a in arms.split(",") if a.strip()) or ARMS,
+        styles=tuple(s.strip() for s in styles.split(",") if s.strip()) or MAIN_SWEEP_STYLES,
+        split=split,
+        backend=backend,
+        seed=seed or config.seed_set[0],
+        concurrency=concurrency,
+        style_separation=style_separation,
+        followups_enabled=followups,
+        suffix=suffix,
+        limit=limit or None,
+    )
+
+    personas, meta = load_population(population or config.population_version)
+    subjects = [p for p in personas if split in ("all", p.split)][: (limit or None)]
+    n_runs = len(subjects) * len(plan.styles) * len(plan.arms)
+
+    if backend == "anthropic":
+        from probe.runtime.anthropic_client import estimate_cost
+
+        estimate = estimate_cost(n_runs, turns_per_interview=config.budgets.max_questions)
+        console.print(f"[yellow]live backend[/yellow]: {n_runs} interviews, {estimate.render()}")
+        if not yes and not typer.confirm("proceed?"):
+            raise typer.Exit(code=1)
+    else:
+        console.print(f"offline backend '{backend}': {n_runs} interviews, $0.00 estimated")
+
+    result = run_sweep(
+        plan,
+        population_version=population or config.population_version,
+        bank_version=bank_version or config.bank_version,
+        config=config,
+        traces=traces,
+    )
+    console.print(json.dumps(result.summary(), indent=2))
+    if result.outcome.failures:
+        console.print(f"[red]{len(result.outcome.failures)} run(s) failed[/red]")
+        for label, error in result.outcome.failures[:5]:
+            console.print(f"  {label}: {error}")
+        raise typer.Exit(code=1)
 
 
 @app.command("run")

@@ -13,11 +13,12 @@ from probe.config import ExperimentConfig
 from probe.models import Rubric
 from probe.policy.base import Policy
 from probe.policy.eig import EIGPolicy
+from probe.policy.eig_corr import EIGCorrPolicy
 from probe.policy.fixed import FixedPolicy
 from probe.policy.heuristic import HeuristicPolicy
 
-#: Arms available at this phase. ``eig+corr`` joins in Phase 3.
-ARMS: tuple[str, ...] = ("fixed", "heuristic", "eig")
+#: The four arms of the main experiment.
+ARMS: tuple[str, ...] = ("fixed", "heuristic", "eig", "eig+corr")
 
 #: Arms that require a grid posterior. The prior-only belief would score them
 #: at chance, so building one against it is a configuration error rather than
@@ -41,6 +42,10 @@ def make_policy(
         return HeuristicPolicy(rubric, client, seed=seed)
     if name == "eig":
         return EIGPolicy(rubric, config)
+    if name == "eig+corr":
+        # Same selection maths as `eig`; the ablation lives entirely in the
+        # belief state it is paired with (see runtime.session).
+        return EIGCorrPolicy(rubric, config)
     raise ValueError(f"unknown arm {name!r}; available: {', '.join(ARMS)}")
 
 

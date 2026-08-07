@@ -17,9 +17,13 @@ import pytest
 from scipy import stats
 
 from probe.config import Budgets, ExperimentConfig
-from probe.policy.registry import ARMS
 from probe.runtime.session import InterviewSpec, build_interview
 from probe.runtime.tracing import TracedClient, TraceStore
+
+#: The three arms that existed when this directional result was recorded.
+#: `eig+corr` lands in Phase 3 and is compared with confidence intervals in
+#: Phase 4; adding it here would silently change a logged number.
+ARMS = ("fixed", "heuristic", "eig")
 
 BUDGET = 12
 SEED = 20260805
@@ -40,7 +44,17 @@ def run_sweep(arm, personas, jds, bank, sim, store, budget=BUDGET):
     out = []
     for persona in personas:
         traced = TracedClient(sim, store=store)
-        spec = InterviewSpec(persona=persona, jd=jds[persona.jd_id], arm=arm, seed=SEED)
+        spec = InterviewSpec(
+            persona=persona,
+            jd=jds[persona.jd_id],
+            arm=arm,
+            seed=SEED,
+            # Follow-ups are a Phase 3 feature and a Phase 6 ablation. Pinning
+            # them off here keeps this phase's recorded finding reproducible
+            # and keeps the comparison about question *selection*, which is the
+            # only thing that differs between arms.
+            followups_enabled=False,
+        )
         loop = build_interview(spec, bank=bank, config=config, client=traced, store=store)
         result = loop.run(resume=False)
         out.append((persona, result, loop))
@@ -85,57 +99,53 @@ def sweeps(personas, jds, starter, request):
 
 @pytest.mark.slow
 @pytest.mark.gate
-def test_eig_leaves_less_uncertainty_than_the_fixed_script(sweeps):
-    """The Phase 2 directional gate.
+def test_eig_resolves_more_competencies_than_the_fixed_script(sweeps):
+    """The Phase 2 directional gate, as re-measured under the frozen constants.
 
-    Measured as mean posterior SD over required competencies at a fixed
-    question budget — the continuous form of the accuracy-vs-budget curve that
-    is the project's centrepiece figure. Deliberately *not* questions-to-
-    confidence: tau is still a placeholder at this phase and no arm reaches it
-    within budget, so that metric is fully censored and cannot discriminate.
-    Phase 3 sets tau empirically and it becomes measurable then.
+    **This result was retracted and re-run once.** The first version was
+    measured against a rubric of fourteen competencies on a twelve-question
+    budget, which cannot even ask one question per competency: several were
+    never probed, sat at their prior interval for the whole interview, and
+    counted against every arm identically. Under that configuration the eig arm
+    resolved *fewer* competencies than the fixed script, and the log recorded
+    that as a genuine tension between entropy-greedy selection and a threshold
+    stop rule.
+
+    Phase 3 established the rubric size was the mis-specification, set it to
+    six, and set tau empirically. Re-run under the corrected design the
+    ordering flips and eig wins. The mechanism named in the old entry was real
+    arithmetic — a resume-evidenced competency crosses tau in one question, a
+    resume-silent one in three — but it only dominated because the budget was
+    too thin to reach most of the rubric at all.
+
+    The retraction is in results-log.md under 2026-08-07. This is what the
+    plan's "frozen means frozen: re-run or retract" rule is for, and it earned
+    its place the first time it was invoked.
     """
-    fixed = np.mean([mean_required_sd(loop) for _p, _r, loop in sweeps["fixed"]])
-    eig = np.mean([mean_required_sd(loop) for _p, _r, loop in sweeps["eig"]])
+    fixed = np.mean([resolved_fraction(loop) for _p, _r, loop in sweeps["fixed"]])
+    eig = np.mean([resolved_fraction(loop) for _p, _r, loop in sweeps["eig"]])
 
-    assert eig < fixed, f"eig mean SD {eig:.3f} vs fixed {fixed:.3f}"
+    assert eig > fixed, f"eig resolved {eig:.1%} vs fixed {fixed:.1%} at budget {BUDGET}"
 
 
 @pytest.mark.slow
-def test_greedy_eig_loses_on_the_threshold_count(sweeps):
-    """A negative result, pinned so it cannot quietly disappear.
+def test_total_uncertainty_is_a_wash_between_arms(sweeps):
+    """The honest counterpart, pinned so it does not get quietly overstated.
 
-    The eig arm leaves *less total uncertainty* than the fixed script and
-    still resolves *fewer competencies below tau*. Both are true and the
-    tension is real: entropy-greedy selection maximises nats, while the
-    confidence stop rule counts threshold crossings, and those are not the
-    same objective.
-
-    The mechanism is arithmetic. Against tau = 0.55 with a = 1.9 items:
-
-      - a resume-evidenced competency starts at SD 0.60 and crosses after
-        **one** question;
-      - a resume-silent one starts at SD 1.15 and needs **three**.
-
-    So a breadth-first script buys roughly three threshold crossings for every
-    one a widest-first policy buys, even though the widest-first policy
-    extracts more information overall. This is exactly the "eig lost, what
-    broke?" case the plan says to report in the main text rather than bury,
-    and it is the reason tau is set empirically in Phase 3 instead of guessed.
-
-    Asserted rather than merely noted, so that if a later change reverses it
-    the suite says so instead of letting the README go stale.
+    On *mean posterior SD* the three arms are indistinguishable at this sample
+    size — roughly 0.58 for all of them, differences of a few thousandths on
+    ten personas with no confidence interval. The eig arm's advantage is in
+    *where* it spends questions, not in extracting more total information, and
+    the write-up should not claim otherwise.
     """
-    fixed_resolved = np.mean([resolved_fraction(loop) for _p, _r, loop in sweeps["fixed"]])
-    eig_resolved = np.mean([resolved_fraction(loop) for _p, _r, loop in sweeps["eig"]])
-    fixed_sd = np.mean([mean_required_sd(loop) for _p, _r, loop in sweeps["fixed"]])
-    eig_sd = np.mean([mean_required_sd(loop) for _p, _r, loop in sweeps["eig"]])
-
-    assert eig_sd < fixed_sd, "the premise of this finding no longer holds"
-    assert eig_resolved < fixed_resolved, (
-        "the threshold-count inversion has reversed — good news, but the "
-        "results-log entry and the README's 'where eig loses' section now "
-        "describe something that is no longer true"
+    values = {
+        arm: np.mean([mean_required_sd(loop) for _p, _r, loop in runs])
+        for arm, runs in sweeps.items()
+    }
+    spread = max(values.values()) - min(values.values())
+    assert spread < 0.05, (
+        f"arms have separated on mean posterior SD ({values}); this test "
+        f"asserted they were a wash, so the claim needs revisiting"
     )
 
 
@@ -158,17 +168,17 @@ def test_the_heuristic_arm_is_a_real_competitor(sweeps):
     script and the belief-driven arm — which is precisely what makes it a
     credible stand-in for "what everyone else builds".
     """
-    fixed = np.mean([mean_required_sd(loop) for _p, _r, loop in sweeps["fixed"]])
-    heuristic = np.mean([mean_required_sd(loop) for _p, _r, loop in sweeps["heuristic"]])
-    eig = np.mean([mean_required_sd(loop) for _p, _r, loop in sweeps["eig"]])
+    fixed = np.mean([resolved_fraction(loop) for _p, _r, loop in sweeps["fixed"]])
+    heuristic = np.mean([resolved_fraction(loop) for _p, _r, loop in sweeps["heuristic"]])
+    eig = np.mean([resolved_fraction(loop) for _p, _r, loop in sweeps["eig"]])
 
-    assert heuristic < fixed, (
-        f"the heuristic arm ({heuristic:.3f}) did not beat the fixed script "
-        f"({fixed:.3f}); a strawman competitor would make the headline result "
+    assert heuristic > fixed, (
+        f"the heuristic arm ({heuristic:.1%}) did not beat the fixed script "
+        f"({fixed:.1%}); a strawman competitor would make the headline result "
         f"meaningless"
     )
-    assert eig <= heuristic, (
-        f"eig ({eig:.3f}) did not beat the heuristic arm ({heuristic:.3f}) — "
+    assert eig >= heuristic, (
+        f"eig ({eig:.1%}) did not beat the heuristic arm ({heuristic:.1%}) — "
         f"report this rather than tuning until it does"
     )
 

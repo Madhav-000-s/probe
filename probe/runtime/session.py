@@ -15,6 +15,8 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from probe.bank.followup import FollowUpGenerator
+from probe.belief.correlation import CompetencyCorrelation, CorrelatedGridBelief
 from probe.belief.grid import GridBelief
 from probe.belief.state import BeliefState
 from probe.config import ExperimentConfig
@@ -72,6 +74,7 @@ def build_interview(
     store: TraceStore | None = None,
     taxonomy: Taxonomy | None = None,
     belief_factory=None,
+    correlation: CompetencyCorrelation | None = None,
 ) -> InterviewLoop:
     taxonomy = taxonomy or load_taxonomy()
     traced = client if isinstance(client, TracedClient) else TracedClient(client, store=store)
@@ -86,6 +89,7 @@ def build_interview(
         role_title=spec.jd.title,
         seniority_level=seniority_level(spec.jd.seniority),
         seed=spec.seed,
+        max_competencies=config.max_competencies,
         # Only compile competencies the bank can actually probe. Quarantined
         # items are already excluded from `live()`, so a competency whose only
         # items were quarantined by calibration correctly drops out here too.
@@ -97,7 +101,15 @@ def build_interview(
     # identical machinery in all four. Giving the belief-free arms a weaker
     # estimator would make them lose on inference rather than on question
     # choice, which is not the experiment.
-    belief: BeliefState = (belief_factory or GridBelief)(rubric)
+    #
+    # The one exception is `eig+corr`, whose entire ablation *is* the belief:
+    # same policy, same objective, correlated updates.
+    if belief_factory is not None:
+        belief: BeliefState = belief_factory(rubric)
+    elif spec.arm == "eig+corr":
+        belief = CorrelatedGridBelief(rubric, correlation)
+    else:
+        belief = GridBelief(rubric)
 
     return InterviewLoop(
         rubric=rubric,
@@ -125,4 +137,7 @@ def build_interview(
         style_separation=spec.style_separation,
         followups_enabled=spec.followups_enabled,
         grader_model=getattr(traced, "model", "unknown"),
+        followup_generator=(
+            FollowUpGenerator(traced, seed=spec.seed) if spec.followups_enabled else None
+        ),
     )

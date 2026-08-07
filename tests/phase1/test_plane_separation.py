@@ -67,16 +67,39 @@ def test_runtime_only_touches_the_simulator_at_the_documented_seam():
     assert not offenders, "\n".join(offenders)
 
 
+def _code_tokens(path: Path) -> set[str]:
+    """Identifiers in executable code, with comments and strings removed.
+
+    Prose is excluded deliberately. A docstring that says "this deliberately
+    never touches theta_star" is the documentation you want, not a violation,
+    and a plain substring grep flags it — which it did, on
+    ``probe/belief/calibration.py``, whose whole point is that it calibrates
+    without ground truth. What matters is whether the *code* references it.
+    """
+    import io
+    import tokenize
+
+    names: set[str] = set()
+    with path.open("rb") as handle:
+        for token in tokenize.tokenize(io.BufferedReader(handle).readline):
+            if token.type == tokenize.NAME:
+                names.add(token.string)
+    return names
+
+
 def test_persona_type_is_confined():
-    """Grepping for the type name catches what import analysis misses — a
-    module that never imports Persona but happily accepts one."""
+    """Catches what import analysis misses — a module that never imports
+    Persona but happily accepts one."""
+    banned = {"Persona", "theta_star", "ability", "public_view"}
     offenders = []
     for package in INTERVIEW_PLANE:
         for path in _modules(package):
-            text = path.read_text(encoding="utf-8")
-            if "Persona" in text or "theta_star" in text:
-                offenders.append(str(path.relative_to(ROOT)))
-    assert not offenders, f"ground-truth vocabulary on the interview plane: {offenders}"
+            hits = _code_tokens(path) & banned
+            if hits:
+                offenders.append(f"{path.relative_to(ROOT)}: {sorted(hits)}")
+    assert not offenders, "ground-truth vocabulary on the interview plane:\n" + "\n".join(
+        offenders
+    )
 
 
 def test_the_provider_boundary_is_the_only_crossing():

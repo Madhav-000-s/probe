@@ -1,0 +1,20 @@
+{
+  "protocol": {
+    "blind_to_llm_score": true,
+    "blind_to_theta_star": true,
+    "single_sitting": true,
+    "anchor_order": "ascending, fixed for every item",
+    "rater": "independent estimator (NOT human) \u2014 see module docstring",
+    "answers_shown": "question text, five rubric anchors, answer text",
+    "scale": "1-5, whole numbers only"
+  },
+  "agreement": {
+    "n": 85,
+    "cohens_kappa": 0.5544,
+    "quadratic_weighted_kappa": 0.8883,
+    "exact_agreement": 0.6471,
+    "within_one_agreement": 0.9882,
+    "mean_reference": 3.224,
+    "mean_llm": 3.094
+  }
+}

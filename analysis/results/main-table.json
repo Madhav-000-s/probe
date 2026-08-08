@@ -1,0 +1,558 @@
+{
+  "arms": [
+    {
+      "arm": "fixed",
+      "cost": {
+        "calls_per_interview": 24.3229,
+        "parse_failure_rate": 0.0133,
+        "repair_call_rate": 0.0128,
+        "tokens_per_interview": 11430.6979,
+        "total_usd": 1.8735,
+        "usd_per_interview": 0.0195
+      },
+      "cost_to_confidence_usd": 0.0189,
+      "coverage_80": 0.6842,
+      "decision_f1": 0.8124,
+      "decision_precision": 0.8834,
+      "decision_recall": 0.752,
+      "ece": {
+        "hi": 0.1695,
+        "lo": 0.0613,
+        "n": 24,
+        "point": 0.1142,
+        "resamples": 2000
+      },
+      "followup_rate": 0.2472,
+      "mean_posterior_sd": {
+        "hi": 0.6969,
+        "lo": 0.6569,
+        "n": 24,
+        "point": 0.6765,
+        "resamples": 2000
+      },
+      "mean_questions": 10.2396,
+      "n_runs": 96,
+      "questions_to_confidence": {
+        "hi": 10.2009,
+        "lo": 7.8064,
+        "n": 24,
+        "point": 8.7391,
+        "resamples": 2000
+      },
+      "reached_confidence_fraction": 0.2396,
+      "recovery_rho": {
+        "hi": 0.7432,
+        "lo": 0.6403,
+        "n": 24,
+        "point": 0.7007,
+        "resamples": 2000
+      },
+      "resolved_fraction": {
+        "hi": 0.8455,
+        "lo": 0.7431,
+        "n": 24,
+        "point": 0.7934,
+        "resamples": 2000
+      },
+      "seconds_to_confidence": 714.4835,
+      "stop_reasons": {
+        "budget_questions": 0.3438,
+        "budget_wallclock": 0.4167,
+        "confidence": 0.2396
+      },
+      "wallclock_seconds": 851.6812
+    },
+    {
+      "arm": "heuristic",
+      "cost": {
+        "calls_per_interview": 30.2292,
+        "parse_failure_rate": 0.0086,
+        "repair_call_rate": 0.0086,
+        "tokens_per_interview": 19936.4896,
+        "total_usd": 2.5533,
+        "usd_per_interview": 0.0266
+      },
+      "cost_to_confidence_usd": 0.0292,
+      "coverage_80": 0.6908,
+      "decision_f1": 0.8103,
+      "decision_precision": 0.9082,
+      "decision_recall": 0.7315,
+      "ece": {
+        "hi": 0.1558,
+        "lo": 0.0422,
+        "n": 24,
+        "point": 0.097,
+        "resamples": 2000
+      },
+      "followup_rate": 0.2632,
+      "mean_posterior_sd": {
+        "hi": 0.6781,
+        "lo": 0.6393,
+        "n": 24,
+        "point": 0.658,
+        "resamples": 2000
+      },
+      "mean_questions": 9.6562,
+      "n_runs": 96,
+      "questions_to_confidence": {
+        "hi": 8.682,
+        "lo": 6.5714,
+        "n": 24,
+        "point": 7.5294,
+        "resamples": 2000
+      },
+      "reached_confidence_fraction": 0.3542,
+      "recovery_rho": {
+        "hi": 0.7605,
+        "lo": 0.6391,
+        "n": 24,
+        "point": 0.7138,
+        "resamples": 2000
+      },
+      "resolved_fraction": {
+        "hi": 0.8889,
+        "lo": 0.783,
+        "n": 24,
+        "point": 0.8385,
+        "resamples": 2000
+      },
+      "seconds_to_confidence": 591.7779,
+      "stop_reasons": {
+        "budget_questions": 0.2917,
+        "budget_wallclock": 0.3542,
+        "confidence": 0.3542
+      },
+      "wallclock_seconds": 790.9952
+    },
+    {
+      "arm": "eig",
+      "cost": {
+        "calls_per_interview": 18.8333,
+        "parse_failure_rate": 0.0144,
+        "repair_call_rate": 0.0144,
+        "tokens_per_interview": 9212.7812,
+        "total_usd": 1.5434,
+        "usd_per_interview": 0.0161
+      },
+      "cost_to_confidence_usd": 0.0162,
+      "coverage_80": 0.6882,
+      "decision_f1": 0.8449,
+      "decision_precision": 0.9046,
+      "decision_recall": 0.7926,
+      "ece": {
+        "hi": 0.1358,
+        "lo": 0.0502,
+        "n": 24,
+        "point": 0.0904,
+        "resamples": 2000
+      },
+      "followup_rate": 0.2631,
+      "mean_posterior_sd": {
+        "hi": 0.5881,
+        "lo": 0.5667,
+        "n": 24,
+        "point": 0.5771,
+        "resamples": 2000
+      },
+      "mean_questions": 7.7604,
+      "n_runs": 96,
+      "questions_to_confidence": {
+        "hi": 8.1412,
+        "lo": 6.9089,
+        "n": 24,
+        "point": 7.5341,
+        "resamples": 2000
+      },
+      "reached_confidence_fraction": 0.9167,
+      "recovery_rho": {
+        "hi": 0.8209,
+        "lo": 0.7101,
+        "n": 24,
+        "point": 0.7761,
+        "resamples": 2000
+      },
+      "resolved_fraction": {
+        "hi": 0.9948,
+        "lo": 0.974,
+        "n": 24,
+        "point": 0.9861,
+        "resamples": 2000
+      },
+      "seconds_to_confidence": 606.7161,
+      "stop_reasons": {
+        "bank_exhausted": 0.0625,
+        "budget_wallclock": 0.0208,
+        "confidence": 0.9167
+      },
+      "wallclock_seconds": 625.3861
+    },
+    {
+      "arm": "eig+corr",
+      "cost": {
+        "calls_per_interview": 9.5,
+        "parse_failure_rate": 0.0164,
+        "repair_call_rate": 0.0164,
+        "tokens_per_interview": 5919.1875,
+        "total_usd": 1.0806,
+        "usd_per_interview": 0.0113
+      },
+      "cost_to_confidence_usd": 0.0101,
+      "coverage_80": 0.7138,
+      "decision_f1": 0.8537,
+      "decision_precision": 0.8994,
+      "decision_recall": 0.8125,
+      "ece": {
+        "hi": 0.1135,
+        "lo": 0.0325,
+        "n": 24,
+        "point": 0.066,
+        "resamples": 2000
+      },
+      "followup_rate": 0.1885,
+      "mean_posterior_sd": {
+        "hi": 0.5705,
+        "lo": 0.5215,
+        "n": 24,
+        "point": 0.545,
+        "resamples": 2000
+      },
+      "mean_questions": 3.8125,
+      "n_runs": 96,
+      "questions_to_confidence": {
+        "hi": 4.0625,
+        "lo": 3.2396,
+        "n": 24,
+        "point": 3.6667,
+        "resamples": 2000
+      },
+      "reached_confidence_fraction": 1.0,
+      "recovery_rho": {
+        "hi": 0.8373,
+        "lo": 0.741,
+        "n": 24,
+        "point": 0.8049,
+        "resamples": 2000
+      },
+      "resolved_fraction": {
+        "hi": 1.0,
+        "lo": 1.0,
+        "n": 24,
+        "point": 1.0,
+        "resamples": 2000
+      },
+      "seconds_to_confidence": 310.7641,
+      "stop_reasons": {
+        "confidence": 1.0
+      },
+      "wallclock_seconds": 317.9649
+    }
+  ],
+  "budget": 12,
+  "contrasts": [
+    {
+      "arm": "heuristic",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.0536,
+        "lo": -0.0287,
+        "n": 24,
+        "point": 0.0131,
+        "resamples": 2000
+      },
+      "excludes_zero": false,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "heuristic",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.0816,
+        "lo": 0.0087,
+        "n": 24,
+        "point": 0.0451,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "heuristic",
+      "baseline": "fixed",
+      "difference": {
+        "hi": -0.0101,
+        "lo": -0.0267,
+        "n": 24,
+        "point": -0.0185,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "eig",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.1237,
+        "lo": 0.0186,
+        "n": 24,
+        "point": 0.0755,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "eig",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.2413,
+        "lo": 0.1424,
+        "n": 24,
+        "point": 0.1927,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "eig",
+      "baseline": "fixed",
+      "difference": {
+        "hi": -0.0769,
+        "lo": -0.1201,
+        "n": 24,
+        "point": -0.0994,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.1477,
+        "lo": 0.0514,
+        "n": 24,
+        "point": 0.1042,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.2569,
+        "lo": 0.1545,
+        "n": 24,
+        "point": 0.2066,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "fixed",
+      "difference": {
+        "hi": -0.0998,
+        "lo": -0.1577,
+        "n": 24,
+        "point": -0.1315,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "fixed",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.0287,
+        "lo": -0.0536,
+        "n": 24,
+        "point": -0.0131,
+        "resamples": 2000
+      },
+      "excludes_zero": false,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "fixed",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": -0.0087,
+        "lo": -0.0816,
+        "n": 24,
+        "point": -0.0451,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "fixed",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.0267,
+        "lo": 0.0101,
+        "n": 24,
+        "point": 0.0185,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "eig",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.1176,
+        "lo": 0.0106,
+        "n": 24,
+        "point": 0.0623,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "eig",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.1979,
+        "lo": 0.1024,
+        "n": 24,
+        "point": 0.1476,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "eig",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": -0.0598,
+        "lo": -0.1015,
+        "n": 24,
+        "point": -0.0809,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.1393,
+        "lo": 0.0421,
+        "n": 24,
+        "point": 0.0911,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.217,
+        "lo": 0.1111,
+        "n": 24,
+        "point": 0.1615,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": -0.0841,
+        "lo": -0.1379,
+        "n": 24,
+        "point": -0.113,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    }
+  ],
+  "n_personas": 24,
+  "per_competency_rho": {
+    "eig": {
+      "databases.migrations": 0.6795,
+      "databases.schema_design": 0.474,
+      "databases.transactions": 0.7003,
+      "delivery.ci_cd": 0.6021,
+      "distributed_systems.consensus": 0.7786,
+      "distributed_systems.consistency": 0.9065,
+      "distributed_systems.replication": 0.7169,
+      "ml.feature_engineering": 0.8707,
+      "ml.model_evaluation": 0.9431,
+      "observability.debugging": 0.6758,
+      "security.input_validation": 0.8033,
+      "testing.strategy": 0.7509
+    },
+    "eig+corr": {
+      "databases.migrations": 0.7014,
+      "databases.transactions": 0.6355,
+      "distributed_systems.consistency": 0.9079,
+      "distributed_systems.replication": 0.5972,
+      "ml.feature_engineering": 0.7828,
+      "ml.model_evaluation": 0.9582,
+      "observability.debugging": 0.713,
+      "security.input_validation": 0.85,
+      "testing.strategy": 0.7509
+    },
+    "fixed": {
+      "databases.migrations": 0.4618,
+      "databases.schema_design": 0.5069,
+      "databases.transactions": 0.5855,
+      "delivery.ci_cd": 0.6482,
+      "distributed_systems.consensus": 0.6023,
+      "distributed_systems.consistency": 0.8582,
+      "distributed_systems.replication": 0.725,
+      "ml.feature_engineering": 0.4224,
+      "ml.model_evaluation": 0.6986,
+      "observability.debugging": 0.7419,
+      "security.input_validation": 0.8544,
+      "testing.strategy": 0.6077
+    },
+    "heuristic": {
+      "databases.migrations": 0.7063,
+      "databases.schema_design": 0.455,
+      "databases.transactions": 0.4392,
+      "delivery.ci_cd": 0.7439,
+      "distributed_systems.consensus": 0.6359,
+      "distributed_systems.consistency": 0.8823,
+      "distributed_systems.replication": 0.7044,
+      "ml.feature_engineering": 0.7399,
+      "ml.model_evaluation": 0.8324,
+      "observability.debugging": 0.7701,
+      "security.input_validation": 0.7668,
+      "testing.strategy": 0.5017
+    }
+  },
+  "provenance": {
+    "bank_version": "v2",
+    "code_commit": "5965d76",
+    "population_version": "v2",
+    "seed_set": [
+      20260807
+    ],
+    "taxonomy_version": "v1"
+  },
+  "schema_health": {
+    "n_calls": 7957.0,
+    "repair_success_rate": 0.9896,
+    "violation_rate": 0.0121
+  },
+  "tau": 0.8
+}

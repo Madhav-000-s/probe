@@ -152,10 +152,28 @@ class SimLLM:
         """Seeded by the call's identity, so the same prompt under the same
         seed always yields the same output, and a different grader seed yields
         a genuinely different draw. Both halves are needed: the first for
-        reproducibility, the second for test-retest variance."""
-        digest = hashlib.sha256(
-            f"{request.hash}|{self.seed}|{request.seed}".encode()
-        ).digest()
+        reproducibility, the second for test-retest variance.
+
+        Grading is keyed on *what is being graded* — the answer text and the
+        competency — rather than on the whole prompt. Prompt-hash seeding made
+        the grader's noise sensitive to incidental prompt content, which broke
+        the name-swap invariant: two identical answers under different
+        candidate names produced different noise draws and therefore different
+        scores. That is not a name bias anyone designed; it is an artefact of
+        how the randomness was keyed, and it would have shown up in the
+        fairness table as one.
+        """
+        if request.role is LLMRole.GRADE:
+            key = (
+                f"{request.context.get('answer', '')}|"
+                f"{request.context.get('competency_id', '')}|"
+                f"{request.context.get('question_id', '')}|"
+                f"{request.context.get('style_separation', True)}|"
+                f"{request.context.get('n_prior_turns', 0)}"
+            )
+        else:
+            key = request.hash
+        digest = hashlib.sha256(f"{key}|{self.seed}|{request.seed}".encode()).digest()
         return random.Random(int.from_bytes(digest[:8], "big"))
 
     # --------------------------------------------------------------- grading

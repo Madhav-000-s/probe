@@ -29,6 +29,7 @@ from probe.rubric.taxonomy import Taxonomy, load_taxonomy
 from probe.runtime.loop import InterviewLoop
 from probe.runtime.tracing import TracedClient, TraceStore, new_run_id
 from probe.sim.candidate import PersonaCandidate
+from probe.sim.persona import persona_name
 
 
 @dataclass
@@ -120,6 +121,7 @@ def build_interview(
             traced,
             style_separation=spec.style_separation,
             resume_claims=resume_claims(rubric),
+            candidate_name=persona_name(spec.persona) if spec.include_name else None,
         ),
         candidate=PersonaCandidate(
             spec.persona,

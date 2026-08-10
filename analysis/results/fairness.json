@@ -1,0 +1,174 @@
+{
+  "arm": "eig",
+  "delta": {
+    "mean_abs_drift_off": 0.3263,
+    "mean_abs_drift_on": 0.2394,
+    "reduction": 0.0869,
+    "slices": [
+      {
+        "abs_drift_off": 0.3642,
+        "abs_drift_on": 0.2532,
+        "reduction": 0.111,
+        "residual_max_drift_competency": "delivery.ci_cd",
+        "slice": "verbose vs terse"
+      },
+      {
+        "abs_drift_off": 0.4894,
+        "abs_drift_on": 0.4458,
+        "reduction": 0.0436,
+        "residual_max_drift_competency": "observability.debugging",
+        "slice": "neutral vs l1_transfer"
+      },
+      {
+        "abs_drift_off": 0.4514,
+        "abs_drift_on": 0.2584,
+        "reduction": 0.193,
+        "residual_max_drift_competency": "testing.strategy",
+        "slice": "hedged vs assertive"
+      },
+      {
+        "abs_drift_off": 0.0,
+        "abs_drift_on": 0.0,
+        "reduction": 0.0,
+        "residual_max_drift_competency": null,
+        "slice": "name_a vs name_b"
+      }
+    ]
+  },
+  "intervention_off": {
+    "mean_abs_drift": 0.3263,
+    "slices": [
+      {
+        "abs_drift": 0.3642,
+        "adverse_impact_ratio": 0.875,
+        "drift": 0.2491,
+        "flags_disparity": false,
+        "max_drift": 0.4537,
+        "max_drift_competency": "databases.migrations",
+        "n_pairs": 127,
+        "slice_a": "verbose",
+        "slice_b": "terse"
+      },
+      {
+        "abs_drift": 0.4894,
+        "adverse_impact_ratio": 0.7101,
+        "drift": 0.3713,
+        "flags_disparity": true,
+        "max_drift": 0.6847,
+        "max_drift_competency": "databases.migrations",
+        "n_pairs": 128,
+        "slice_a": "neutral",
+        "slice_b": "l1_transfer"
+      },
+      {
+        "abs_drift": 0.4514,
+        "adverse_impact_ratio": 0.7209,
+        "drift": -0.4042,
+        "flags_disparity": true,
+        "max_drift": -0.6041,
+        "max_drift_competency": "ml.feature_engineering",
+        "n_pairs": 128,
+        "slice_a": "hedged",
+        "slice_b": "assertive"
+      },
+      {
+        "abs_drift": 0.0,
+        "adverse_impact_ratio": 1.0,
+        "drift": 0.0,
+        "flags_disparity": false,
+        "max_drift": 0.0,
+        "max_drift_competency": null,
+        "n_pairs": 128,
+        "slice_a": "name_a",
+        "slice_b": "name_b"
+      }
+    ],
+    "style_separation": false,
+    "worst_slice": {
+      "abs_drift": 0.4894,
+      "adverse_impact_ratio": 0.7101,
+      "drift": 0.3713,
+      "flags_disparity": true,
+      "max_drift": 0.6847,
+      "max_drift_competency": "databases.migrations",
+      "n_pairs": 128,
+      "slice_a": "neutral",
+      "slice_b": "l1_transfer"
+    }
+  },
+  "intervention_on": {
+    "mean_abs_drift": 0.2394,
+    "slices": [
+      {
+        "abs_drift": 0.2532,
+        "adverse_impact_ratio": 0.9872,
+        "drift": 0.0013,
+        "flags_disparity": false,
+        "max_drift": -0.2847,
+        "max_drift_competency": "delivery.ci_cd",
+        "n_pairs": 127,
+        "slice_a": "verbose",
+        "slice_b": "terse"
+      },
+      {
+        "abs_drift": 0.4458,
+        "adverse_impact_ratio": 0.7368,
+        "drift": 0.3217,
+        "flags_disparity": true,
+        "max_drift": 0.6111,
+        "max_drift_competency": "observability.debugging",
+        "n_pairs": 128,
+        "slice_a": "neutral",
+        "slice_b": "l1_transfer"
+      },
+      {
+        "abs_drift": 0.2584,
+        "adverse_impact_ratio": 1.0,
+        "drift": -0.1133,
+        "flags_disparity": false,
+        "max_drift": -0.433,
+        "max_drift_competency": "testing.strategy",
+        "n_pairs": 128,
+        "slice_a": "hedged",
+        "slice_b": "assertive"
+      },
+      {
+        "abs_drift": 0.0,
+        "adverse_impact_ratio": 1.0,
+        "drift": 0.0,
+        "flags_disparity": false,
+        "max_drift": 0.0,
+        "max_drift_competency": null,
+        "n_pairs": 128,
+        "slice_a": "name_a",
+        "slice_b": "name_b"
+      }
+    ],
+    "style_separation": true,
+    "worst_slice": {
+      "abs_drift": 0.4458,
+      "adverse_impact_ratio": 0.7368,
+      "drift": 0.3217,
+      "flags_disparity": true,
+      "max_drift": 0.6111,
+      "max_drift_competency": "observability.debugging",
+      "n_pairs": 128,
+      "slice_a": "neutral",
+      "slice_b": "l1_transfer"
+    }
+  },
+  "name_swap": {
+    "exact": true,
+    "max_difference": 0.0,
+    "n_pairs": 128
+  },
+  "provenance": {
+    "bank_version": "v2",
+    "code_commit": "e4056b6",
+    "population_version": "v2",
+    "seed_set": [
+      20260807
+    ],
+    "taxonomy_version": "v1"
+  }
+}

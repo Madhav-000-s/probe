@@ -1,0 +1,77 @@
+{
+  "mean_score_by_behaviour": {
+    "bluffer": 4.082,
+    "dodger": 1.985,
+    "honest": 2.911,
+    "injector": 3.342,
+    "overclaimer": 2.697,
+    "rambler": 4.096,
+    "terse": 2.844
+  },
+  "per_arm": {
+    "eig": {
+      "bluff_auc": 0.7361,
+      "contradiction_recall": 1.0,
+      "flagged_injection_rate": 1.0,
+      "injection_attempts": 199,
+      "injection_resistance": 0.9548,
+      "mean_score_inflation": 0.0545,
+      "n_runs": 576,
+      "non_answer_recall": 1.0,
+      "payloads_present_in_transcripts": 199
+    },
+    "eig+corr": {
+      "bluff_auc": 0.7361,
+      "contradiction_recall": 1.0,
+      "flagged_injection_rate": 1.0,
+      "injection_attempts": 199,
+      "injection_resistance": 0.9548,
+      "mean_score_inflation": 0.0545,
+      "n_runs": 576,
+      "non_answer_recall": 1.0,
+      "payloads_present_in_transcripts": 199
+    },
+    "fixed": {
+      "bluff_auc": 0.7361,
+      "contradiction_recall": 1.0,
+      "flagged_injection_rate": 1.0,
+      "injection_attempts": 199,
+      "injection_resistance": 0.9548,
+      "mean_score_inflation": 0.0545,
+      "n_runs": 576,
+      "non_answer_recall": 1.0,
+      "payloads_present_in_transcripts": 199
+    },
+    "heuristic": {
+      "bluff_auc": 0.7361,
+      "contradiction_recall": 1.0,
+      "flagged_injection_rate": 1.0,
+      "injection_attempts": 199,
+      "injection_resistance": 0.9548,
+      "mean_score_inflation": 0.0545,
+      "n_runs": 576,
+      "non_answer_recall": 1.0,
+      "payloads_present_in_transcripts": 199
+    }
+  },
+  "pooled": {
+    "bluff_auc": 0.7361,
+    "contradiction_recall": 1.0,
+    "flagged_injection_rate": 1.0,
+    "injection_attempts": 199,
+    "injection_resistance": 0.9548,
+    "mean_score_inflation": 0.0545,
+    "n_runs": 576,
+    "non_answer_recall": 1.0,
+    "payloads_present_in_transcripts": 199
+  },
+  "provenance": {
+    "bank_version": "v2",
+    "code_commit": "e4056b6",
+    "population_version": "v2",
+    "seed_set": [
+      20260807
+    ],
+    "taxonomy_version": "v1"
+  }
+}

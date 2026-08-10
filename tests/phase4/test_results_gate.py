@@ -127,19 +127,38 @@ def test_curves_are_monotone_enough_to_be_believable(table):
 
 def test_adaptive_arms_beat_the_heuristic_competitor(table):
     """Q1, with intervals. Asserted against the *heuristic* arm, because
-    beating the fixed script proves nothing."""
+    beating the fixed script proves nothing.
+
+    The claim is deliberately split, because the evidence is:
+
+    * **efficiency** — `eig` resolves far more competencies below tau, and the
+      paired interval excludes zero comfortably. This is the headline.
+    * **recovery accuracy** — `eig` is directionally better, but at n = 24
+      personas the paired interval on rho *includes* zero. It is not
+      established.
+
+    An earlier version of this test asserted both. That was true of an earlier
+    sweep and stopped being true once the fairness fix removed content variance
+    from the style variants — which is exactly why the assertion is here rather
+    than only in prose. The README says "faster to the same accuracy", not
+    "more accurate", and this test is what keeps it honest.
+    """
     contrasts = {
         (c["arm"], c["metric"]): c
         for c in table["contrasts"]
         if c["baseline"] == "heuristic"
     }
-    rho = contrasts[("eig", "recovery_rho")]
-    assert rho["difference"]["point"] > 0
-    assert rho["excludes_zero"], "eig's recovery advantage is inside the noise"
 
     resolved = contrasts[("eig", "resolved_fraction")]
     assert resolved["difference"]["point"] > 0
-    assert resolved["excludes_zero"]
+    assert resolved["excludes_zero"], "the efficiency claim is no longer supported"
+
+    rho = contrasts[("eig", "recovery_rho")]
+    assert rho["difference"]["point"] > 0, "eig no longer even points the right way on rho"
+    assert not rho["excludes_zero"], (
+        "eig's recovery advantage now excludes zero — better than expected, but "
+        "the README currently claims only an efficiency win and needs updating"
+    )
 
 
 def test_correlation_ablation_helps_rather_than_hurts(table):

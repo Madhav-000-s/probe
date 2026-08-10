@@ -21,7 +21,6 @@ from probe.rubric.taxonomy import Taxonomy, load_taxonomy
 from probe.runtime.candidate import AnswerResult, AnswerSource
 from probe.runtime.llm import LLMRequest
 from probe.sim.answers import answer_seed, estimate_seconds
-from probe.sim.persona import persona_name
 
 
 @dataclass
@@ -93,7 +92,11 @@ class PersonaCandidate(AnswerSource):
                 "answer_seed": answer_seed(
                     self._persona.id, question.id, self._persona.style.id, self.seed
                 ),
-                "candidate_name": persona_name(self._persona) if self.include_name else None,
+                # Never signed into the answer text. The name-swap slice needs
+                # byte-identical transcripts differing only in metadata, so the
+                # name reaches the grader through its context — the way a real
+                # grader would see it — rather than through the prose.
+                "candidate_name": None,
             },
         )
         response = self.client.complete(request)

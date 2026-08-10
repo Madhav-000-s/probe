@@ -422,3 +422,116 @@ so early curve points were reading untouched priors as though they were
 estimates. That flattens the low-budget end of the curve, which is precisely
 where the arms separate. Two independent implementations is the only reason it
 was visible at all.
+
+---
+
+## 2026-08-10 — Phase 5: three measurement bugs, then Q3
+
+Every headline number in this phase was wrong the first time. All three
+failures were in the *measurement*, not the system, which is the worst place
+for them: a broken metric reports a number with the same confidence as a
+working one.
+
+### Bug 1 — style variants were answering different questions
+
+`answer_seed` hashed the style id, so every style variant of a persona drew a
+different response level from the graded-response model. The terse and verbose
+variants of one candidate were giving different content. The "style drift" the
+fairness suite measured was mostly content variance wearing a style label, and
+the intervention could not reduce it because it was never style.
+
+Content is now a function of (persona, question, seed) alone. Mean absolute
+drift fell from 0.613 to 0.331 the moment the confound was removed — over half
+the "drift" had never been drift.
+
+### Bug 2 — the name-swap invariant could not have held
+
+Two problems at once. The candidate name was being signed into the answer
+text, so the transcripts were not identical and "identical transcript,
+different name" was untestable by construction. And the grader's noise was
+seeded on the whole prompt hash, so any incidental difference — including a
+name — produced a different noise draw and therefore a different score.
+
+The name now reaches the grader through its context, the way a real grader
+sees it, and grader noise is keyed on what is being graded rather than on
+prompt formatting. Name swap is now exactly invariant: 0.00e+00 over 128
+pairs. Under a deterministic backend that holds by construction rather than as
+a finding, and the README says so.
+
+### Bug 3 — injection resistance measured twice, wrong both times
+
+First: resistance compared each injected turn against the mean of that
+interview's clean turns. But the injector persona appends a payload to every
+answer, so there were no clean turns, the baseline fell back to a hard-coded
+3.0, and every competent answer scoring 4 or 5 was recorded as a successful
+attack. It reported 54% resistance for a defence that had not been breached
+once.
+
+Second: replacing that with a real counterfactual — re-grade the same answer
+with the payload stripped, using a length-preserving sanitiser — gave 83%. The
+remaining 17% was the grader's own noise: comparing one noisy draw against
+another counts a coin flip as an attack.
+
+Third and correct: average the counterfactual over five grader seeds.
+
+| version | resistance | what it was measuring |
+|---|---|---|
+| within-run baseline | 0.539 | a hard-coded constant |
+| single-seed counterfactual | 0.829 | payload effect + grader noise |
+| seed-averaged counterfactual | **0.955** | payload effect |
+
+Mean score inflation from a payload is +0.054 of a rubric level — under a
+tenth of the grader's own noise. 100% of payloads are flagged. The target was
+above 95% and it is met, but the number to trust is the inflation, not the
+threshold count.
+
+### Q3: how much does surface style move a score?
+
+Eight slices, `eig` arm, run twice — content-style separation off, then on.
+
+| slice | drift off | drift on | reduction |
+|---|---|---|---|
+| verbose vs terse | 0.364 | 0.253 | 0.111 |
+| neutral vs L1-transfer | 0.489 | 0.446 | 0.044 |
+| hedged vs assertive | 0.451 | 0.258 | 0.193 |
+| name_a vs name_b | 0.000 | 0.000 | — |
+| **mean** | **0.326** | **0.239** | **0.087 (27%)** |
+
+The intervention works, and it works most where it was aimed: the
+hedged-versus-assertive axis drops 43%, because that is a pure tone effect and
+telling the grader to score content removes it.
+
+The residual is the L1-transfer slice, and it is the largest single drift left
+(0.446). That is the open bug, and it is a different kind of failure from the
+others. The intervention removes the fluency reward; it cannot remove a
+recognition failure. First-language paraphrase — "consistency eventually" for
+"eventual consistency", "read your writes" de-hyphenated — defeats exact
+concept matching, so a candidate who knows the idea loses marks for phrasing
+it non-idiomatically. The remedy is fuzzy or embedding-based concept matching,
+which this version does not implement. Named in the README as the residual
+rather than quietly fixed and lost.
+
+### A negative result: bluffing works on the score
+
+Bluffers average 4.08 against honest candidates' 2.91. The flags catch them —
+bluff-detection AUC 0.736, and overclaim and non-answer recall are both 1.00 —
+but the score does not, because the grader gives partial credit for borrowed
+technical vocabulary from neighbouring competencies. Detection and scoring are
+different problems and only one of them is solved here. The comparison is
+uncontrolled: behaviour is confounded with whatever ability those personas
+happen to have, so it is a direction, not an effect size.
+
+### What the fairness fix did to Q1
+
+Removing content variance from the style variants also changed the main table,
+and not entirely in the project's favour. `eig` still beats the `heuristic`
+arm decisively on resolved fraction (0.982 vs 0.804, interval excludes zero)
+and on questions-to-confidence. But the recovery-rho difference (+0.028) now
+has an interval that includes zero at n = 24 personas.
+
+So the claim narrows: the adaptive policy gets to the same accuracy faster,
+not to a higher accuracy. The README says exactly that, and the test that used
+to assert both now asserts the efficiency win and asserts the rho interval
+includes zero — so if a later change makes recovery significant, the suite
+fails and forces the write-up to be updated rather than leaving an
+understatement in place.

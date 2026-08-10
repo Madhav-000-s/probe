@@ -74,12 +74,22 @@ def test_composition_is_deterministic(starter):
     assert a == b
 
 
-def test_answer_seed_is_stable_and_distinct():
+def test_answer_seed_is_stable_and_independent_of_style():
+    """Content is a function of (persona, question, seed) and nothing else.
+
+    Style used to be in this hash, and it quietly broke the fairness design:
+    each style variant of a persona drew a *different* response level, so the
+    terse and verbose variants were answering with different content and the
+    measured "style drift" was mostly content variance. Style renders content;
+    it must never change it.
+    """
     a = answer_seed("p001", "q1", "neutral", 7)
     assert a == answer_seed("p001", "q1", "neutral", 7)
-    assert a != answer_seed("p001", "q1", "terse", 7)
+    assert a == answer_seed("p001", "q1", "terse", 7), "style changed the content draw"
+    assert a == answer_seed("p001", "q1", "name_b", 7)
     assert a != answer_seed("p002", "q1", "neutral", 7)
     assert a != answer_seed("p001", "q2", "neutral", 7)
+    assert a != answer_seed("p001", "q1", "neutral", 8)
 
 
 def test_drawn_level_respects_the_response_model(starter):

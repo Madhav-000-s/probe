@@ -3,234 +3,234 @@
     {
       "arm": "fixed",
       "cost": {
-        "calls_per_interview": 24.3229,
-        "parse_failure_rate": 0.0133,
-        "repair_call_rate": 0.0128,
-        "tokens_per_interview": 11430.6979,
-        "total_usd": 1.8735,
-        "usd_per_interview": 0.0195
+        "calls_per_interview": 25.0417,
+        "parse_failure_rate": 0.0108,
+        "repair_call_rate": 0.0096,
+        "tokens_per_interview": 11595.2812,
+        "total_usd": 1.8958,
+        "usd_per_interview": 0.0197
       },
       "cost_to_confidence_usd": 0.0189,
-      "coverage_80": 0.6842,
-      "decision_f1": 0.8124,
-      "decision_precision": 0.8834,
-      "decision_recall": 0.752,
+      "coverage_80": 0.6772,
+      "decision_f1": 0.7845,
+      "decision_precision": 0.875,
+      "decision_recall": 0.7109,
       "ece": {
-        "hi": 0.1695,
-        "lo": 0.0613,
+        "hi": 0.1705,
+        "lo": 0.0502,
         "n": 24,
-        "point": 0.1142,
+        "point": 0.1101,
         "resamples": 2000
       },
-      "followup_rate": 0.2472,
+      "followup_rate": 0.2601,
       "mean_posterior_sd": {
-        "hi": 0.6969,
-        "lo": 0.6569,
+        "hi": 0.6984,
+        "lo": 0.6512,
         "n": 24,
-        "point": 0.6765,
+        "point": 0.6746,
         "resamples": 2000
       },
-      "mean_questions": 10.2396,
+      "mean_questions": 10.5312,
       "n_runs": 96,
       "questions_to_confidence": {
-        "hi": 10.2009,
-        "lo": 7.8064,
+        "hi": 11.1667,
+        "lo": 7.7588,
         "n": 24,
-        "point": 8.7391,
+        "point": 9.375,
         "resamples": 2000
       },
-      "reached_confidence_fraction": 0.2396,
+      "reached_confidence_fraction": 0.1667,
       "recovery_rho": {
-        "hi": 0.7432,
-        "lo": 0.6403,
+        "hi": 0.7754,
+        "lo": 0.6208,
         "n": 24,
-        "point": 0.7007,
+        "point": 0.7126,
         "resamples": 2000
       },
       "resolved_fraction": {
-        "hi": 0.8455,
-        "lo": 0.7431,
+        "hi": 0.8281,
+        "lo": 0.7292,
         "n": 24,
-        "point": 0.7934,
+        "point": 0.7778,
         "resamples": 2000
       },
-      "seconds_to_confidence": 714.4835,
+      "seconds_to_confidence": 708.4713,
       "stop_reasons": {
-        "budget_questions": 0.3438,
-        "budget_wallclock": 0.4167,
-        "confidence": 0.2396
+        "budget_questions": 0.3958,
+        "budget_wallclock": 0.4375,
+        "confidence": 0.1667
       },
-      "wallclock_seconds": 851.6812
+      "wallclock_seconds": 857.8749
     },
     {
       "arm": "heuristic",
       "cost": {
-        "calls_per_interview": 30.2292,
-        "parse_failure_rate": 0.0086,
-        "repair_call_rate": 0.0086,
-        "tokens_per_interview": 19936.4896,
-        "total_usd": 2.5533,
-        "usd_per_interview": 0.0266
+        "calls_per_interview": 30.9167,
+        "parse_failure_rate": 0.0084,
+        "repair_call_rate": 0.0084,
+        "tokens_per_interview": 20329.1875,
+        "total_usd": 2.5917,
+        "usd_per_interview": 0.027
       },
-      "cost_to_confidence_usd": 0.0292,
-      "coverage_80": 0.6908,
-      "decision_f1": 0.8103,
-      "decision_precision": 0.9082,
-      "decision_recall": 0.7315,
+      "cost_to_confidence_usd": 0.0285,
+      "coverage_80": 0.7235,
+      "decision_f1": 0.8107,
+      "decision_precision": 0.9007,
+      "decision_recall": 0.7371,
       "ece": {
-        "hi": 0.1558,
-        "lo": 0.0422,
+        "hi": 0.1439,
+        "lo": 0.0267,
         "n": 24,
-        "point": 0.097,
+        "point": 0.0816,
         "resamples": 2000
       },
-      "followup_rate": 0.2632,
+      "followup_rate": 0.2603,
       "mean_posterior_sd": {
-        "hi": 0.6781,
-        "lo": 0.6393,
+        "hi": 0.688,
+        "lo": 0.6443,
         "n": 24,
-        "point": 0.658,
+        "point": 0.666,
         "resamples": 2000
       },
-      "mean_questions": 9.6562,
+      "mean_questions": 9.8854,
       "n_runs": 96,
       "questions_to_confidence": {
-        "hi": 8.682,
-        "lo": 6.5714,
+        "hi": 8.563,
+        "lo": 6.0999,
         "n": 24,
-        "point": 7.5294,
+        "point": 7.1111,
         "resamples": 2000
       },
-      "reached_confidence_fraction": 0.3542,
+      "reached_confidence_fraction": 0.2812,
       "recovery_rho": {
-        "hi": 0.7605,
-        "lo": 0.6391,
+        "hi": 0.8061,
+        "lo": 0.6449,
         "n": 24,
-        "point": 0.7138,
+        "point": 0.7434,
         "resamples": 2000
       },
       "resolved_fraction": {
-        "hi": 0.8889,
-        "lo": 0.783,
+        "hi": 0.8611,
+        "lo": 0.7448,
         "n": 24,
-        "point": 0.8385,
+        "point": 0.8038,
         "resamples": 2000
       },
-      "seconds_to_confidence": 591.7779,
+      "seconds_to_confidence": 584.7481,
       "stop_reasons": {
-        "budget_questions": 0.2917,
-        "budget_wallclock": 0.3542,
-        "confidence": 0.3542
+        "budget_questions": 0.4062,
+        "budget_wallclock": 0.3125,
+        "confidence": 0.2812
       },
-      "wallclock_seconds": 790.9952
+      "wallclock_seconds": 797.4745
     },
     {
       "arm": "eig",
       "cost": {
-        "calls_per_interview": 18.8333,
-        "parse_failure_rate": 0.0144,
-        "repair_call_rate": 0.0144,
-        "tokens_per_interview": 9212.7812,
-        "total_usd": 1.5434,
-        "usd_per_interview": 0.0161
+        "calls_per_interview": 31.4549,
+        "parse_failure_rate": 0.0139,
+        "repair_call_rate": 0.0136,
+        "tokens_per_interview": 15185.5833,
+        "total_usd": 7.6838,
+        "usd_per_interview": 0.0267
       },
-      "cost_to_confidence_usd": 0.0162,
-      "coverage_80": 0.6882,
-      "decision_f1": 0.8449,
-      "decision_precision": 0.9046,
-      "decision_recall": 0.7926,
+      "cost_to_confidence_usd": 0.0159,
+      "coverage_80": 0.6806,
+      "decision_f1": 0.8228,
+      "decision_precision": 0.8607,
+      "decision_recall": 0.7881,
       "ece": {
-        "hi": 0.1358,
-        "lo": 0.0502,
+        "hi": 0.1474,
+        "lo": 0.0519,
         "n": 24,
-        "point": 0.0904,
+        "point": 0.0976,
         "resamples": 2000
       },
-      "followup_rate": 0.2631,
+      "followup_rate": 0.2592,
       "mean_posterior_sd": {
-        "hi": 0.5881,
-        "lo": 0.5667,
+        "hi": 0.5911,
+        "lo": 0.5687,
         "n": 24,
-        "point": 0.5771,
+        "point": 0.5793,
         "resamples": 2000
       },
-      "mean_questions": 7.7604,
-      "n_runs": 96,
+      "mean_questions": 7.7708,
+      "n_runs": 288,
       "questions_to_confidence": {
-        "hi": 8.1412,
-        "lo": 6.9089,
+        "hi": 8.08,
+        "lo": 6.7159,
         "n": 24,
-        "point": 7.5341,
+        "point": 7.4093,
         "resamples": 2000
       },
-      "reached_confidence_fraction": 0.9167,
+      "reached_confidence_fraction": 0.8993,
       "recovery_rho": {
-        "hi": 0.8209,
-        "lo": 0.7101,
+        "hi": 0.8282,
+        "lo": 0.6786,
         "n": 24,
-        "point": 0.7761,
+        "point": 0.7711,
         "resamples": 2000
       },
       "resolved_fraction": {
-        "hi": 0.9948,
-        "lo": 0.974,
+        "hi": 0.9983,
+        "lo": 0.9595,
         "n": 24,
-        "point": 0.9861,
+        "point": 0.9821,
         "resamples": 2000
       },
-      "seconds_to_confidence": 606.7161,
+      "seconds_to_confidence": 587.3568,
       "stop_reasons": {
-        "bank_exhausted": 0.0625,
-        "budget_wallclock": 0.0208,
-        "confidence": 0.9167
+        "bank_exhausted": 0.0486,
+        "budget_wallclock": 0.0521,
+        "confidence": 0.8993
       },
-      "wallclock_seconds": 625.3861
+      "wallclock_seconds": 625.3583
     },
     {
       "arm": "eig+corr",
       "cost": {
-        "calls_per_interview": 9.5,
-        "parse_failure_rate": 0.0164,
-        "repair_call_rate": 0.0164,
-        "tokens_per_interview": 5919.1875,
-        "total_usd": 1.0806,
+        "calls_per_interview": 9.4896,
+        "parse_failure_rate": 0.0176,
+        "repair_call_rate": 0.0176,
+        "tokens_per_interview": 5938.5104,
+        "total_usd": 1.0851,
         "usd_per_interview": 0.0113
       },
       "cost_to_confidence_usd": 0.0101,
-      "coverage_80": 0.7138,
-      "decision_f1": 0.8537,
-      "decision_precision": 0.8994,
-      "decision_recall": 0.8125,
+      "coverage_80": 0.709,
+      "decision_f1": 0.843,
+      "decision_precision": 0.8841,
+      "decision_recall": 0.8056,
       "ece": {
-        "hi": 0.1135,
-        "lo": 0.0325,
+        "hi": 0.1393,
+        "lo": 0.0383,
         "n": 24,
-        "point": 0.066,
+        "point": 0.0856,
         "resamples": 2000
       },
-      "followup_rate": 0.1885,
+      "followup_rate": 0.1831,
       "mean_posterior_sd": {
-        "hi": 0.5705,
-        "lo": 0.5215,
+        "hi": 0.5754,
+        "lo": 0.5277,
         "n": 24,
-        "point": 0.545,
+        "point": 0.5501,
         "resamples": 2000
       },
       "mean_questions": 3.8125,
       "n_runs": 96,
       "questions_to_confidence": {
-        "hi": 4.0625,
-        "lo": 3.2396,
+        "hi": 4.0312,
+        "lo": 3.1875,
         "n": 24,
-        "point": 3.6667,
+        "point": 3.625,
         "resamples": 2000
       },
       "reached_confidence_fraction": 1.0,
       "recovery_rho": {
-        "hi": 0.8373,
-        "lo": 0.741,
+        "hi": 0.8487,
+        "lo": 0.6669,
         "n": 24,
-        "point": 0.8049,
+        "point": 0.7934,
         "resamples": 2000
       },
       "resolved_fraction": {
@@ -240,11 +240,11 @@
         "point": 1.0,
         "resamples": 2000
       },
-      "seconds_to_confidence": 310.7641,
+      "seconds_to_confidence": 311.7985,
       "stop_reasons": {
         "confidence": 1.0
       },
-      "wallclock_seconds": 317.9649
+      "wallclock_seconds": 321.6264
     }
   ],
   "budget": 12,
@@ -253,10 +253,10 @@
       "arm": "heuristic",
       "baseline": "fixed",
       "difference": {
-        "hi": 0.0536,
-        "lo": -0.0287,
+        "hi": 0.0801,
+        "lo": -0.0171,
         "n": 24,
-        "point": 0.0131,
+        "point": 0.0308,
         "resamples": 2000
       },
       "excludes_zero": false,
@@ -266,49 +266,49 @@
       "arm": "heuristic",
       "baseline": "fixed",
       "difference": {
-        "hi": 0.0816,
-        "lo": 0.0087,
+        "hi": 0.0712,
+        "lo": -0.0174,
         "n": 24,
-        "point": 0.0451,
+        "point": 0.026,
         "resamples": 2000
       },
-      "excludes_zero": true,
+      "excludes_zero": false,
       "metric": "resolved_fraction"
     },
     {
       "arm": "heuristic",
       "baseline": "fixed",
       "difference": {
-        "hi": -0.0101,
-        "lo": -0.0267,
+        "hi": 0.0023,
+        "lo": -0.0208,
         "n": 24,
-        "point": -0.0185,
+        "point": -0.0086,
         "resamples": 2000
       },
-      "excludes_zero": true,
+      "excludes_zero": false,
       "metric": "mean_posterior_sd"
     },
     {
       "arm": "eig",
       "baseline": "fixed",
       "difference": {
-        "hi": 0.1237,
-        "lo": 0.0186,
+        "hi": 0.1266,
+        "lo": -0.0089,
         "n": 24,
-        "point": 0.0755,
+        "point": 0.0585,
         "resamples": 2000
       },
-      "excludes_zero": true,
+      "excludes_zero": false,
       "metric": "recovery_rho"
     },
     {
       "arm": "eig",
       "baseline": "fixed",
       "difference": {
-        "hi": 0.2413,
-        "lo": 0.1424,
+        "hi": 0.2506,
+        "lo": 0.1557,
         "n": 24,
-        "point": 0.1927,
+        "point": 0.2043,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -318,10 +318,10 @@
       "arm": "eig",
       "baseline": "fixed",
       "difference": {
-        "hi": -0.0769,
-        "lo": -0.1201,
+        "hi": -0.0686,
+        "lo": -0.1214,
         "n": 24,
-        "point": -0.0994,
+        "point": -0.0953,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -331,23 +331,23 @@
       "arm": "eig+corr",
       "baseline": "fixed",
       "difference": {
-        "hi": 0.1477,
-        "lo": 0.0514,
+        "hi": 0.1567,
+        "lo": -0.0205,
         "n": 24,
-        "point": 0.1042,
+        "point": 0.0808,
         "resamples": 2000
       },
-      "excludes_zero": true,
+      "excludes_zero": false,
       "metric": "recovery_rho"
     },
     {
       "arm": "eig+corr",
       "baseline": "fixed",
       "difference": {
-        "hi": 0.2569,
-        "lo": 0.1545,
+        "hi": 0.2708,
+        "lo": 0.1719,
         "n": 24,
-        "point": 0.2066,
+        "point": 0.2222,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -357,10 +357,10 @@
       "arm": "eig+corr",
       "baseline": "fixed",
       "difference": {
-        "hi": -0.0998,
-        "lo": -0.1577,
+        "hi": -0.0885,
+        "lo": -0.1571,
         "n": 24,
-        "point": -0.1315,
+        "point": -0.1245,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -370,10 +370,10 @@
       "arm": "fixed",
       "baseline": "heuristic",
       "difference": {
-        "hi": 0.0287,
-        "lo": -0.0536,
+        "hi": 0.0171,
+        "lo": -0.0801,
         "n": 24,
-        "point": -0.0131,
+        "point": -0.0308,
         "resamples": 2000
       },
       "excludes_zero": false,
@@ -383,49 +383,49 @@
       "arm": "fixed",
       "baseline": "heuristic",
       "difference": {
-        "hi": -0.0087,
-        "lo": -0.0816,
+        "hi": 0.0174,
+        "lo": -0.0712,
         "n": 24,
-        "point": -0.0451,
+        "point": -0.026,
         "resamples": 2000
       },
-      "excludes_zero": true,
+      "excludes_zero": false,
       "metric": "resolved_fraction"
     },
     {
       "arm": "fixed",
       "baseline": "heuristic",
       "difference": {
-        "hi": 0.0267,
-        "lo": 0.0101,
+        "hi": 0.0208,
+        "lo": -0.0023,
         "n": 24,
-        "point": 0.0185,
+        "point": 0.0086,
         "resamples": 2000
       },
-      "excludes_zero": true,
+      "excludes_zero": false,
       "metric": "mean_posterior_sd"
     },
     {
       "arm": "eig",
       "baseline": "heuristic",
       "difference": {
-        "hi": 0.1176,
-        "lo": 0.0106,
+        "hi": 0.0947,
+        "lo": -0.0422,
         "n": 24,
-        "point": 0.0623,
+        "point": 0.0277,
         "resamples": 2000
       },
-      "excludes_zero": true,
+      "excludes_zero": false,
       "metric": "recovery_rho"
     },
     {
       "arm": "eig",
       "baseline": "heuristic",
       "difference": {
-        "hi": 0.1979,
-        "lo": 0.1024,
+        "hi": 0.2344,
+        "lo": 0.1209,
         "n": 24,
-        "point": 0.1476,
+        "point": 0.1782,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -435,10 +435,10 @@
       "arm": "eig",
       "baseline": "heuristic",
       "difference": {
-        "hi": -0.0598,
-        "lo": -0.1015,
+        "hi": -0.0594,
+        "lo": -0.113,
         "n": 24,
-        "point": -0.0809,
+        "point": -0.0867,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -448,23 +448,23 @@
       "arm": "eig+corr",
       "baseline": "heuristic",
       "difference": {
-        "hi": 0.1393,
-        "lo": 0.0421,
+        "hi": 0.1374,
+        "lo": -0.0631,
         "n": 24,
-        "point": 0.0911,
+        "point": 0.05,
         "resamples": 2000
       },
-      "excludes_zero": true,
+      "excludes_zero": false,
       "metric": "recovery_rho"
     },
     {
       "arm": "eig+corr",
       "baseline": "heuristic",
       "difference": {
-        "hi": 0.217,
-        "lo": 0.1111,
+        "hi": 0.2552,
+        "lo": 0.1389,
         "n": 24,
-        "point": 0.1615,
+        "point": 0.1962,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -474,10 +474,10 @@
       "arm": "eig+corr",
       "baseline": "heuristic",
       "difference": {
-        "hi": -0.0841,
-        "lo": -0.1379,
+        "hi": -0.078,
+        "lo": -0.1492,
         "n": 24,
-        "point": -0.113,
+        "point": -0.1159,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -487,62 +487,62 @@
   "n_personas": 24,
   "per_competency_rho": {
     "eig": {
-      "databases.migrations": 0.6795,
-      "databases.schema_design": 0.474,
-      "databases.transactions": 0.7003,
-      "delivery.ci_cd": 0.6021,
-      "distributed_systems.consensus": 0.7786,
-      "distributed_systems.consistency": 0.9065,
-      "distributed_systems.replication": 0.7169,
-      "ml.feature_engineering": 0.8707,
-      "ml.model_evaluation": 0.9431,
-      "observability.debugging": 0.6758,
-      "security.input_validation": 0.8033,
-      "testing.strategy": 0.7509
+      "databases.migrations": 0.7481,
+      "databases.schema_design": 0.5024,
+      "databases.transactions": 0.7357,
+      "delivery.ci_cd": 0.8388,
+      "distributed_systems.consensus": 0.6474,
+      "distributed_systems.consistency": 0.8572,
+      "distributed_systems.replication": 0.7751,
+      "ml.feature_engineering": 0.8996,
+      "ml.model_evaluation": 0.8445,
+      "observability.debugging": 0.3936,
+      "security.input_validation": 0.864,
+      "testing.strategy": 0.8923
     },
     "eig+corr": {
-      "databases.migrations": 0.7014,
-      "databases.transactions": 0.6355,
-      "distributed_systems.consistency": 0.9079,
-      "distributed_systems.replication": 0.5972,
-      "ml.feature_engineering": 0.7828,
-      "ml.model_evaluation": 0.9582,
-      "observability.debugging": 0.713,
-      "security.input_validation": 0.85,
-      "testing.strategy": 0.7509
+      "databases.migrations": 0.6592,
+      "databases.transactions": 0.7627,
+      "distributed_systems.consistency": 0.7004,
+      "distributed_systems.replication": 0.7901,
+      "ml.feature_engineering": 0.6533,
+      "ml.model_evaluation": 0.8533,
+      "observability.debugging": 0.7084,
+      "security.input_validation": 0.8487,
+      "testing.strategy": 0.8844
     },
     "fixed": {
-      "databases.migrations": 0.4618,
-      "databases.schema_design": 0.5069,
-      "databases.transactions": 0.5855,
-      "delivery.ci_cd": 0.6482,
-      "distributed_systems.consensus": 0.6023,
-      "distributed_systems.consistency": 0.8582,
-      "distributed_systems.replication": 0.725,
-      "ml.feature_engineering": 0.4224,
-      "ml.model_evaluation": 0.6986,
-      "observability.debugging": 0.7419,
-      "security.input_validation": 0.8544,
-      "testing.strategy": 0.6077
+      "databases.migrations": 0.4536,
+      "databases.schema_design": 0.6397,
+      "databases.transactions": 0.7436,
+      "delivery.ci_cd": 0.7928,
+      "distributed_systems.consensus": 0.686,
+      "distributed_systems.consistency": 0.9082,
+      "distributed_systems.replication": 0.8019,
+      "ml.feature_engineering": 0.5785,
+      "ml.model_evaluation": 0.7812,
+      "observability.debugging": 0.7268,
+      "security.input_validation": 0.8687,
+      "testing.strategy": 0.3836
     },
     "heuristic": {
-      "databases.migrations": 0.7063,
-      "databases.schema_design": 0.455,
-      "databases.transactions": 0.4392,
-      "delivery.ci_cd": 0.7439,
-      "distributed_systems.consensus": 0.6359,
-      "distributed_systems.consistency": 0.8823,
-      "distributed_systems.replication": 0.7044,
-      "ml.feature_engineering": 0.7399,
-      "ml.model_evaluation": 0.8324,
-      "observability.debugging": 0.7701,
-      "security.input_validation": 0.7668,
-      "testing.strategy": 0.5017
+      "databases.migrations": 0.722,
+      "databases.schema_design": 0.6532,
+      "databases.transactions": 0.5792,
+      "delivery.ci_cd": 0.7864,
+      "distributed_systems.consensus": 0.7064,
+      "distributed_systems.consistency": 0.9123,
+      "distributed_systems.replication": 0.8147,
+      "ml.feature_engineering": 0.729,
+      "ml.model_evaluation": 0.7901,
+      "observability.debugging": 0.8002,
+      "security.input_validation": 0.8933,
+      "testing.strategy": 0.4304
     }
   },
   "provenance": {
     "bank_version": "v2",
-    "code_commit": "5965d76",
+    "code_commit": "e4056b6",
     "population_version": "v2",
     "seed_set": [
       20260807
@@ -550,9 +550,9 @@
     "taxonomy_version": "v1"
   },
   "schema_health": {
-    "n_calls": 7957.0,
-    "repair_success_rate": 0.9896,
-    "violation_rate": 0.0121
+    "n_calls": 15342.0,
+    "repair_success_rate": 0.9679,
+    "violation_rate": 0.0122
   },
   "tau": 0.8
 }

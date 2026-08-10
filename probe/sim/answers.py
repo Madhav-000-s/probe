@@ -56,14 +56,32 @@ _CLOSERS = (
 
 
 def answer_seed(persona_id: str, question_id: str, style_id: str, seed: int) -> int:
-    """A stable per-answer seed.
+    """A stable per-answer seed for the *content* draw.
 
     Derived from the identifiers rather than a counter so an answer is
     reproducible in isolation — which is what makes a resumed run identical to
-    an uninterrupted one, and what lets the reliability suite re-grade the
-    *same* answer under five different grader seeds.
+    an uninterrupted one, and what lets the reliability suite re-grade the same
+    answer under five different grader seeds.
+
+    ``style_id`` is deliberately **not** in the hash. It was, and that quietly
+    broke the entire fairness design: every style variant of a persona drew a
+    *different* response level from the graded-response model, so the terse and
+    verbose variants of one candidate were answering with different content.
+    The "style drift" the suite measured was mostly content variance wearing a
+    style label, and the intervention could not reduce it because it was never
+    style in the first place.
+
+    Content is now a function of (persona, question, seed) alone. Style renders
+    that content; it never changes it. That is the invariant the whole of Q3
+    rests on, and the name-swap slice — identical in every dimension including
+    this seed — is the check that it holds.
+
+    The parameter is kept in the signature so callers stay explicit about the
+    variant they are rendering, and so a future style that legitimately needs
+    its own content draw has somewhere to say so.
     """
-    h = hashlib.sha256(f"{persona_id}|{question_id}|{style_id}|{seed}".encode()).digest()
+    del style_id  # see above: content must not depend on presentation
+    h = hashlib.sha256(f"{persona_id}|{question_id}|{seed}".encode()).digest()
     return int.from_bytes(h[:8], "big")
 
 

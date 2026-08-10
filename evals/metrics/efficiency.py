@@ -100,7 +100,19 @@ def accuracy_vs_budget(
         for run in runs:
             if len(run.turns) < budget:
                 continue
-            t, e = run.truth_and_estimate(budget=budget)
+            # Over every competency in the rubric, probed or not -- the
+            # estimate for an unprobed one is its prior, which is genuinely
+            # what the report would say about it.
+            #
+            # Restricting to probed competencies made the curve *fall* with
+            # more questions (eig: 0.83 at budget 4, 0.71 at budget 12), which
+            # looks like the interview getting worse and is actually a
+            # composition effect: later questions add newly-probed
+            # competencies carrying a single observation each, diluting a pool
+            # that previously held only well-measured ones. A curve whose x
+            # axis changes what it is averaging over is not a curve about
+            # budget.
+            t, e = run.truth_and_estimate(budget=budget, probed_only=False)
             truth.extend(t)
             estimate.extend(e)
         if len(truth) >= MIN_PAIRS_FOR_RHO and np.std(estimate) > 1e-12:
@@ -154,9 +166,9 @@ def replay_curve(run: RunView, budgets: Sequence[int]) -> dict[int, float]:
             curve[budget] = float("nan")
             continue
         snapshot = run.turns[budget - 1].belief_after
-        probed = {t.competency_id for t in run.turns[:budget]}
-        truth = [run.persona.ability(c) for c in snapshot.means if c in probed]
-        estimate = [v for c, v in snapshot.means.items() if c in probed]
+        known = set(run.persona.theta_star)
+        truth = [run.persona.ability(c) for c in snapshot.means if c in known]
+        estimate = [v for c, v in snapshot.means.items() if c in known]
         # Same inclusion threshold as accuracy_vs_budget. The two must differ in
         # *computation* to be a real cross-check, and agree on *which* pairs
         # they compute over — otherwise the diff reports a disagreement that is

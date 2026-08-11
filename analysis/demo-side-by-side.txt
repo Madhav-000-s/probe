@@ -1,0 +1,54 @@
+probe — fixed vs eig on a dodger (p047, 3 understated competencies)
+Both panes are rendered from committed traces.
+
+fixed  (p047)                                               |  eig  (p047)
+-------------------------------------------------------------------------------------------------------------------------
+[0] distributed_systems.consistency                         |  [0] distributed_systems.replication
+  score 1  theta -1.62+-0.69 non_answer                     |    score 1  theta -1.29+-0.74 non_answer
+  ..####..............                                      |    ...#####............
+
+[1] distributed_systems.consistency                         |  [1] distributed_systems.replication
+  score 1  theta -1.92+-0.56 non_answer                     |    score 1  theta -1.56+-0.64 non_answer
+  .####...............                                      |    ..####..............
+
+[2] distributed_systems.replication                         |  [2] distributed_systems.consistency
+  score 2  theta -0.71+-0.66 non_answer                     |    score 1  theta -1.08+-0.70 non_answer
+  .....####...........                                      |    ....####............
+
+[3] distributed_systems.replication                         |  [3] distributed_systems.consistency
+  score 1  theta -1.14+-0.57 non_answer                     |    score 1  theta -1.21+-0.66 non_answer
+  ....####............                                      |    ...#####............
+
+[4] distributed_systems.consensus                           |  [4] databases.transactions
+  score 4  theta +0.16+-0.77 non_answer                     |    score 1  theta -1.03+-0.75 non_answer
+  .......######.......                                      |    ....#####...........
+
+[5] distributed_systems.consensus                           |  [5] databases.transactions
+  score 3  theta +0.04+-0.62 non_answer                     |    score 3  theta -0.14+-0.48 non_answer
+  ........####........                                      |    .......####.........
+
+[6] databases.transactions                                  |  [6] distributed_systems.consensus
+  score 4  theta +0.06+-0.95 non_answer                     |    score 3  theta -0.22+-0.76 non_answer
+  .......######.......                                      |    ......#####.........
+
+[7] databases.schema_design                                 |  [7] databases.schema_design
+  score 2  theta -0.93+-0.83 non_answer                     |    score 4  theta +0.52+-0.75 non_answer
+  ....#####...........                                      |    .........#####......
+
+[8] databases.migrations                                    |  [8] 
+  score 5  theta +1.03+-0.50 non_answer                     |  
+  ...........####.....                                      |  
+
+[9] distributed_systems.consistency                         |  [9] 
+  score 1  theta -2.02+-0.52 non_answer                     |  
+  .###................                                      |  
+
+[10] distributed_systems.replication                        |  [10] 
+  score 2  theta -0.85+-0.43 non_answer                     |  
+  .....###............                                      |  
+
+[11] distributed_systems.consensus                          |  [11] 
+  score 1  theta -0.42+-0.54 non_answer                     |  
+  ......####..........                                      |  
+
+stopped: budget_questions after 12   |   confidence after 8

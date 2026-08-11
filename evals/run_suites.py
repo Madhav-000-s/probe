@@ -16,7 +16,7 @@ import argparse
 import json
 from pathlib import Path
 
-from evals.metrics import fairness, robustness
+from evals.metrics import fairness, reliability, robustness
 from evals.metrics.loader import load_views
 from probe.config import RESULTS_DIR, ExperimentConfig
 from probe.grader.base import LLMGrader
@@ -67,6 +67,34 @@ def main(argv: list[str] | None = None) -> int:
         json.dumps(robustness_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
 
+    # ---- reliability: re-grade real answers under varied conditions
+    #
+    # Needs a grader rather than only the trace store, because test-retest and
+    # position bias are questions about how the grader behaves when the same
+    # answer is put to it again, and that second grading never happened during
+    # the interview.
+    from probe.bank.loader import load_bank
+
+    bank = {q.id: q for q in load_bank(config.bank_version).questions}
+    samples = []
+    for unit in main_units:
+        for run_view in unit.by_arm("eig"):
+            for turn in run_view.turns:
+                question = bank.get(turn.question_id)
+                if question is not None and len(turn.answer) > 40:
+                    samples.append((question, turn.answer))
+    samples = samples[:: max(1, len(samples) // 120)][:120]
+    reliability_report = reliability.measure(grader, samples)
+    (out_dir / "reliability.json").write_text(
+        json.dumps(
+            {"provenance": config.provenance, **reliability_report.to_dict()},
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
     # ---- fairness, from the eight-slice sweeps
     on = load_views(
         args.traces,
@@ -105,6 +133,9 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     print(render(robustness_payload, fairness_payload))
+    print("\nreliability (Q2)")
+    for key, value in reliability_report.to_dict().items():
+        print(f"  {key:<28}{value}")
     print(f"\nwrote {out_dir / 'robustness.json'}")
     print(f"wrote {out_dir / 'fairness.json'}")
     return 0

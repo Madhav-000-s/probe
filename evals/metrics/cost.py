@@ -22,8 +22,16 @@ from evals.metrics.loader import PersonaRuns, flatten
 from probe.runtime.tracing import TraceStore
 
 
-def token_totals(traces: str | Path, arm: str | None = None) -> dict[str, float]:
-    """Exact token and latency totals straight from the call log."""
+def token_totals(traces: str | Path, run_ids: Sequence[str] | None = None) -> dict[str, float]:
+    """Exact token and latency totals straight from the call log.
+
+    Scoped to an explicit set of run ids rather than to an arm. Filtering by
+    arm summed every sweep that arm ever appeared in — the main sweep plus the
+    fairness and ablation sweeps — and then divided by the main sweep's run
+    count, which inflated the eig arm's cost per interview roughly threefold.
+    The run set the caller is reporting on is the run set the cost has to come
+    from.
+    """
     store = TraceStore(traces, read_only=True)
     try:
         sql = """
@@ -35,12 +43,12 @@ def token_totals(traces: str | Path, arm: str | None = None) -> dict[str, float]
                 sum(CASE WHEN NOT c.parsed_ok THEN 1 ELSE 0 END) AS parse_failures,
                 sum(CASE WHEN c.repair_attempt > 0 THEN 1 ELSE 0 END) AS repair_calls
             FROM llm_calls c
-            JOIN runs r USING (run_id)
         """
         params: list = []
-        if arm is not None:
-            sql += " WHERE r.arm = ?"
-            params.append(arm)
+        if run_ids is not None:
+            placeholders = ",".join("?" for _ in run_ids) or "NULL"
+            sql += f" WHERE c.run_id IN ({placeholders})"
+            params.extend(run_ids)
         row = store.df(sql, params).iloc[0].to_dict()
     finally:
         store.close()
@@ -52,11 +60,16 @@ def usd(prompt_tokens: float, completion_tokens: float, per_mtok_in: float, per_
 
 
 def cost_per_interview(
-    traces: str | Path, arm: str, n_runs: int, per_mtok_in: float, per_mtok_out: float
+    traces: str | Path,
+    units: Sequence[PersonaRuns],
+    arm: str,
+    per_mtok_in: float,
+    per_mtok_out: float,
 ) -> dict[str, float]:
-    totals = token_totals(traces, arm)
+    run_ids = [r.run.run_id for r in flatten(list(units), arm)]
+    totals = token_totals(traces, run_ids)
     total_usd = usd(totals["prompt_tokens"], totals["completion_tokens"], per_mtok_in, per_mtok_out)
-    n = max(1, n_runs)
+    n = max(1, len(run_ids))
     return {
         "calls_per_interview": totals["n_calls"] / n,
         "tokens_per_interview": (totals["prompt_tokens"] + totals["completion_tokens"]) / n,

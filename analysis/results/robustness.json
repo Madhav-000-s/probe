@@ -1,73 +1,73 @@
 {
   "mean_score_by_behaviour": {
-    "bluffer": 4.082,
-    "dodger": 1.985,
-    "honest": 2.911,
-    "injector": 3.342,
-    "overclaimer": 2.697,
-    "rambler": 4.096,
-    "terse": 2.844
+    "bluffer": 4.054,
+    "dodger": 2.052,
+    "honest": 2.986,
+    "injector": 3.403,
+    "overclaimer": 2.812,
+    "rambler": 4.043,
+    "terse": 2.81
   },
   "per_arm": {
     "eig": {
-      "bluff_auc": 0.7361,
+      "bluff_auc": 0.7302,
       "contradiction_recall": 1.0,
       "flagged_injection_rate": 1.0,
-      "injection_attempts": 199,
-      "injection_resistance": 0.9548,
-      "mean_score_inflation": 0.0545,
-      "n_runs": 576,
+      "injection_attempts": 124,
+      "injection_resistance": 0.9597,
+      "mean_score_inflation": 0.0494,
+      "n_runs": 384,
       "non_answer_recall": 1.0,
-      "payloads_present_in_transcripts": 199
+      "payloads_present_in_transcripts": 124
     },
     "eig+corr": {
-      "bluff_auc": 0.7361,
+      "bluff_auc": 0.7302,
       "contradiction_recall": 1.0,
       "flagged_injection_rate": 1.0,
-      "injection_attempts": 199,
-      "injection_resistance": 0.9548,
-      "mean_score_inflation": 0.0545,
-      "n_runs": 576,
+      "injection_attempts": 124,
+      "injection_resistance": 0.9597,
+      "mean_score_inflation": 0.0494,
+      "n_runs": 384,
       "non_answer_recall": 1.0,
-      "payloads_present_in_transcripts": 199
+      "payloads_present_in_transcripts": 124
     },
     "fixed": {
-      "bluff_auc": 0.7361,
+      "bluff_auc": 0.7302,
       "contradiction_recall": 1.0,
       "flagged_injection_rate": 1.0,
-      "injection_attempts": 199,
-      "injection_resistance": 0.9548,
-      "mean_score_inflation": 0.0545,
-      "n_runs": 576,
+      "injection_attempts": 124,
+      "injection_resistance": 0.9597,
+      "mean_score_inflation": 0.0494,
+      "n_runs": 384,
       "non_answer_recall": 1.0,
-      "payloads_present_in_transcripts": 199
+      "payloads_present_in_transcripts": 124
     },
     "heuristic": {
-      "bluff_auc": 0.7361,
+      "bluff_auc": 0.7302,
       "contradiction_recall": 1.0,
       "flagged_injection_rate": 1.0,
-      "injection_attempts": 199,
-      "injection_resistance": 0.9548,
-      "mean_score_inflation": 0.0545,
-      "n_runs": 576,
+      "injection_attempts": 124,
+      "injection_resistance": 0.9597,
+      "mean_score_inflation": 0.0494,
+      "n_runs": 384,
       "non_answer_recall": 1.0,
-      "payloads_present_in_transcripts": 199
+      "payloads_present_in_transcripts": 124
     }
   },
   "pooled": {
-    "bluff_auc": 0.7361,
+    "bluff_auc": 0.7302,
     "contradiction_recall": 1.0,
     "flagged_injection_rate": 1.0,
-    "injection_attempts": 199,
-    "injection_resistance": 0.9548,
-    "mean_score_inflation": 0.0545,
-    "n_runs": 576,
+    "injection_attempts": 124,
+    "injection_resistance": 0.9597,
+    "mean_score_inflation": 0.0494,
+    "n_runs": 384,
     "non_answer_recall": 1.0,
-    "payloads_present_in_transcripts": 199
+    "payloads_present_in_transcripts": 124
   },
   "provenance": {
     "bank_version": "v2",
-    "code_commit": "e4056b6",
+    "code_commit": "a7030f5",
     "population_version": "v2",
     "seed_set": [
       20260807

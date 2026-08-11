@@ -70,10 +70,12 @@ desktop.ini
 !.env.example
 
 # --- generated run artefacts ---
-# Committed traces live in traces/committed/ (see Makefile); scratch runs do not.
+# traces/probe.duckdb IS committed: `make eval` on a fresh clone reproduces the
+# results table from it, which is the reproducibility contract in DELIVERABLES.
+# Scratch runs and write-ahead logs are not.
 traces/scratch/
-traces/*.duckdb
 traces/*.duckdb.wal
-!traces/committed/*.duckdb
+traces/*.duckdb.tmp/
+!traces/probe.duckdb
 analysis/results/scratch/
 *.log

@@ -127,64 +127,64 @@
     {
       "arm": "eig",
       "cost": {
-        "calls_per_interview": 31.4549,
-        "parse_failure_rate": 0.0139,
-        "repair_call_rate": 0.0136,
-        "tokens_per_interview": 15185.5833,
-        "total_usd": 7.6838,
-        "usd_per_interview": 0.0267
+        "calls_per_interview": 18.8542,
+        "parse_failure_rate": 0.0155,
+        "repair_call_rate": 0.0149,
+        "tokens_per_interview": 9205.6979,
+        "total_usd": 1.5407,
+        "usd_per_interview": 0.016
       },
       "cost_to_confidence_usd": 0.0159,
-      "coverage_80": 0.6806,
-      "decision_f1": 0.8228,
-      "decision_precision": 0.8607,
-      "decision_recall": 0.7881,
+      "coverage_80": 0.6673,
+      "decision_f1": 0.8137,
+      "decision_precision": 0.8646,
+      "decision_recall": 0.7685,
       "ece": {
-        "hi": 0.1474,
-        "lo": 0.0519,
+        "hi": 0.1587,
+        "lo": 0.0587,
         "n": 24,
-        "point": 0.0976,
+        "point": 0.1073,
         "resamples": 2000
       },
-      "followup_rate": 0.2592,
+      "followup_rate": 0.2614,
       "mean_posterior_sd": {
-        "hi": 0.5911,
-        "lo": 0.5687,
+        "hi": 0.591,
+        "lo": 0.5676,
         "n": 24,
-        "point": 0.5793,
+        "point": 0.5784,
         "resamples": 2000
       },
       "mean_questions": 7.7708,
-      "n_runs": 288,
+      "n_runs": 96,
       "questions_to_confidence": {
-        "hi": 8.08,
-        "lo": 6.7159,
+        "hi": 8.0989,
+        "lo": 6.738,
         "n": 24,
-        "point": 7.4093,
+        "point": 7.4302,
         "resamples": 2000
       },
-      "reached_confidence_fraction": 0.8993,
+      "reached_confidence_fraction": 0.8958,
       "recovery_rho": {
-        "hi": 0.8282,
-        "lo": 0.6786,
+        "hi": 0.8219,
+        "lo": 0.6633,
         "n": 24,
-        "point": 0.7711,
+        "point": 0.7594,
         "resamples": 2000
       },
       "resolved_fraction": {
         "hi": 0.9983,
-        "lo": 0.9595,
+        "lo": 0.9566,
         "n": 24,
-        "point": 0.9821,
+        "point": 0.9809,
         "resamples": 2000
       },
-      "seconds_to_confidence": 587.3568,
+      "seconds_to_confidence": 585.7985,
       "stop_reasons": {
-        "bank_exhausted": 0.0486,
+        "bank_exhausted": 0.0521,
         "budget_wallclock": 0.0521,
-        "confidence": 0.8993
+        "confidence": 0.8958
       },
-      "wallclock_seconds": 625.3583
+      "wallclock_seconds": 624.0326
     },
     {
       "arm": "eig+corr",
@@ -292,10 +292,10 @@
       "arm": "eig",
       "baseline": "fixed",
       "difference": {
-        "hi": 0.1266,
-        "lo": -0.0089,
+        "hi": 0.1177,
+        "lo": -0.024,
         "n": 24,
-        "point": 0.0585,
+        "point": 0.0469,
         "resamples": 2000
       },
       "excludes_zero": false,
@@ -305,10 +305,10 @@
       "arm": "eig",
       "baseline": "fixed",
       "difference": {
-        "hi": 0.2506,
-        "lo": 0.1557,
+        "hi": 0.2483,
+        "lo": 0.1545,
         "n": 24,
-        "point": 0.2043,
+        "point": 0.2031,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -318,10 +318,10 @@
       "arm": "eig",
       "baseline": "fixed",
       "difference": {
-        "hi": -0.0686,
-        "lo": -0.1214,
+        "hi": -0.0694,
+        "lo": -0.1226,
         "n": 24,
-        "point": -0.0953,
+        "point": -0.0962,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -409,10 +409,10 @@
       "arm": "eig",
       "baseline": "heuristic",
       "difference": {
-        "hi": 0.0947,
-        "lo": -0.0422,
+        "hi": 0.0889,
+        "lo": -0.0575,
         "n": 24,
-        "point": 0.0277,
+        "point": 0.016,
         "resamples": 2000
       },
       "excludes_zero": false,
@@ -422,10 +422,10 @@
       "arm": "eig",
       "baseline": "heuristic",
       "difference": {
-        "hi": 0.2344,
-        "lo": 0.1209,
+        "hi": 0.2326,
+        "lo": 0.1198,
         "n": 24,
-        "point": 0.1782,
+        "point": 0.1771,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -435,10 +435,10 @@
       "arm": "eig",
       "baseline": "heuristic",
       "difference": {
-        "hi": -0.0594,
-        "lo": -0.113,
+        "hi": -0.0598,
+        "lo": -0.1142,
         "n": 24,
-        "point": -0.0867,
+        "point": -0.0876,
         "resamples": 2000
       },
       "excludes_zero": true,
@@ -487,18 +487,18 @@
   "n_personas": 24,
   "per_competency_rho": {
     "eig": {
-      "databases.migrations": 0.7481,
-      "databases.schema_design": 0.5024,
-      "databases.transactions": 0.7357,
-      "delivery.ci_cd": 0.8388,
-      "distributed_systems.consensus": 0.6474,
-      "distributed_systems.consistency": 0.8572,
-      "distributed_systems.replication": 0.7751,
-      "ml.feature_engineering": 0.8996,
-      "ml.model_evaluation": 0.8445,
-      "observability.debugging": 0.3936,
-      "security.input_validation": 0.864,
-      "testing.strategy": 0.8923
+      "databases.migrations": 0.7326,
+      "databases.schema_design": 0.4153,
+      "databases.transactions": 0.7248,
+      "delivery.ci_cd": 0.8173,
+      "distributed_systems.consensus": 0.5914,
+      "distributed_systems.consistency": 0.8445,
+      "distributed_systems.replication": 0.7688,
+      "ml.feature_engineering": 0.8897,
+      "ml.model_evaluation": 0.8364,
+      "observability.debugging": 0.3977,
+      "security.input_validation": 0.8386,
+      "testing.strategy": 0.8844
     },
     "eig+corr": {
       "databases.migrations": 0.6592,
@@ -542,7 +542,7 @@
   },
   "provenance": {
     "bank_version": "v2",
-    "code_commit": "e4056b6",
+    "code_commit": "a7030f5",
     "population_version": "v2",
     "seed_set": [
       20260807
@@ -550,9 +550,9 @@
     "taxonomy_version": "v1"
   },
   "schema_health": {
-    "n_calls": 15342.0,
-    "repair_success_rate": 0.9679,
-    "violation_rate": 0.0122
+    "n_calls": 16665.0,
+    "repair_success_rate": 0.9703,
+    "violation_rate": 0.0121
   },
   "tau": 0.8
 }

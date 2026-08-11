@@ -10,6 +10,7 @@ a second thing to validate rather than a measurement of the first.
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -145,7 +146,7 @@ def load_views(
                 continue
             if followups_enabled is not None and run.followups_enabled != followups_enabled:
                 continue
-            if suffix is not None and not run_id.endswith(suffix):
+            if suffix is not None and not _matches_suffix(run_id, suffix):
                 continue
 
             view = RunView(run=run, turns=store.load_turns(run_id), persona=by_id[run.persona_id])
@@ -153,6 +154,23 @@ def load_views(
         return [grouped[k] for k in sorted(grouped)]
     finally:
         store.close()
+
+
+_UNSUFFIXED = re.compile(r"\.s\d+$")
+
+
+def _matches_suffix(run_id: str, suffix: str) -> bool:
+    """Whether ``run_id`` belongs to the sweep labelled ``suffix``.
+
+    An empty suffix means the *main* sweep, not "any sweep". The obvious
+    implementation — ``run_id.endswith(suffix)`` — is a no-op for the empty
+    string, which silently pooled the eight-slice fairness sweep into the main
+    results table. Run ids end in ``.s<seed>`` when unsuffixed, so that is what
+    the main sweep is matched on.
+    """
+    if suffix:
+        return run_id.endswith(f".{suffix}")
+    return bool(_UNSUFFIXED.search(run_id))
 
 
 def flatten(units: list[PersonaRuns], arm: str | None = None) -> list[RunView]:

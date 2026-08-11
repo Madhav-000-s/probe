@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import replace
+from pathlib import Path
 
 import numpy as np
 import typer
@@ -498,3 +499,68 @@ def _with_question_budget(config: ExperimentConfig, questions: int) -> Experimen
 
 if __name__ == "__main__":  # pragma: no cover
     app()
+
+
+# --------------------------------------------------------------- inspection
+
+
+@app.command("viewer")
+def viewer_show(
+    run: str = typer.Option(..., help="Run id to render."),
+    traces: str = typer.Option(str(DEFAULT_TRACE_DB)),
+) -> None:
+    """Render one interview: transcript plus belief trajectory."""
+    from probe.report.viewer import render_run
+
+    store = TraceStore(traces, read_only=True)
+    try:
+        console.print(render_run(store, run))
+    finally:
+        store.close()
+
+
+@app.command("demo")
+def demo_render(
+    traces: str = typer.Option(str(DEFAULT_TRACE_DB)),
+    behavior: str = typer.Option("dodger", help="Adversarial behaviour to feature."),
+    left: str = typer.Option("fixed"),
+    right: str = typer.Option("eig"),
+    out: str = typer.Option("analysis/demo-side-by-side.txt"),
+) -> None:
+    """The D4 deliverable: one adversarial candidate, two arms, side by side.
+
+    A rendering of committed traces, never a re-recording — both runs are
+    reconstructed from DuckDB, so what is shown is what happened.
+    """
+    from probe.report.viewer import render_side_by_side
+
+    config = ExperimentConfig.load()
+    personas, _meta = load_population(config.population_version)
+    candidates = [
+        p for p in personas if p.behavior.value == behavior and p.split == "eval"
+    ]
+    if not candidates:
+        console.print(f"[red]no eval-split persona with behaviour {behavior!r}[/red]")
+        raise typer.Exit(code=2)
+
+    persona = candidates[0]
+    seed = config.seed_set[0]
+    left_id = f"{left}.{persona.id}.{persona.style.id}.s{seed}"
+    right_id = f"{right}.{persona.id}.{persona.style.id}.s{seed}"
+
+    store = TraceStore(traces, read_only=True)
+    try:
+        rendered = render_side_by_side(store, left_id, right_id)
+    finally:
+        store.close()
+
+    header = (
+        f"probe — {left} vs {right} on a {behavior} ({persona.id}, "
+        f"{len(persona.understated)} understated competencies)\n"
+        f"Both panes are rendered from committed traces.\n\n"
+    )
+    path = Path(out)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(header + rendered + "\n", encoding="utf-8")
+    console.print(rendered)
+    console.print(f"\n[green]wrote[/green] {path}")

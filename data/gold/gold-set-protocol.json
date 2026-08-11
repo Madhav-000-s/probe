@@ -9,12 +9,12 @@
     "scale": "1-5, whole numbers only"
   },
   "agreement": {
-    "n": 85,
-    "cohens_kappa": 0.5544,
-    "quadratic_weighted_kappa": 0.8883,
-    "exact_agreement": 0.6471,
-    "within_one_agreement": 0.9882,
-    "mean_reference": 3.224,
-    "mean_llm": 3.094
+    "n": 75,
+    "cohens_kappa": 0.6756,
+    "quadratic_weighted_kappa": 0.9243,
+    "exact_agreement": 0.7467,
+    "within_one_agreement": 1.0,
+    "mean_reference": 3.013,
+    "mean_llm": 3.0
   }
 }

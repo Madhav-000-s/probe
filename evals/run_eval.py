@@ -81,7 +81,7 @@ def arm_row(units: list[PersonaRuns], arm: str, config: ExperimentConfig, traces
         "followup_rate": efficiency.followup_rate(units, arm),
         "stop_reasons": efficiency.stop_reason_distribution(units, arm),
         "cost": cost.cost_per_interview(
-            traces, arm, n_runs, config.usd_per_mtok_in, config.usd_per_mtok_out
+            traces, units, arm, config.usd_per_mtok_in, config.usd_per_mtok_out
         ),
         "cost_to_confidence_usd": cost.cost_to_confidence(
             units, arm, tau, config.usd_per_mtok_in, config.usd_per_mtok_out

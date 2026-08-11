@@ -1,9 +1,9 @@
 {
-  "cohens_kappa": 0.5544,
-  "exact_agreement": 0.6471,
-  "mean_llm": 3.094,
-  "mean_reference": 3.224,
-  "n": 85,
-  "quadratic_weighted_kappa": 0.8883,
-  "within_one_agreement": 0.9882
+  "cohens_kappa": 0.6756,
+  "exact_agreement": 0.7467,
+  "mean_llm": 3.0,
+  "mean_reference": 3.013,
+  "n": 75,
+  "quadratic_weighted_kappa": 0.9243,
+  "within_one_agreement": 1.0
 }

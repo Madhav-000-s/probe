@@ -1,0 +1,17 @@
+{
+  "anchor_order_disagreement": 0.0,
+  "exact_agreement": 0.8133,
+  "n_answers": 120,
+  "position_bias": 0.3,
+  "provenance": {
+    "bank_version": "v2",
+    "code_commit": "a7030f5",
+    "population_version": "v2",
+    "seed_set": [
+      20260807
+    ],
+    "taxonomy_version": "v1"
+  },
+  "span_entailment_rate": 1.0,
+  "test_retest_sd": 0.3212
+}

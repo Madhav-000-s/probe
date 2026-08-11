@@ -135,7 +135,7 @@ class AnthropicClient:
         message = self._with_backoff(
             lambda: self._client.messages.create(
                 model=self.model,
-                max_tokens=request.max_tokens,
+                max_tokens=request.token_budget,
                 temperature=request.temperature,
                 system=system,
                 messages=[{"role": "user", "content": request.prompt}],
@@ -150,6 +150,7 @@ class AnthropicClient:
             prompt_tokens=message.usage.input_tokens,
             completion_tokens=message.usage.output_tokens,
             latency_ms=(time.perf_counter() - started) * 1000.0,
+            truncated=getattr(message, "stop_reason", None) == "max_tokens",
         )
 
     def _with_backoff(self, call):

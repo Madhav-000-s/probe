@@ -180,6 +180,7 @@ class LLMGrader(Grader):
             self.client,
             request,
             Grade,
+            normalise=lambda g: relocate_spans(g, answer),
             postcheck=lambda g: self._postcheck(g, question, answer),
             degraded=lambda: degraded_grade(question, answer),
             max_repairs=self.max_repairs,
@@ -211,6 +212,28 @@ class LLMGrader(Grader):
                     f"quote the answer text"
                 )
         return None
+
+
+def relocate_spans(grade: Grade, answer: str) -> Grade:
+    """Correct evidence-span offsets that quote the answer but mis-locate it.
+
+    Discovered against a live model: Haiku's grades were substantively good —
+    scores varying sensibly with answer quality, quotes lifted verbatim — and
+    100% of them were rejected, because the character offsets were arithmetic
+    the model could not do. Every grade fell through to the degraded path, so
+    the interview scored every answer 3 at zero confidence and the posterior
+    learned nothing. The offline backend computes exact offsets, so this was
+    invisible until a real model produced the first grade.
+
+    Spans whose text is genuinely absent are left untouched, so the postcheck
+    still rejects them. Fabricated evidence remains fabricated evidence.
+    """
+    if not grade.evidence_spans:
+        return grade
+    fixed = [span.relocated_in(answer) or span for span in grade.evidence_spans]
+    if fixed == list(grade.evidence_spans):
+        return grade
+    return grade.model_copy(update={"evidence_spans": fixed})
 
 
 def degraded_grade(question: Question, answer: str) -> Grade:

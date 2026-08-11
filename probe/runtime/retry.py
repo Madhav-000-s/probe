@@ -51,6 +51,10 @@ class ParseResult:
     attempts: int = 1
     errors: list[str] = field(default_factory=list)
     raw: list[str] = field(default_factory=list)
+    #: Summed across every attempt, repairs included. A repair is a real call
+    #: against a real budget, and charging the caller only for the successful
+    #: one makes a flaky role look as cheap as a clean one.
+    tokens: int = 0
 
     @property
     def ok(self) -> bool:
@@ -126,20 +130,28 @@ def structured_call(
     model_cls: type[T],
     *,
     degraded: Callable[[], T] | None = None,
+    normalise: Callable[[T], T] | None = None,
     postcheck: Callable[[T], str | None] | None = None,
     max_repairs: int = 1,
 ) -> ParseResult:
     """Run one structured call through the full ladder.
 
-    ``postcheck`` runs *after* schema validation and returns an error string
-    when a semantically-invalid-but-schema-valid response should be rejected.
-    The grader uses it to reject grades whose evidence spans do not actually
-    resolve against the answer text: schema-valid, meaning-invalid, and
-    exactly the class of failure that quietly poisons an audit trail.
+    ``normalise`` runs after schema validation and before ``postcheck``, and
+    repairs what the caller can repair itself. The distinction it draws is the
+    important one: a model that quotes the answer correctly but reports the
+    character offsets of that quote inaccurately has made an arithmetic error,
+    not an evidential one, and asking it to try counting again is not a fix.
+
+    ``postcheck`` then returns an error string when a semantically-invalid-but-
+    schema-valid response should still be rejected. The grader uses it to reject
+    grades whose evidence is not in the answer at all: schema-valid,
+    meaning-invalid, and exactly the class of failure that quietly poisons an
+    audit trail.
     """
     errors: list[str] = []
     raws: list[str] = []
     attempts = 0
+    tokens = 0
     prompt = request.prompt
 
     for attempt in range(max_repairs + 1):
@@ -159,7 +171,23 @@ def structured_call(
         )
         response = _complete(client, req, repair_attempt=attempt)
         raws.append(response.text)
+        tokens += response.total_tokens
         value, error = parse_model(model_cls, response.text)
+        if value is None and getattr(response, "truncated", False):
+            # Naming it matters. A truncated object reads as "not valid JSON",
+            # so the repair prompt asks for well-formed JSON, the model obliges,
+            # and the reply is cut off at exactly the same place — one wasted
+            # call and a misleading error in the trace.
+            error = (
+                f"response hit the {req.token_budget}-token output budget and was "
+                f"cut off mid-object; raise ROLE_MAX_TOKENS[{req.role.value}] "
+                "rather than repairing"
+            )
+        if value is not None and normalise is not None:
+            try:
+                value = normalise(value)
+            except Exception as exc:  # pragma: no cover - normalisers are total
+                value, error = None, f"normalisation failed: {exc}"
         if value is not None and postcheck is not None:
             error = postcheck(value)
             if error:
@@ -172,6 +200,7 @@ def structured_call(
                 attempts=attempts,
                 errors=errors,
                 raw=raws,
+                tokens=tokens,
             )
         _mark(client, False)
         errors.append(error or "unknown parse failure")
@@ -185,12 +214,18 @@ def structured_call(
                 attempts=attempts,
                 errors=errors,
                 raw=raws,
+                tokens=tokens,
             )
         except Exception as exc:  # pragma: no cover - degraded paths are trivial
             errors.append(f"degraded path failed: {exc}")
 
     return ParseResult(
-        value=None, outcome=ParseOutcome.UNRECOVERABLE, attempts=attempts, errors=errors, raw=raws
+        value=None,
+        outcome=ParseOutcome.UNRECOVERABLE,
+        attempts=attempts,
+        errors=errors,
+        raw=raws,
+        tokens=tokens,
     )
 
 

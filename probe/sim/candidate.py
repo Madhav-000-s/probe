@@ -13,14 +13,56 @@ did not see it" — a distinction the interview plane must not be able to make.
 
 from __future__ import annotations
 
-import json
 from dataclasses import dataclass, field
+
+from pydantic import BaseModel, Field
 
 from probe.models import LLMRole, Persona, Question, Transcript
 from probe.rubric.taxonomy import Taxonomy, load_taxonomy
 from probe.runtime.candidate import AnswerResult, AnswerSource
 from probe.runtime.llm import LLMRequest
-from probe.sim.answers import answer_seed, estimate_seconds
+from probe.runtime.retry import extract_json, structured_call
+from probe.sim.answers import answer_seed, estimate_seconds, plan_answer
+
+
+class AnswerEnvelope(BaseModel):
+    """What a persona-answer call returns.
+
+    Only the prose is taken from the model. ``drawn_level`` and the concept
+    counts are accepted so the offline backend's richer payload validates
+    unchanged, but the harness records its own values for them — see
+    :meth:`PersonaCandidate.answer`.
+    """
+
+    answer: str = Field(min_length=1)
+    drawn_level: int | None = None
+    n_concepts: int | None = None
+    n_distractors: int | None = None
+
+
+def extract_prose(raw: str) -> str:
+    """Salvage the answer from a response that ignored the envelope.
+
+    A model that replied with the answer and nothing else has done the work;
+    only the wrapper is missing. Dropping it would quietly shorten the
+    transcript, and it would do so unevenly — biasing the interview toward
+    whichever personas happened to draw a compliant response.
+    """
+    raw = (raw or "").strip()
+    if not raw:
+        return ""
+    candidate = extract_json(raw)
+    if candidate.startswith("{"):
+        import json
+
+        try:
+            payload = json.loads(candidate)
+        except json.JSONDecodeError:
+            payload = None
+        if isinstance(payload, dict) and isinstance(payload.get("answer"), str):
+            return payload["answer"].strip()
+    # Not JSON at all, or JSON we cannot use: treat the whole reply as prose.
+    return raw
 
 
 @dataclass
@@ -78,9 +120,26 @@ class PersonaCandidate(AnswerSource):
 
     def answer(self, question: Question, transcript: Transcript) -> AnswerResult:
         theta = self._persona.ability(question.competency_id)
+        seed = answer_seed(self._persona.id, question.id, self._persona.style.id, self.seed)
+        distractors = self._distractor_pool(question.competency_id)
+
+        # Drawn here, not by the model. What this persona knows is ground truth
+        # the harness owns; a live model asked to pick its own depth would be
+        # scored against a theta it never saw, and recovery would be measuring
+        # its self-report. The model is told what to express, never how much it
+        # knows — which is also why this stays firewall-clean: the *number*
+        # never reaches the prompt.
+        level, plan, _ = plan_answer(
+            question=question,
+            theta=theta,
+            behavior=self._persona.behavior,
+            distractor_pool=distractors,
+            seed=seed,
+        )
+
         request = LLMRequest(
             role=LLMRole.PERSONA_ANSWER,
-            prompt=self._prompt(question),
+            prompt=self._prompt(question, plan),
             seed=self.seed,
             temperature=0.7,
             context={
@@ -88,10 +147,8 @@ class PersonaCandidate(AnswerSource):
                 "style": self._persona.style.model_dump(mode="json"),
                 "behavior": self._persona.behavior.value,
                 "theta": theta,
-                "distractor_pool": self._distractor_pool(question.competency_id),
-                "answer_seed": answer_seed(
-                    self._persona.id, question.id, self._persona.style.id, self.seed
-                ),
+                "distractor_pool": distractors,
+                "answer_seed": seed,
                 # Never signed into the answer text. The name-swap slice needs
                 # byte-identical transcripts differing only in metadata, so the
                 # name reaches the grader through its context — the way a real
@@ -99,44 +156,72 @@ class PersonaCandidate(AnswerSource):
                 "candidate_name": None,
             },
         )
-        response = self.client.complete(request)
-        payload = json.loads(response.text)
-        text = payload["answer"]
+        result = structured_call(self.client, request, AnswerEnvelope)
+        if result.usable:
+            text = result.value.answer
+        else:
+            # A live model that answered the question in prose has done the job
+            # asked of it; only the envelope is missing. Discarding a perfectly
+            # good answer over its wrapper would silently shrink the transcript
+            # and bias the interview toward candidates whose model complied.
+            text = extract_prose(result.raw[-1] if result.raw else "")
+            if not text:
+                raise RuntimeError(
+                    f"persona answer for {question.id} was unrecoverable: "
+                    f"{result.errors[-1] if result.errors else 'empty response'}"
+                )
 
         self.records.append(
             AnswerRecord(
                 question_id=question.id,
                 competency_id=question.competency_id,
                 theta=theta,
-                drawn_level=int(payload["drawn_level"]),
-                n_concepts=int(payload["n_concepts"]),
-                n_distractors=int(payload.get("n_distractors", 0)),
+                drawn_level=level,
+                n_concepts=plan.n_concepts,
+                n_distractors=len(plan.distractors),
                 text=text,
             )
         )
         return AnswerResult(
             text=text,
             seconds=estimate_seconds(question, text, self._persona.style),
-            tokens=response.total_tokens,
+            tokens=result.tokens,
         )
 
-    def _prompt(self, question: Question) -> str:
+    def _prompt(self, question: Question, plan) -> str:
         """The prompt a real provider would receive.
 
-        It carries the persona's *behaviour and style* but not the number: a
-        live backend is told to answer as somebody with a given depth of
-        experience, and the depth is expressed in words. The firewall test
-        reads this prompt, so if it ever starts interpolating ``theta`` the
-        suite fails.
+        It carries the persona's behaviour and style, and the *content* the
+        harness has already decided this answer expresses — the concepts to
+        cover and, for a bluffer, the plausible-but-wrong vocabulary to reach
+        for. What it never carries is ``theta`` or the drawn level as a number.
+        The firewall test reads this prompt, so if it ever starts interpolating
+        either, the suite fails.
+
+        Depth is expressed as coverage rather than as a score for the same
+        reason: "mention these three things and not the other two" is a
+        reproducible instruction, where "answer as a level-3 candidate" invites
+        the model to apply its own idea of what a 3 is.
         """
         style = self._persona.style
         length = "in two or three sentences" if style.verbosity < 0.7 else "in a short paragraph"
-        return (
+        lines = [
             f"You are a candidate in a technical interview. Answer {length}, "
-            f"in a {style.tone} register.\n"
-            f"Behaviour to adopt: {self._persona.behavior.value}.\n\n"
-            f"Question: {question.text}\n"
-        )
+            f"in a {style.tone} register.",
+            f"Behaviour to adopt: {self._persona.behavior.value}.",
+        ]
+        if plan.concepts:
+            lines.append("Cover exactly these ideas, in your own words: " + ", ".join(plan.concepts))
+        else:
+            lines.append("You do not know this topic well. Do not cover it convincingly.")
+        if plan.distractors:
+            lines.append(
+                "Also reach for this related-but-off-target vocabulary, as somebody "
+                "overstating their experience would: " + ", ".join(plan.distractors)
+            )
+        lines.append(f"\nQuestion: {question.text}\n")
+        lines.append('Return only: {"answer": "<your answer>"}')
+        return "\n".join(lines)
 
     # ------------------------------------------------------- eval-side views
 

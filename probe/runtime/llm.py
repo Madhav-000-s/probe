@@ -44,13 +44,36 @@ def prompt_hash(role: LLMRole, prompt: str, seed: int) -> str:
     return h.hexdigest()[:32]
 
 
+#: Output budget per role. Sized to the largest *legitimate* output each role
+#: produces, because a truncated JSON object is unparseable no matter how good
+#: the repair prompt is — the repair reproduces the identical truncation and
+#: burns a second call to do it. A flat 1024 silently capped rubric compilation
+#: at roughly a third of a 14-competency rubric, and only a live backend
+#: revealed it: the offline backends compose their output in full and never
+#: consult this number.
+ROLE_MAX_TOKENS: dict[LLMRole, int] = {
+    LLMRole.RUBRIC_COMPILE: 8192,
+    LLMRole.PERSONA_RESUME: 4096,
+    LLMRole.GRADE: 2048,
+    LLMRole.PERSONA_ANSWER: 1536,
+    LLMRole.FOLLOWUP_GEN: 1024,
+    LLMRole.ENTAILMENT_AUDIT: 1024,
+    LLMRole.BLIND_RATE: 512,
+    LLMRole.POLICY_CHOOSE: 512,
+    LLMRole.FLAG_CLASSIFY: 512,
+}
+
+DEFAULT_MAX_TOKENS = 1024
+
+
 @dataclass(frozen=True)
 class LLMRequest:
     role: LLMRole
     prompt: str
     seed: int = 0
     temperature: float = 0.0
-    max_tokens: int = 1024
+    #: ``0`` means "the budget for this role"; an explicit value overrides it.
+    max_tokens: int = 0
     #: Free-form structured payload the sim backend reads instead of parsing
     #: the natural-language prompt back apart. A real provider ignores it, so
     #: nothing on the interview plane may put ground truth here — the firewall
@@ -62,6 +85,18 @@ class LLMRequest:
     def hash(self) -> str:
         return prompt_hash(self.role, self.prompt, self.seed)
 
+    @property
+    def token_budget(self) -> int:
+        """The budget a provider should actually send.
+
+        Kept off ``max_tokens`` itself so the field stays a faithful record of
+        what the caller asked for — ``0`` meaning "you decide" — and the
+        request stays hashable and comparable across backends.
+        """
+        if self.max_tokens > 0:
+            return self.max_tokens
+        return ROLE_MAX_TOKENS.get(self.role, DEFAULT_MAX_TOKENS)
+
 
 @dataclass
 class LLMResponse:
@@ -70,6 +105,10 @@ class LLMResponse:
     prompt_tokens: int = 0
     completion_tokens: int = 0
     latency_ms: float = 0.0
+    #: True when the provider stopped because the output budget ran out. Worth
+    #: its own field: a truncated object fails as "not valid JSON", which sends
+    #: the repair ladder chasing a formatting problem that does not exist.
+    truncated: bool = False
 
     @property
     def total_tokens(self) -> int:

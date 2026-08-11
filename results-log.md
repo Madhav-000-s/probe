@@ -587,3 +587,66 @@ longer does.
 Nothing in the results changed: the committed table regenerates identically
 apart from that stamp. No live run has been made, so every number in the README
 is still `sim`-backend and the limitations section stands unedited.
+
+---
+
+## 2026-08-11 — First live model: four defects the offline backend could not have shown
+
+Ran one interview against Haiku. It cost about six cents and found four bugs,
+every one of them in code that had been green for six phases. The pattern is
+the same in all four: the offline backends *compose* their output directly, so
+nothing ever exercised the parts of the system that exist because a real model
+writes JSON, counts characters, and stops when it runs out of budget.
+
+**1. A flat 1024-token output budget for every role.** A 14-competency rubric
+is roughly 3,000 tokens of JSON. It was truncated mid-object, and the repair
+attempt — asking a model to return well-formed JSON — produced output cut off
+at exactly the same place. Two calls, one error, no diagnosis. Budgets are now
+per role, and truncation is detected from `stop_reason` and reported as
+truncation, so the ladder stops chasing a formatting problem that does not
+exist.
+
+**2. The persona simulator had no live path at all.** `PersonaCandidate` parsed
+the response with a bare `json.loads` and no repair ladder, and the prompt it
+sent asked for prose. Under `sim` this never mattered: the backend returned the
+full envelope regardless of what the prompt said. The prompt's own docstring
+claimed the persona's depth was "expressed in words" — it was not expressed at
+all, so a live sweep would have produced answers uncorrelated with theta and a
+recovery metric measuring nothing.
+
+Fixed by splitting `plan_answer` out of `compose_answer`: the level is drawn
+from the GRM and the concepts chosen **before** any model is called, and the
+live prompt is told which ideas to cover rather than what score to hit. Ground
+truth stays on this side of the boundary. Asking a model to answer "as a
+level-4 candidate" would have scored its own idea of a 4 against ours.
+
+**3. The evidence-span postcheck rejected 100% of real grades.** This is the
+one worth remembering. `EvidenceSpan.verify_against` requires
+`answer[start:end] == text`. Haiku's grades were *substantively good* — scores
+2 and 4 where the offline grader would also have discriminated, quotes lifted
+verbatim from the answer — and every single one was rejected, because the
+character offsets were arithmetic the model cannot do. Every grade fell to the
+degraded path, so the transcript showed six answers all scored 3 at confidence
+0.000 and the posterior learned nothing from a working interview.
+
+The check was defending the wrong invariant. What matters is that the quoted
+text is really in the answer; where it sits is arithmetic we can do ourselves.
+Spans are now relocated by exact substring search before the postcheck runs,
+and a span whose text is genuinely absent is still rejected — fabricated
+evidence stays fabricated evidence. Exact match only: accepting near-matches
+would let a paraphrase pass as a quotation, which is the whole reason the span
+exists.
+
+After the fix, the same interview: scores 1, 4, 4, 4, 4, 4, confidences
+0.85–0.95, zero repair calls, and a `non_answer` flag at turn 1 that triggered
+a follow-up which the candidate then answered at 4. The mechanism works against
+a real model. It had never been run against one.
+
+**4. Repair calls were free.** `ParseResult` carried no token count, so callers
+charged themselves for the successful attempt only. A role that fails and
+repairs looked exactly as cheap as one that parses first time.
+
+Every committed number is unchanged — the sim path is bit-identical, verified
+by the full suite and by regenerating the results table. That is the point of
+the fixes being where they are: relocation is a no-op on exact offsets, and the
+role budgets are only consulted by a backend that has a budget.

@@ -158,6 +158,28 @@ class EvidenceSpan(BaseModel):
             return False
         return source[self.start : self.end] == self.text
 
+    def relocated_in(self, source: str) -> EvidenceSpan | None:
+        """This span with offsets corrected, or ``None`` if the quote is absent.
+
+        Separates the two failures that used to look identical. A grader that
+        quotes the answer accurately but mis-reports where the quote sits has
+        made an arithmetic error — real models cannot count characters, and a
+        repair prompt asking them to try again produces the same mistake. A
+        grader that quotes text which is *not in the answer* has fabricated
+        evidence, and that must still be rejected.
+
+        Exact substring only. Accepting near-matches here would let a
+        paraphrase pass as a quotation, which is the thing the span exists to
+        prevent.
+        """
+        if self.verify_against(source):
+            return self
+        quote = self.text.strip()
+        start = source.find(quote)
+        if start < 0:
+            return None
+        return EvidenceSpan(start=start, end=start + len(quote), text=quote)
+
 
 class Competency(BaseModel):
     """A taxonomy node instantiated for one candidate.

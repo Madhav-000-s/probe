@@ -159,6 +159,33 @@ def build_segments(
     return segs
 
 
+def plan_answer(
+    *,
+    question: Question,
+    theta: float,
+    behavior: Behavior,
+    distractor_pool: list[str],
+    seed: int,
+) -> tuple[int, ContentPlan, random.Random]:
+    """Decide *what* the answer contains, before deciding how it is worded.
+
+    Split out of :func:`compose_answer` so the live backend can share it. What
+    a persona knows is ground truth this project owns; asking a real model to
+    invent its own depth would mean the recovery metric was scoring the model's
+    self-report against a theta it never saw. So the level is drawn here, from
+    the GRM, either way — the live model is told what to express, not asked how
+    much it knows.
+
+    The returned RNG is the same stream ``compose_answer`` continues with, so
+    calling this first and composing after is bit-identical to composing
+    directly. The committed sim traces depend on that.
+    """
+    rng = random.Random(seed)
+    level = draw_level(theta, question, rng)
+    pool = list(question.anchor(5).required_concepts)
+    return level, plan_content(behavior, level, pool, distractor_pool, rng), rng
+
+
 def compose_answer(
     *,
     question: Question,
@@ -176,10 +203,13 @@ def compose_answer(
     uses it to separate "the candidate did not say it" from "the grader did not
     see it". It must never reach the interview plane.
     """
-    rng = random.Random(seed)
-    level = draw_level(theta, question, rng)
-    pool = list(question.anchor(5).required_concepts)
-    plan = plan_content(behavior, level, pool, distractor_pool, rng)
+    level, plan, rng = plan_answer(
+        question=question,
+        theta=theta,
+        behavior=behavior,
+        distractor_pool=distractor_pool,
+        seed=seed,
+    )
     segments = build_segments(plan, style, rng, candidate_name=candidate_name)
     text = render(segments, style, rng)
     return text, level, plan

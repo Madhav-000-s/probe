@@ -12,7 +12,7 @@ from pathlib import Path
 
 from evals.gold import build_gold_set, kappa_report, release
 from probe.bank.loader import load_bank
-from probe.config import ExperimentConfig
+from probe.config import ExperimentConfig, load_dotenv
 from probe.grader.base import LLMGrader
 from probe.runtime.llm import get_client
 from probe.runtime.tracing import TraceStore
@@ -21,6 +21,7 @@ SAMPLE_SIZE = 100
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser(description="Build the released anchor set.")
     parser.add_argument("--traces", default="traces/probe.duckdb")
     parser.add_argument("--n", type=int, default=SAMPLE_SIZE)

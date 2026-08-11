@@ -18,7 +18,7 @@ from pathlib import Path
 
 from evals.metrics import fairness, reliability, robustness
 from evals.metrics.loader import load_views
-from probe.config import RESULTS_DIR, ExperimentConfig
+from probe.config import RESULTS_DIR, ExperimentConfig, load_dotenv
 from probe.grader.base import LLMGrader
 from probe.policy.registry import ARMS
 from probe.runtime.llm import get_client
@@ -28,11 +28,37 @@ FAIRNESS_STYLES = tuple(sorted({s for pair in FAIRNESS_PAIRS for s in pair}))
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser(description="Robustness and fairness suites.")
     parser.add_argument("--traces", default="traces/probe.duckdb")
     parser.add_argument("--arm", default="eig", help="Arm the fairness suite is run on.")
     parser.add_argument("--out", default=str(RESULTS_DIR))
+    parser.add_argument(
+        "--backend",
+        default="sim",
+        help="Grader backend for the re-grading suites. The interviews' own grader "
+        "was configured this way; using a different one measures two things at once.",
+    )
+    parser.add_argument("--model", default="", help="Live backend only.")
+    parser.add_argument(
+        "--only",
+        default="",
+        help="Comma-separated subset of robustness,reliability,fairness. Fairness "
+        "needs the sep-on/sep-off sweeps, which a partial run may not have.",
+    )
+    parser.add_argument(
+        "--reliability-samples",
+        type=int,
+        default=120,
+        help="Answers re-graded. Each costs ten grader calls, so this is the "
+        "knob that decides what a live reliability run costs.",
+    )
     args = parser.parse_args(argv)
+    only = {s.strip() for s in args.only.split(",") if s.strip()} or {
+        "robustness",
+        "reliability",
+        "fairness",
+    }
 
     config = ExperimentConfig.load()
     out_dir = Path(args.out)
@@ -49,23 +75,27 @@ def main(argv: list[str] | None = None) -> int:
     )
     # Resistance is a counterfactual, so this one suite needs a grader
     # configured exactly as the interviews' was.
-    grader = LLMGrader(get_client("sim", seed=config.seed_set[0]))
-    report = robustness.measure(main_units, grader)
-    per_arm = {
-        arm: robustness.measure(
-            [u for u in main_units if u.by_arm(arm)], grader
-        ).to_dict()
-        for arm in ARMS
-    }
-    robustness_payload = {
-        "provenance": config.provenance,
-        "pooled": report.to_dict(),
-        "per_arm": per_arm,
-        "mean_score_by_behaviour": robustness.behaviour_score_profile(main_units),
-    }
-    (out_dir / "robustness.json").write_text(
-        json.dumps(robustness_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
-    )
+    client_kwargs = {"model": args.model} if args.model and args.backend == "anthropic" else {}
+    grader = LLMGrader(get_client(args.backend, seed=config.seed_set[0], **client_kwargs))
+
+    provenance = {**config.provenance, "grader_backend": args.backend, "grader_model": grader.client.model}
+
+    robustness_payload = None
+    if "robustness" in only:
+        report = robustness.measure(main_units, grader)
+        per_arm = {
+            arm: robustness.measure([u for u in main_units if u.by_arm(arm)], grader).to_dict()
+            for arm in ARMS
+        }
+        robustness_payload = {
+            "provenance": provenance,
+            "pooled": report.to_dict(),
+            "per_arm": per_arm,
+            "mean_score_by_behaviour": robustness.behaviour_score_profile(main_units),
+        }
+        (out_dir / "robustness.json").write_text(
+            json.dumps(robustness_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+        )
 
     # ---- reliability: re-grade real answers under varied conditions
     #
@@ -73,27 +103,37 @@ def main(argv: list[str] | None = None) -> int:
     # position bias are questions about how the grader behaves when the same
     # answer is put to it again, and that second grading never happened during
     # the interview.
-    from probe.bank.loader import load_bank
+    reliability_report = None
+    if "reliability" in only:
+        from probe.bank.loader import load_bank
 
-    bank = {q.id: q for q in load_bank(config.bank_version).questions}
-    samples = []
-    for unit in main_units:
-        for run_view in unit.by_arm("eig"):
-            for turn in run_view.turns:
-                question = bank.get(turn.question_id)
-                if question is not None and len(turn.answer) > 40:
-                    samples.append((question, turn.answer))
-    samples = samples[:: max(1, len(samples) // 120)][:120]
-    reliability_report = reliability.measure(grader, samples)
-    (out_dir / "reliability.json").write_text(
-        json.dumps(
-            {"provenance": config.provenance, **reliability_report.to_dict()},
-            indent=2,
-            sort_keys=True,
+        bank = {q.id: q for q in load_bank(config.bank_version).questions}
+        samples = []
+        for unit in main_units:
+            for run_view in unit.by_arm("eig"):
+                for turn in run_view.turns:
+                    question = bank.get(turn.question_id)
+                    if question is not None and len(turn.answer) > 40:
+                        samples.append((question, turn.answer))
+        n = args.reliability_samples
+        samples = samples[:: max(1, len(samples) // n)][:n]
+        reliability_report = reliability.measure(grader, samples)
+        (out_dir / "reliability.json").write_text(
+            json.dumps(
+                {"provenance": provenance, **reliability_report.to_dict()},
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
         )
-        + "\n",
-        encoding="utf-8",
-    )
+
+    if "fairness" not in only:
+        if robustness_payload is not None:
+            print(render_robustness(robustness_payload))
+        if reliability_report is not None:
+            print_reliability(reliability_report)
+        return 0
 
     # ---- fairness, from the eight-slice sweeps
     on = load_views(
@@ -121,7 +161,7 @@ def main(argv: list[str] | None = None) -> int:
     exact, n_pairs, max_diff = fairness.name_swap_is_exact(on, args.arm)
 
     fairness_payload = {
-        "provenance": config.provenance,
+        "provenance": provenance,
         "arm": args.arm,
         "intervention_off": before.to_dict(),
         "intervention_on": after.to_dict(),
@@ -132,28 +172,43 @@ def main(argv: list[str] | None = None) -> int:
         json.dumps(fairness_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
     )
 
-    print(render(robustness_payload, fairness_payload))
-    print("\nreliability (Q2)")
-    for key, value in reliability_report.to_dict().items():
-        print(f"  {key:<28}{value}")
-    print(f"\nwrote {out_dir / 'robustness.json'}")
-    print(f"wrote {out_dir / 'fairness.json'}")
+    if robustness_payload is not None:
+        print(render_robustness(robustness_payload))
+    print(render_fairness(fairness_payload))
+    if reliability_report is not None:
+        print_reliability(reliability_report)
+    print(f"\nwrote {out_dir / 'fairness.json'}")
     return 0
 
 
-def render(robustness_payload: dict, fairness_payload: dict) -> str:
+def print_reliability(report) -> None:
+    print("\nreliability (Q2)")
+    for key, value in report.to_dict().items():
+        print(f"  {key:<28}{value}")
+
+
+def render_robustness(robustness_payload: dict) -> str:
     r = robustness_payload["pooled"]
+    return "\n".join(
+        [
+            "",
+            "robustness",
+            f"  injection resistance      {r['injection_resistance']:.3f} "
+            f"({r['injection_attempts']} attempts, {r['flagged_injection_rate']:.0%} flagged, "
+            f"mean score inflation {r['mean_score_inflation']:+.3f})",
+            f"  bluff detection AUC       {r['bluff_auc']:.3f}",
+            f"  overclaim recall          {r['contradiction_recall']:.3f}",
+            f"  non-answer recall         {r['non_answer_recall']:.3f}",
+            "  mean score by behaviour   "
+            + ", ".join(
+                f"{k}={v}" for k, v in robustness_payload["mean_score_by_behaviour"].items()
+            ),
+        ]
+    )
+
+
+def render_fairness(fairness_payload: dict) -> str:
     lines = [
-        "",
-        "robustness",
-        f"  injection resistance      {r['injection_resistance']:.3f} "
-        f"({r['injection_attempts']} attempts, {r['flagged_injection_rate']:.0%} flagged, "
-        f"mean score inflation {r['mean_score_inflation']:+.3f})",
-        f"  bluff detection AUC       {r['bluff_auc']:.3f}",
-        f"  overclaim recall          {r['contradiction_recall']:.3f}",
-        f"  non-answer recall         {r['non_answer_recall']:.3f}",
-        "  mean score by behaviour   "
-        + ", ".join(f"{k}={v}" for k, v in robustness_payload["mean_score_by_behaviour"].items()),
         "",
         "fairness — style drift, intervention off vs on",
         f"  {'slice':<28}{'off':>8}{'on':>8}{'reduction':>12}",

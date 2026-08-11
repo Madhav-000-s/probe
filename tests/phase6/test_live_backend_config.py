@@ -43,6 +43,29 @@ def test_dotenv_is_absent_and_ignored(tmp_path):
     assert load_dotenv(tmp_path / "nope.env") == []
 
 
+def test_every_entry_point_loads_the_env_file():
+    """The CLI loaded `.env`; the eval entry points are separate `python -m`
+    modules and did not, so `--backend anthropic` on a suite failed with "key
+    not set" while the identical key worked through `probe`."""
+    import ast
+
+    missing = []
+    for name in ("evals/run_eval.py", "evals/run_suites.py", "evals/build_gold.py"):
+        tree = ast.parse((ROOT / name).read_text(encoding="utf-8"))
+        main = next(
+            (n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "main"), None
+        )
+        assert main is not None, f"{name} has no main()"
+        calls = {
+            n.func.id
+            for n in ast.walk(main)
+            if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+        }
+        if "load_dotenv" not in calls:
+            missing.append(name)
+    assert not missing, f"entry points that never load .env: {missing}"
+
+
 def test_dotenv_is_not_committed_but_the_example_is():
     """A key in the history is a key that has to be rotated."""
     import subprocess

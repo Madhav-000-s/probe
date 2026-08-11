@@ -229,6 +229,32 @@ def test_readme_does_not_link_to_ignored_planning_docs(readme):
         assert f"({doc})" not in readme, f"README links to gitignored {doc}"
 
 
+def test_redirecting_results_redirects_the_figure_with_them():
+    """`--out` sent the results table to a side directory and left the figure
+    written to the committed path, so a live-backend experiment silently
+    replaced the README's chart with one drawn from different traces."""
+    import subprocess
+    import sys
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as tmp:
+        before = (FIGURE_DIR / "accuracy-vs-budget.png").read_bytes()
+        subprocess.run(
+            [
+                sys.executable, "-m", "evals.run_eval",
+                "--traces", TRACES,
+                "--suites", "evals/suites",
+                "--out", tmp,
+                "--figures-only",
+            ],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+        )
+        assert (ROOT / tmp / "figures" / "accuracy-vs-budget.png").exists()
+        assert (FIGURE_DIR / "accuracy-vs-budget.png").read_bytes() == before
+
+
 def test_every_make_recipe_invokes_something_that_exists():
     """`make experiment` invoked `probe experiment run`, which Typer rejects as
     an unexpected argument — the target had never been exercised because the

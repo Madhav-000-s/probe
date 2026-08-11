@@ -25,7 +25,7 @@ import pandas as pd
 from evals.metrics import cost, efficiency, recovery
 from evals.metrics.bootstrap import bootstrap_ci, paired_difference_ci
 from evals.metrics.loader import PersonaRuns, load_views
-from probe.config import FIGURE_DIR, RESULTS_DIR, ExperimentConfig
+from probe.config import FIGURE_DIR, RESULTS_DIR, ExperimentConfig, load_dotenv
 from probe.policy.registry import ARMS
 
 BUDGETS = tuple(range(1, 16))
@@ -182,18 +182,37 @@ def tidy_frames(units: list[PersonaRuns]) -> dict[str, pd.DataFrame]:
 
 
 def main(argv: list[str] | None = None) -> int:
+    load_dotenv()
     parser = argparse.ArgumentParser(description="Compute every metric from committed traces.")
     parser.add_argument("--traces", default="traces/probe.duckdb")
     parser.add_argument("--suites", default="evals/suites")
     parser.add_argument("--population", default="")
     parser.add_argument("--figures-only", action="store_true")
     parser.add_argument("--out", default=str(RESULTS_DIR))
+    parser.add_argument(
+        "--figures",
+        default="",
+        help="Where figures go. Defaults to the committed figure directory only "
+        "when --out is also the committed one.",
+    )
     args = parser.parse_args(argv)
 
     config = ExperimentConfig.load()
     population = args.population or config.population_version
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
+
+    # An --out pointing somewhere else means "these are not the committed
+    # numbers". Writing the figure to the committed path anyway silently
+    # replaced the README's chart with one drawn from a side experiment — the
+    # results were redirected and the picture of them was not.
+    if args.figures:
+        figure_dir = Path(args.figures)
+    elif out_dir.resolve() == RESULTS_DIR.resolve():
+        figure_dir = FIGURE_DIR
+    else:
+        figure_dir = out_dir / "figures"
+    figure_dir.mkdir(parents=True, exist_ok=True)
 
     units = load_views(
         args.traces,
@@ -209,7 +228,7 @@ def main(argv: list[str] | None = None) -> int:
 
     present = tuple(a for a in ARMS if any(u.by_arm(a) for u in units))
     curves = build_curves(units, present)
-    figure = plot_curves(curves, FIGURE_DIR / "accuracy-vs-budget.png")
+    figure = plot_curves(curves, figure_dir / "accuracy-vs-budget.png")
 
     if args.figures_only:
         print(f"wrote {figure}")

@@ -73,9 +73,24 @@ def test_eval_is_byte_reproducible():
     """
     from evals.run_eval import main
 
-    before = MAIN_TABLE.read_bytes()
+    committed = json.loads(MAIN_TABLE.read_text(encoding="utf-8"))
+
     assert main(["--traces", TRACES, "--suites", "evals/suites"]) == 0
-    assert MAIN_TABLE.read_bytes() == before
+    once = MAIN_TABLE.read_bytes()
+    assert main(["--traces", TRACES, "--suites", "evals/suites"]) == 0
+    assert MAIN_TABLE.read_bytes() == once
+
+    # And the committed table is that same table: every number regenerates
+    # from the committed traces. Provenance is excluded from the comparison
+    # for one reason only — ``code_commit`` stamps the commit doing the
+    # regeneration, so it necessarily differs the moment any later commit
+    # lands. Numbers drifting is a failure; the stamp moving is not.
+    fresh = json.loads(MAIN_TABLE.read_text(encoding="utf-8"))
+    assert {k: v for k, v in fresh.items() if k != "provenance"} == {
+        k: v for k, v in committed.items() if k != "provenance"
+    }, "the committed results table is not what the eval path now produces"
+    for key in ("bank_version", "population_version", "taxonomy_version", "seed_set"):
+        assert fresh["provenance"][key] == committed["provenance"][key]
 
 
 def test_figure_is_generated_not_committed_by_hand():

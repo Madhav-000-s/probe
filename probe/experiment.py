@@ -41,6 +41,15 @@ class SweepPlan:
     #: with the main one in the trace store.
     suffix: str = ""
     limit: int | None = None
+    #: Live backend only. Empty means the backend's own default; the offline
+    #: backends have no model to choose, so it is not forwarded to them.
+    model: str = ""
+
+    @property
+    def client_kwargs(self) -> dict[str, str]:
+        if self.model and self.backend == "anthropic":
+            return {"model": self.model}
+        return {}
 
     @property
     def n_runs_per_arm(self) -> int:
@@ -141,7 +150,9 @@ def _make_job(spec, bank, config, store, plan, correlation):
     def job():
         # A fresh client per interview: shared token counters across concurrent
         # runs would attribute one run's spend to another.
-        traced = TracedClient(get_client(plan.backend, seed=plan.seed), store=store)
+        traced = TracedClient(
+            get_client(plan.backend, seed=plan.seed, **plan.client_kwargs), store=store
+        )
         loop = build_interview(
             spec,
             bank=bank,

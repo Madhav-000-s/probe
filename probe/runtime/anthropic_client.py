@@ -36,7 +36,25 @@ PRICING: dict[str, tuple[float, float]] = {
     "claude-opus-5": (15.00, 75.00),
 }
 
-DEFAULT_MODEL = "claude-sonnet-5"
+#: Short names, so `--model haiku` does not require remembering a date suffix.
+MODEL_ALIASES = {
+    "haiku": "claude-haiku-4-5-20251001",
+    "sonnet": "claude-sonnet-5",
+    "opus": "claude-opus-5",
+}
+
+
+def resolve_model(name: str | None = None) -> str:
+    """Alias → model id, falling back to ``PROBE_MODEL`` then to Sonnet.
+
+    The env fallback exists so the cost estimator and the client agree on which
+    model is being priced without threading a flag through every call site.
+    """
+    raw = (name or os.environ.get("PROBE_MODEL") or "claude-sonnet-5").strip()
+    return MODEL_ALIASES.get(raw.lower(), raw)
+
+
+DEFAULT_MODEL = resolve_model()
 
 
 @dataclass
@@ -69,7 +87,7 @@ def estimate_cost(
     n_calls = n_interviews * turns_per_interview * calls_per_turn
     tin = n_calls * prompt_tokens
     tout = n_calls * completion_tokens
-    price_in, price_out = PRICING.get(model, PRICING[DEFAULT_MODEL])
+    price_in, price_out = PRICING.get(resolve_model(model), PRICING["claude-sonnet-5"])
     usd = (tin * price_in + tout * price_out) / 1_000_000.0
     return CostEstimate(n_calls=n_calls, prompt_tokens=tin, completion_tokens=tout, usd=usd)
 
@@ -101,7 +119,7 @@ class AnthropicClient:
                 "the anthropic package is not installed; `uv sync --extra anthropic`"
             ) from exc
 
-        self.model = model
+        self.model = resolve_model(model)
         self.max_retries = max_retries
         self.base_delay = base_delay
         self._client = anthropic.Anthropic(api_key=key, timeout=timeout)

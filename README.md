@@ -222,11 +222,27 @@ See the adaptive policy re-probe a dodger while the fixed script marches on:
 make demo
 ```
 
+### Running against a real model
+
+Everything above is offline and needs no credentials. To drive the same pipeline with a live model, copy [`.env.example`](.env.example) to `.env` — gitignored — and put the key in it:
+
+```bash
+cp .env.example .env
+```
+
+`ANTHROPIC_API_KEY` is read from the environment, so an exported variable works equally well and always wins over the file. Then:
+
+```bash
+make experiment BACKEND=anthropic MODEL=haiku
+```
+
+`--model` takes `haiku`, `sonnet`, `opus` or a full model id, and defaults to `PROBE_MODEL` then to Sonnet. Every live run prints a token and USD estimate and waits for confirmation before spending anything; the estimate is priced for the model actually selected. The committed traces are **not** live traces, and re-running the sweep this way overwrites them with a different provenance stamp — point `TRACES` somewhere else to keep both.
+
 | Target | What it does |
 |---|---|
 | `make test` | Full suite — 300+ tests |
 | `make eval` | Every metric from committed traces → results table + figure |
-| `make experiment` | Re-run all interviews (`BACKEND=sim\|fake\|anthropic`) |
+| `make experiment` | Re-run all interviews (`BACKEND=sim\|fake\|anthropic`, `MODEL=haiku`) |
 | `make calibrate` | Fit item parameters on the calibration split |
 | `make demo` | Side-by-side `fixed` vs `eig` on an adversarial candidate |
 | `make gate-N` | Cumulative exit gate for phase N (0–6) |

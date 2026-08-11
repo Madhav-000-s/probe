@@ -11,13 +11,14 @@ PROBE    := $(UV) run probe
 
 # Backend for LLM roles: sim (default, deterministic offline) | fake | anthropic
 BACKEND  ?= sim
+MODEL    ?=
 SEED     ?= 20260801
 TRACES   ?= traces/probe.duckdb
 
 .DEFAULT_GOAL := help
 
 .PHONY: help sync test lint fmt clean \
-        taxonomy bank population calibrate experiment eval figures report demo viewer \
+        taxonomy bank population calibrate experiment eval figures demo viewer \
         gate-0 gate-1 gate-2 gate-3 gate-4 gate-5 gate-6 gates
 
 help:  ## list every target
@@ -50,7 +51,7 @@ calibrate:  ## fit GRM item parameters on the calibration split, emit bank vN
 	$(PROBE) bank calibrate --seed $(SEED)
 
 experiment:  ## re-run every interview from scratch (prints a cost estimate first)
-	$(PROBE) experiment run --backend $(BACKEND) --seed $(SEED) --traces $(TRACES)
+	$(PROBE) experiment --backend $(BACKEND) --model "$(MODEL)" --seed $(SEED) --traces $(TRACES)
 
 eval:  ## compute every metric from committed traces -> results table + figures
 	$(PY) -m evals.run_eval --traces $(TRACES) --suites evals/suites
@@ -58,14 +59,11 @@ eval:  ## compute every metric from committed traces -> results table + figures
 figures:
 	$(PY) -m evals.run_eval --traces $(TRACES) --suites evals/suites --figures-only
 
-report:  ## regenerate README artefact blocks and the 2-page PDF
-	$(PY) -m analysis.build_report
-
 demo:  ## render the side-by-side fixed-vs-eig adversarial demo
-	$(PROBE) demo render --traces $(TRACES)
+	$(PROBE) demo --traces $(TRACES)
 
 viewer:  ## render one run: transcript + belief trajectory
-	$(PROBE) viewer show --traces $(TRACES) --run-id $(RUN)
+	$(PROBE) viewer --traces $(TRACES) --run-id $(RUN)
 
 # ------------------------------------------------------------- phase gates --
 

@@ -20,7 +20,13 @@ from probe.bank.generate import bank_summary, full_bank, starter_bank
 from probe.bank.loader import load_bank, save_bank
 from probe.belief.calibration import calibrate_bank
 from probe.belief.correlation import estimate_correlation
-from probe.config import DEFAULT_TRACE_DB, EXPERIMENT_CONFIG_PATH, ExperimentConfig, ensure_dirs
+from probe.config import (
+    DEFAULT_TRACE_DB,
+    EXPERIMENT_CONFIG_PATH,
+    ExperimentConfig,
+    ensure_dirs,
+    load_dotenv,
+)
 from probe.experiment import CORRELATION_PATH, SweepPlan, run_sweep
 from probe.jd import default_jds, load_jd, save_jd
 from probe.models import Behavior
@@ -59,6 +65,10 @@ app.add_typer(population_app, name="population")
 def _root(
     version: bool = typer.Option(False, "--version", help="Print the version and exit."),
 ) -> None:
+    # Secrets come from the environment, and `.env` is a gitignored way to set
+    # the environment without putting a key in shell history. Loaded here so
+    # every command sees it and no command has to remember to ask.
+    load_dotenv()
     if version:
         console.print(f"probe {__version__}")
         raise typer.Exit()
@@ -377,6 +387,7 @@ def experiment_run(
     styles: str = typer.Option("", help="Comma-separated styles; default is the main sweep."),
     split: str = typer.Option("eval", help="eval | calibration | all"),
     backend: str = typer.Option("sim", help="sim | fake | anthropic"),
+    model: str = typer.Option("", help="Live backend only: haiku | sonnet | opus, or a model id."),
     population: str = typer.Option("", help="Defaults to the frozen population."),
     bank_version: str = typer.Option("", help="Defaults to the frozen bank."),
     traces: str = typer.Option(str(DEFAULT_TRACE_DB)),
@@ -407,6 +418,7 @@ def experiment_run(
         followups_enabled=followups,
         suffix=suffix,
         limit=limit or None,
+        model=model,
     )
 
     personas, meta = load_population(population or config.population_version)
@@ -414,10 +426,15 @@ def experiment_run(
     n_runs = len(subjects) * len(plan.styles) * len(plan.arms)
 
     if backend == "anthropic":
-        from probe.runtime.anthropic_client import estimate_cost
+        from probe.runtime.anthropic_client import estimate_cost, resolve_model
 
-        estimate = estimate_cost(n_runs, turns_per_interview=config.budgets.max_questions)
-        console.print(f"[yellow]live backend[/yellow]: {n_runs} interviews, {estimate.render()}")
+        resolved = resolve_model(model)
+        estimate = estimate_cost(
+            n_runs, turns_per_interview=config.budgets.max_questions, model=resolved
+        )
+        console.print(
+            f"[yellow]live backend[/yellow] ({resolved}): {n_runs} interviews, {estimate.render()}"
+        )
         if not yes and not typer.confirm("proceed?"):
             raise typer.Exit(code=1)
     else:
@@ -442,6 +459,7 @@ def experiment_run(
 def run_interview(
     persona: str = typer.Option("p001", help="Persona id, or 'stub' for the fixture path."),
     backend: str = typer.Option("sim", help="sim | fake | anthropic"),
+    model: str = typer.Option("", help="Live backend only: haiku | sonnet | opus, or a model id."),
     arm: str = typer.Option("fixed", help="Policy arm."),
     population: str = typer.Option("v1"),
     bank_version: str = typer.Option("v1-starter"),
@@ -464,7 +482,8 @@ def run_interview(
 
     bank = load_bank(bank_version)
     store = TraceStore(traces)
-    traced = TracedClient(get_client(backend, seed=seed), store=store)
+    client_kwargs = {"model": model} if model and backend == "anthropic" else {}
+    traced = TracedClient(get_client(backend, seed=seed, **client_kwargs), store=store)
 
     spec = InterviewSpec(
         persona=matches[0],

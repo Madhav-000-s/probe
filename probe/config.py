@@ -40,6 +40,32 @@ THETA_MAX = 3.0
 THETA_POINTS = 61
 
 
+def load_dotenv(path: Path | None = None) -> list[str]:
+    """Read ``.env`` at the repo root into the environment. Returns the names set.
+
+    Deliberately does not overwrite variables that are already set, so an
+    exported ``ANTHROPIC_API_KEY`` always beats a stale file, and deliberately
+    has no dependency: the whole feature is "read secrets from a gitignored
+    file instead of a shell history". Values are taken literally apart from one
+    layer of surrounding quotes; nothing here expands ``$VAR``.
+    """
+    path = path or (ROOT / ".env")
+    if not path.exists():
+        return []
+    loaded = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#") or "=" not in line:
+            continue
+        name, _, value = line.partition("=")
+        name = name.strip().removeprefix("export ").strip()
+        value = value.strip().strip("\"'")
+        if name and name not in os.environ:
+            os.environ[name] = value
+            loaded.append(name)
+    return loaded
+
+
 def ensure_dirs() -> None:
     for d in (DATA_DIR, BANK_DIR, PERSONA_DIR, GOLD_DIR, JD_DIR, TRACE_DIR, RESULTS_DIR, FIGURE_DIR):
         d.mkdir(parents=True, exist_ok=True)

@@ -535,3 +535,55 @@ to assert both now asserts the efficiency win and asserts the rho interval
 includes zero — so if a later change makes recovery significant, the suite
 fails and forces the write-up to be updated rather than leaving an
 understatement in place.
+
+---
+
+## 2026-08-11 — Live backend: credentials, model selection, and three dead Make recipes
+
+The offline pipeline was never going to need a key, so the live path had been
+wired, unit-tested against a stub, and never actually invoked. Enabling it
+found the usual thing: the code was fine and the surface around it was not.
+
+**Credentials.** `.env` at the repo root, loaded by the CLI root callback, with
+one rule — it never overwrites a variable that is already exported. A stale
+file silently beating the key you just set is a bad half hour, and the test
+asserts the precedence rather than the loading. `.env.example` is committed;
+`.env` is gitignored, and a test asserts both facts against `git ls-files`
+rather than against the `.gitignore` text, because what matters is what is
+tracked, not what is listed.
+
+**Model selection.** `--model haiku|sonnet|opus` or a full id, falling back to
+`PROBE_MODEL` and then to Sonnet. The alias resolution is shared between the
+client and the cost estimator on purpose: an unpriced model id silently falls
+back to Sonnet's rates, so the confirmation prompt would have quoted a number
+three times wrong for a Haiku sweep. A test asserts every alias is in the
+pricing table.
+
+**Three Make recipes that could never have run.** `make experiment` invoked
+`probe experiment run`, and `experiment` takes no subcommand — Typer rejects
+the extra argument. Same for `make demo` and `make viewer`. Every sweep in this
+project was driven by the CLI directly, so the targets were never exercised,
+and the Phase 6 release test checked only that the targets *existed*.
+
+`make report` was worse: it invoked `analysis.build_report`, a module that was
+never written. That is the unbuilt 2-page PDF (D3) leaving a footprint. The
+target is removed rather than left as a recipe that crashes; D3 stays recorded
+as unmet.
+
+The new test walks every `$(PROBE)` and `$(PY) -m` invocation in the Makefile
+and resolves it against the Typer command tree and the import system. It is the
+same class of gap as the reliability suite that Phase 6 found at 0% coverage:
+something asserted to exist, never once executed.
+
+**One test relaxed, deliberately.** `test_eval_is_byte_reproducible` compared
+the committed results table against a fresh regeneration *including*
+provenance, so it failed on every commit after the one that generated the
+table — `code_commit` stamps whoever regenerates. It now runs the eval twice
+and compares those two outputs byte for byte (the actual determinism claim),
+and separately compares the committed numbers against the regeneration with
+the commit stamp excluded. Numbers drifting still fails. The stamp moving no
+longer does.
+
+Nothing in the results changed: the committed table regenerates identically
+apart from that stamp. No live run has been made, so every number in the README
+is still `sim`-backend and the limitations section stands unedited.

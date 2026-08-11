@@ -229,6 +229,42 @@ def test_readme_does_not_link_to_ignored_planning_docs(readme):
         assert f"({doc})" not in readme, f"README links to gitignored {doc}"
 
 
+def test_every_make_recipe_invokes_something_that_exists():
+    """`make experiment` invoked `probe experiment run`, which Typer rejects as
+    an unexpected argument — the target had never been exercised because the
+    sweeps were driven by the CLI directly. Checking that a target *exists*
+    (above) is not the same as checking that what it runs does.
+    """
+    import importlib.util
+
+    from typer.main import get_command
+
+    from probe.cli import app
+
+    root = get_command(app)
+    makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
+
+    unknown = []
+    # ``[^\S\n]`` rather than ``\s``: a greedy match across the newline runs
+    # one recipe's arguments into the next target's name.
+    for match in re.finditer(r"\$\(PROBE\)((?:[^\S\n]+[a-z][\w-]*)+)", makefile):
+        words = match.group(1).split()
+        command, path = root, []
+        for word in words:
+            sub = getattr(command, "commands", {}).get(word)
+            if sub is None:
+                unknown.append(" ".join(path + [word]))
+                break
+            command, path = sub, path + [word]
+
+    for match in re.finditer(r"\$\(PY\) -m ([\w.]+)", makefile):
+        module = match.group(1)
+        if importlib.util.find_spec(module) is None:
+            unknown.append(f"-m {module}")
+
+    assert not unknown, f"Makefile recipes that resolve to nothing: {unknown}"
+
+
 def test_make_targets_referenced_by_the_readme_exist(readme):
     makefile = (ROOT / "Makefile").read_text(encoding="utf-8")
     for match in re.finditer(r"`make ([a-z0-9]+(?:-[a-z0-9]+)*)", readme):

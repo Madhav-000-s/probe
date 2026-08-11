@@ -77,5 +77,8 @@ traces/scratch/
 traces/*.duckdb.wal
 traces/*.duckdb.tmp/
 !traces/probe.duckdb
+# The live Haiku run, kept beside the offline store rather than replacing it:
+# the two are different measurement instruments and the README says so.
+!traces/probe-haiku.duckdb
 analysis/results/scratch/
 *.log

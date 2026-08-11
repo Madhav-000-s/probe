@@ -1,0 +1,20 @@
+{
+  "anchor_order_disagreement": 0.0,
+  "exact_agreement": null,
+  "n_answers": 40,
+  "position_bias": 0.0,
+  "provenance": {
+    "bank_version": "v2",
+    "code_commit": "c565e99",
+    "grader_backend": "anthropic",
+    "grader_model": "claude-haiku-4-5-20251001",
+    "population_version": "v2",
+    "seed_set": [
+      20260807
+    ],
+    "taxonomy_version": "v1"
+  },
+  "retest_is_meaningful": false,
+  "span_entailment_rate": 0.925,
+  "test_retest_sd": null
+}

@@ -43,21 +43,48 @@ class ReliabilityReport:
     anchor_order_disagreement: float
     span_entailment_rate: float
     n_answers: int
+    #: False when the backend cannot resample — see :func:`test_retest`. The
+    #: two test-retest cells are meaningless then, and reporting them anyway
+    #: produces a spectacularly flattering number for the wrong reason.
+    retest_is_meaningful: bool = True
 
     def to_dict(self) -> dict[str, float]:
-        return {
-            "test_retest_sd": round(self.test_retest_sd, 4),
-            "exact_agreement": round(self.exact_agreement, 4),
+        payload = {
             "position_bias": round(self.position_bias, 4),
             "anchor_order_disagreement": round(self.anchor_order_disagreement, 4),
             "span_entailment_rate": round(self.span_entailment_rate, 4),
             "n_answers": self.n_answers,
+            "retest_is_meaningful": self.retest_is_meaningful,
         }
+        if self.retest_is_meaningful:
+            payload["test_retest_sd"] = round(self.test_retest_sd, 4)
+            payload["exact_agreement"] = round(self.exact_agreement, 4)
+        else:
+            payload["test_retest_sd"] = None
+            payload["exact_agreement"] = None
+        return payload
 
 
 def _score(grader: LLMGrader, question: Question, answer: str, seed: int, transcript=EMPTY):
     outcome = grader.grade(question, answer, transcript, seed=seed)
     return outcome.grade
+
+
+def retest_is_meaningful(grader: LLMGrader) -> bool:
+    """Whether re-grading under different seeds actually resamples anything.
+
+    The seed is a knob on the offline backends' RNG. A provider API has no such
+    knob — ``AnthropicClient`` never sends ``request.seed``, and the grader runs
+    at temperature 0 — so the five "retest seeds" become five byte-identical
+    requests, and the resulting SD measures provider nondeterminism rather than
+    grader noise.
+
+    That number is small and looks wonderful: the first live run produced a
+    test-retest SD of 0.014 against the offline grader's 0.321, which would have
+    read as a twenty-fold reliability improvement and was an artefact of asking
+    the same question five times. Reported as not-applicable instead.
+    """
+    return bool(getattr(grader.client, "honours_seed", True))
 
 
 def test_retest(
@@ -172,8 +199,10 @@ def span_entailment(
 
 
 def measure(grader: LLMGrader, samples: Sequence[tuple[Question, str]]) -> ReliabilityReport:
-    sd, agreement = test_retest(grader, samples)
+    meaningful = retest_is_meaningful(grader)
+    sd, agreement = test_retest(grader, samples) if meaningful else (float("nan"), float("nan"))
     return ReliabilityReport(
+        retest_is_meaningful=meaningful,
         test_retest_sd=sd,
         exact_agreement=agreement,
         position_bias=position_bias(grader, samples),

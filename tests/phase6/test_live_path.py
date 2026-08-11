@@ -7,6 +7,8 @@ The suite exists so they stay fixed without needing to spend money to notice.
 
 from __future__ import annotations
 
+from types import SimpleNamespace
+
 import pytest
 
 from probe.grader.base import degraded_grade, relocate_spans
@@ -154,6 +156,53 @@ def test_repair_tokens_are_charged_to_the_caller():
 
     assert result.outcome is ParseOutcome.REPAIRED
     assert result.tokens == 30, "the repair call's tokens are missing"
+
+
+# -------------------------------------------------- resampling honesty
+
+
+def test_test_retest_refuses_to_report_when_the_backend_cannot_resample():
+    """The seed is an RNG knob on the offline backends. The Messages API has no
+    seed, and the grader runs at temperature 0, so five "retest seeds" are five
+    byte-identical requests.
+
+    The first live run reported a test-retest SD of 0.014 against the offline
+    grader's 0.321 — a twenty-fold reliability improvement that was entirely an
+    artefact of asking the same question five times. A metric that cannot be
+    measured has to say so.
+    """
+    from evals.metrics.reliability import ReliabilityReport, retest_is_meaningful
+
+    class Seedless:
+        name = "anthropic"
+        model = "stub"
+        honours_seed = False
+
+    class Seeded:
+        name = "sim"
+        model = "stub"
+
+    assert not retest_is_meaningful(SimpleNamespace(client=Seedless()))
+    assert retest_is_meaningful(SimpleNamespace(client=Seeded()))
+
+    payload = ReliabilityReport(
+        test_retest_sd=0.0137,
+        exact_agreement=0.99,
+        position_bias=0.0,
+        anchor_order_disagreement=0.0,
+        span_entailment_rate=0.925,
+        n_answers=40,
+        retest_is_meaningful=False,
+    ).to_dict()
+    assert payload["test_retest_sd"] is None
+    assert payload["exact_agreement"] is None
+    assert payload["position_bias"] == 0.0, "the measurable cells still report"
+
+
+def test_the_live_client_declares_that_it_ignores_seeds():
+    from probe.runtime.anthropic_client import AnthropicClient
+
+    assert AnthropicClient.honours_seed is False
 
 
 # ------------------------------------------------------------ prose salvage

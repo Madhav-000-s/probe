@@ -650,3 +650,90 @@ Every committed number is unchanged — the sim path is bit-identical, verified
 by the full suite and by regenerating the results table. That is the point of
 the fixes being where they are: relocation is a no-op on exact offsets, and the
 role budgets are only consulted by a backend that has a budget.
+
+---
+
+## 2026-08-11 — The live sweep: Q1 replicates, Q2's headline does not
+
+96 interviews against Claude Haiku 4.5, all four arms, neutral style, 24 eval
+personas. 96/96 completed, zero failures, $3.35 against a $5.30 estimate — the
+adaptive arms stop early, so they cost less than a flat projection assumes.
+
+### Q1 replicated, including the null
+
+Same personas, same style, same rubrics; the backend is the only difference.
+
+| eig vs heuristic  | offline               | live                  |
+|-------------------|-----------------------|-----------------------|
+| resolved fraction | +0.188 [+0.132,+0.250]| +0.215 [+0.174,+0.257]|
+| mean posterior SD | -0.086 [-0.116,-0.055]| -0.178 [-0.197,-0.159]|
+| recovery rho      | +0.043 [-0.026,+0.111]| +0.071 [-0.076,+0.231]|
+
+Both significant results held and the null result held as a null. Arm ordering
+is preserved end to end, and eig is cheaper than the chooser live as well as
+offline. A harness that reproduced only its wins would have been the worrying
+outcome.
+
+Absolute levels are lower live (fixed recovers 0.555 against ~0.72 offline) and
+that is expected rather than interesting: the item difficulties were fitted
+against simulated responses, so they are miscalibrated for a live grader. The
+penalty lands on all four arms equally, which is exactly why the contrast
+transfers and the levels do not. The README puts the live table in its own
+section with that caveat attached to the table itself rather than merging the
+two.
+
+Calibration got **worse**, not better: ECE for eig 0.107 -> 0.190, eig+corr
+0.086 -> 0.281. The overconfidence recorded as a known defect is amplified by a
+real grader, and worst in the arm that is most confident. Outside eig+corr most
+live runs never reach tau inside the 12-question budget, so
+questions-to-confidence is not measurable at this budget; the efficiency claim
+rests on resolved fraction and posterior SD, which are.
+
+### Q2's headline finding did not replicate, and that is the better result
+
+Position bias — measured offline at +0.30 and written up in Phase 6 as "the
+most interesting Q2 finding in the project" — is **0.00** on Haiku over 40 live
+answers. Anchor-order disagreement confirmed at 0.000. Span entailment is
+*worse* live: 0.925, so three grades in forty cite text naming no anchor
+concept.
+
+This is the "Q2 measures parameters chosen here" caveat arriving with evidence.
+The machinery transferred perfectly: the same suite, unmodified, ran against a
+live grader and returned a verdict. The value did not, because it was mine.
+Written up as a correction in the README rather than left standing.
+
+### A twenty-fold improvement that was not real
+
+The first live reliability run reported a test-retest SD of **0.014** against
+the offline grader's 0.321. A twenty-fold reliability improvement, on the day I
+was asked to make the results look good.
+
+It was an artefact. The seed is an RNG knob on the offline backends; the
+Messages API has no seed parameter and the grader runs at temperature 0, so the
+five "retest seeds" were five byte-identical requests and the metric was
+measuring provider nondeterminism. `AnthropicClient` now declares
+`honours_seed = False`, the suite checks it, and both test-retest cells report
+`null` instead of a number. Measuring grader noise on a live model needs
+temperature-based resampling; that is on the next-steps list rather than
+guessed at.
+
+Worth recording plainly: this number would have improved the write-up and been
+indefensible to anyone who knows how the API works.
+
+### Two more entry-point gaps
+
+Same shape as the Makefile recipes found this morning — something that worked
+through one entry point and had never been tried through another.
+
+- `.env` was loaded by the `probe` CLI root callback only, so `--backend
+  anthropic` on an eval suite failed with "key is not set" while the identical
+  key worked through `probe`. Killed the first reliability attempt instantly,
+  which at least cost nothing. All three eval entry points load it now and a
+  test walks each `main()` to assert it.
+- `--out` redirected the results table but not the figure, so evaluating the
+  live traces overwrote the committed accuracy-vs-budget chart with one drawn
+  from different traces. Restored from git; figures now follow `--out`.
+
+Both offline artefacts regenerate byte-identical after the refactor, modulo
+provenance, which now stamps the grader backend and model — a table graded by
+one model and a table graded by another are two experiments.

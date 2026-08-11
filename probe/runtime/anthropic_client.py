@@ -98,6 +98,11 @@ class AnthropicClient:
 
     name = "anthropic"
 
+    #: The Messages API takes no seed, so ``request.seed`` cannot reach it.
+    #: Any metric that resamples by varying the seed is measuring nothing here
+    #: — :func:`evals.metrics.reliability.retest_is_meaningful` reads this.
+    honours_seed = False
+
     def __init__(
         self,
         model: str = DEFAULT_MODEL,

@@ -1,0 +1,537 @@
+{
+  "arms": [
+    {
+      "arm": "fixed",
+      "cost": {
+        "calls_per_interview": 14.5,
+        "parse_failure_rate": 0.023,
+        "repair_call_rate": 0.0172,
+        "tokens_per_interview": 12774.0417,
+        "total_usd": 0.7096,
+        "usd_per_interview": 0.0296
+      },
+      "cost_to_confidence_usd": null,
+      "coverage_80": 0.7241,
+      "decision_f1": 0.8103,
+      "decision_precision": 0.746,
+      "decision_recall": 0.8868,
+      "ece": {
+        "hi": 0.1467,
+        "lo": 0.0218,
+        "n": 24,
+        "point": 0.075,
+        "resamples": 2000
+      },
+      "followup_rate": 0.3556,
+      "mean_posterior_sd": {
+        "hi": 0.9344,
+        "lo": 0.9088,
+        "n": 24,
+        "point": 0.9212,
+        "resamples": 2000
+      },
+      "mean_questions": 5.625,
+      "n_runs": 24,
+      "questions_to_confidence": {
+        "hi": null,
+        "lo": null,
+        "n": 24,
+        "point": null,
+        "resamples": 2000
+      },
+      "reached_confidence_fraction": 0.0,
+      "recovery_rho": {
+        "hi": 0.6838,
+        "lo": 0.37,
+        "n": 24,
+        "point": 0.5549,
+        "resamples": 2000
+      },
+      "resolved_fraction": {
+        "hi": 0.3819,
+        "lo": 0.3264,
+        "n": 24,
+        "point": 0.3542,
+        "resamples": 2000
+      },
+      "seconds_to_confidence": null,
+      "stop_reasons": {
+        "budget_wallclock": 1.0
+      },
+      "wallclock_seconds": 994.105
+    },
+    {
+      "arm": "heuristic",
+      "cost": {
+        "calls_per_interview": 19.2917,
+        "parse_failure_rate": 0.0108,
+        "repair_call_rate": 0.0086,
+        "tokens_per_interview": 19188.25,
+        "total_usd": 0.8811,
+        "usd_per_interview": 0.0367
+      },
+      "cost_to_confidence_usd": null,
+      "coverage_80": 0.7556,
+      "decision_f1": 0.7805,
+      "decision_precision": 0.6761,
+      "decision_recall": 0.9231,
+      "ece": {
+        "hi": 0.1495,
+        "lo": 0.0326,
+        "n": 24,
+        "point": 0.0824,
+        "resamples": 2000
+      },
+      "followup_rate": 0.3517,
+      "mean_posterior_sd": {
+        "hi": 0.8936,
+        "lo": 0.8634,
+        "n": 24,
+        "point": 0.8792,
+        "resamples": 2000
+      },
+      "mean_questions": 6.0417,
+      "n_runs": 24,
+      "questions_to_confidence": {
+        "hi": null,
+        "lo": null,
+        "n": 24,
+        "point": null,
+        "resamples": 2000
+      },
+      "reached_confidence_fraction": 0.0,
+      "recovery_rho": {
+        "hi": 0.755,
+        "lo": 0.4882,
+        "n": 24,
+        "point": 0.6512,
+        "resamples": 2000
+      },
+      "resolved_fraction": {
+        "hi": 0.5833,
+        "lo": 0.5069,
+        "n": 24,
+        "point": 0.5417,
+        "resamples": 2000
+      },
+      "seconds_to_confidence": null,
+      "stop_reasons": {
+        "budget_wallclock": 1.0
+      },
+      "wallclock_seconds": 983.7267
+    },
+    {
+      "arm": "eig",
+      "cost": {
+        "calls_per_interview": 12.0417,
+        "parse_failure_rate": 0.0138,
+        "repair_call_rate": 0.0104,
+        "tokens_per_interview": 11280.7917,
+        "total_usd": 0.6268,
+        "usd_per_interview": 0.0261
+      },
+      "cost_to_confidence_usd": null,
+      "coverage_80": 0.5909,
+      "decision_f1": 0.8876,
+      "decision_precision": 0.8065,
+      "decision_recall": 0.9868,
+      "ece": {
+        "hi": 0.2495,
+        "lo": 0.1311,
+        "n": 24,
+        "point": 0.1902,
+        "resamples": 2000
+      },
+      "followup_rate": 0.1129,
+      "mean_posterior_sd": {
+        "hi": 0.7197,
+        "lo": 0.6821,
+        "n": 24,
+        "point": 0.7008,
+        "resamples": 2000
+      },
+      "mean_questions": 5.1667,
+      "n_runs": 24,
+      "questions_to_confidence": {
+        "hi": null,
+        "lo": null,
+        "n": 24,
+        "point": null,
+        "resamples": 2000
+      },
+      "reached_confidence_fraction": 0.0,
+      "recovery_rho": {
+        "hi": 0.8091,
+        "lo": 0.5963,
+        "n": 24,
+        "point": 0.7218,
+        "resamples": 2000
+      },
+      "resolved_fraction": {
+        "hi": 0.7917,
+        "lo": 0.7222,
+        "n": 24,
+        "point": 0.7569,
+        "resamples": 2000
+      },
+      "seconds_to_confidence": null,
+      "stop_reasons": {
+        "budget_wallclock": 1.0
+      },
+      "wallclock_seconds": 1008.6675
+    },
+    {
+      "arm": "eig+corr",
+      "cost": {
+        "calls_per_interview": 8.2083,
+        "parse_failure_rate": 0.0102,
+        "repair_call_rate": 0.0051,
+        "tokens_per_interview": 8242.5417,
+        "total_usd": 0.4615,
+        "usd_per_interview": 0.0192
+      },
+      "cost_to_confidence_usd": 0.0148,
+      "coverage_80": 0.5147,
+      "decision_f1": 0.9143,
+      "decision_precision": 0.8421,
+      "decision_recall": 1.0,
+      "ece": {
+        "hi": 0.3654,
+        "lo": 0.1926,
+        "n": 24,
+        "point": 0.2809,
+        "resamples": 2000
+      },
+      "followup_rate": 0.15,
+      "mean_posterior_sd": {
+        "hi": 0.5862,
+        "lo": 0.5459,
+        "n": 24,
+        "point": 0.5648,
+        "resamples": 2000
+      },
+      "mean_questions": 3.3333,
+      "n_runs": 24,
+      "questions_to_confidence": {
+        "hi": 3.4583,
+        "lo": 3.0,
+        "n": 24,
+        "point": 3.25,
+        "resamples": 2000
+      },
+      "reached_confidence_fraction": 1.0,
+      "recovery_rho": {
+        "hi": 0.8208,
+        "lo": 0.5408,
+        "n": 24,
+        "point": 0.7149,
+        "resamples": 2000
+      },
+      "resolved_fraction": {
+        "hi": 1.0,
+        "lo": 1.0,
+        "n": 24,
+        "point": 1.0,
+        "resamples": 2000
+      },
+      "seconds_to_confidence": 642.9954,
+      "stop_reasons": {
+        "confidence": 1.0
+      },
+      "wallclock_seconds": 651.3717
+    }
+  ],
+  "budget": 12,
+  "contrasts": [
+    {
+      "arm": "heuristic",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.2425,
+        "lo": -0.0586,
+        "n": 24,
+        "point": 0.0963,
+        "resamples": 2000
+      },
+      "excludes_zero": false,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "heuristic",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.2292,
+        "lo": 0.1458,
+        "n": 24,
+        "point": 0.1875,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "heuristic",
+      "baseline": "fixed",
+      "difference": {
+        "hi": -0.0263,
+        "lo": -0.0586,
+        "n": 24,
+        "point": -0.042,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "eig",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.3432,
+        "lo": -0.0119,
+        "n": 24,
+        "point": 0.1669,
+        "resamples": 2000
+      },
+      "excludes_zero": false,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "eig",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.4444,
+        "lo": 0.3611,
+        "n": 24,
+        "point": 0.4028,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "eig",
+      "baseline": "fixed",
+      "difference": {
+        "hi": -0.1977,
+        "lo": -0.2428,
+        "n": 24,
+        "point": -0.2204,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.3445,
+        "lo": -0.0518,
+        "n": 24,
+        "point": 0.16,
+        "resamples": 2000
+      },
+      "excludes_zero": false,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "fixed",
+      "difference": {
+        "hi": 0.6736,
+        "lo": 0.6181,
+        "n": 24,
+        "point": 0.6458,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "fixed",
+      "difference": {
+        "hi": -0.3295,
+        "lo": -0.3789,
+        "n": 24,
+        "point": -0.3565,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "fixed",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.0586,
+        "lo": -0.2425,
+        "n": 24,
+        "point": -0.0963,
+        "resamples": 2000
+      },
+      "excludes_zero": false,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "fixed",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": -0.1458,
+        "lo": -0.2292,
+        "n": 24,
+        "point": -0.1875,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "fixed",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.0586,
+        "lo": 0.0263,
+        "n": 24,
+        "point": 0.042,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "eig",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.2306,
+        "lo": -0.0755,
+        "n": 24,
+        "point": 0.0707,
+        "resamples": 2000
+      },
+      "excludes_zero": false,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "eig",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.2569,
+        "lo": 0.1736,
+        "n": 24,
+        "point": 0.2153,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "eig",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": -0.1588,
+        "lo": -0.1973,
+        "n": 24,
+        "point": -0.1784,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.2428,
+        "lo": -0.1215,
+        "n": 24,
+        "point": 0.0637,
+        "resamples": 2000
+      },
+      "excludes_zero": false,
+      "metric": "recovery_rho"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": 0.4931,
+        "lo": 0.4167,
+        "n": 24,
+        "point": 0.4583,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "resolved_fraction"
+    },
+    {
+      "arm": "eig+corr",
+      "baseline": "heuristic",
+      "difference": {
+        "hi": -0.2827,
+        "lo": -0.3407,
+        "n": 24,
+        "point": -0.3145,
+        "resamples": 2000
+      },
+      "excludes_zero": true,
+      "metric": "mean_posterior_sd"
+    }
+  ],
+  "n_personas": 24,
+  "per_competency_rho": {
+    "eig": {
+      "api_design.pagination": 0.4785,
+      "data_eng.data_quality": 0.67,
+      "data_eng.pipeline_orchestration": 0.7242,
+      "databases.migrations": 0.4076,
+      "databases.transactions": 0.8924,
+      "distributed_systems.consistency": 0.8729,
+      "ml.experiment_design": 0.6501,
+      "ml.feature_engineering": 0.8716,
+      "ml.model_evaluation": 0.7754
+    },
+    "eig+corr": {
+      "api_design.pagination": 0.6414,
+      "data_eng.pipeline_orchestration": 0.3508,
+      "databases.transactions": 0.9273,
+      "distributed_systems.consistency": 0.8085,
+      "ml.feature_engineering": 0.7026,
+      "ml.model_evaluation": 0.8783
+    },
+    "fixed": {
+      "databases.migrations": -0.0369,
+      "databases.transactions": 0.808,
+      "distributed_systems.consistency": 0.6844,
+      "ml.data_leakage": 0.7303,
+      "ml.experiment_design": 0.8349,
+      "ml.feature_engineering": 0.2776,
+      "ml.model_evaluation": 0.781
+    },
+    "heuristic": {
+      "concurrency.locking": 0.4129,
+      "databases.migrations": -0.2661,
+      "databases.transactions": 0.7559,
+      "distributed_systems.consistency": 0.8723,
+      "ml.data_leakage": 0.9085,
+      "ml.experiment_design": 0.5586,
+      "ml.feature_engineering": 0.832,
+      "ml.model_evaluation": 0.8194
+    }
+  },
+  "provenance": {
+    "bank_version": "v2",
+    "code_commit": "4e25570",
+    "population_version": "v2",
+    "seed_set": [
+      20260807
+    ],
+    "taxonomy_version": "v1"
+  },
+  "schema_health": {
+    "n_calls": 1297.0,
+    "repair_success_rate": 0.6429,
+    "violation_rate": 0.0108
+  },
+  "tau": 0.8
+}

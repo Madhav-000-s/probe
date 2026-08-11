@@ -5,13 +5,16 @@
   "position_bias": 0.3,
   "provenance": {
     "bank_version": "v2",
-    "code_commit": "a7030f5",
+    "code_commit": "c565e99",
+    "grader_backend": "sim",
+    "grader_model": "sim-grader-v1",
     "population_version": "v2",
     "seed_set": [
       20260807
     ],
     "taxonomy_version": "v1"
   },
+  "retest_is_meaningful": true,
   "span_entailment_rate": 1.0,
   "test_retest_sd": 0.3212
 }

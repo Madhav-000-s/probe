@@ -1,10 +1,29 @@
 # probe
 
-**An adaptive interviewing agent, and the offline harness built to find out whether it actually works.**
+**An adaptive interviewing agent, and the evaluation harness built to prove whether it actually works.**
+
+`Python 3.11` · `Pydantic v2` · `NumPy/SciPy` · `DuckDB` · `pytest + Hypothesis` · `Typer` · `uv` — **no agent framework**
 
 The eval harness is the project. The interviewer is the subject.
 
-Most "AI interviewer" demos show you a transcript. This one asks a narrower and more answerable question: *if you let an agent choose what to ask next based on what it still does not know, does it learn more per question than a well-prompted LLM that just picks from a list?* Then it builds the rig to measure that, with confidence intervals, adversarial candidates, and a fairness audit — and reports the places the answer is no.
+Most "AI interviewer" demos show you a transcript. This one asks a narrower and more answerable question: *if you let an agent choose what to ask next based on what it still does not know, does it learn more per question than a well-prompted LLM that just picks from a list?* Then it builds the rig to measure that — with confidence intervals, adversarial candidates, and a fairness audit — and reports the places the answer is no.
+
+### Headline result
+
+> **The adaptive policy resolves 98.1% of a rubric against a well-prompted LLM chooser's 80.4%, in fewer questions and at 41% lower cost per interview — and the result replicated on a live model on the first attempt.**
+
+| | |
+|---|---|
+| 🎯 **Main finding** | `eig` beats the LLM-chooser baseline on resolved fraction by **+0.177** [+0.120, +0.233] — paired bootstrap, interval excludes zero |
+| 🔁 **Live replication** | Re-ran the sweep against **Claude Haiku 4.5**: same direction, same significance, overlapping intervals. 96/96 interviews, **zero failures**, $3.35 |
+| 💰 **Cheaper, not just faster** | $0.0160/interview vs the chooser's $0.0270 — EIG computes its objective locally instead of sending a transcript every turn |
+| 🔬 **Measured, not asserted** | 348 tests, bootstrap CIs over personas, adversarial suite, fairness audit, byte-reproducible eval |
+| 🧪 **Assumptions tested, not assumed** | The live run *refuted* one of the project's own simulated parameters — the grader position bias measured offline at +0.30 is **0.00** on Haiku. Reported as a correction, not buried |
+| 📉 **Where it loses** | Accuracy difference is inside the noise at n=24; bluffing still beats the score; calibration degrades under a live grader. All three in the main text, all three pinned by tests |
+
+### What this project demonstrates
+
+Applied statistics (item response theory, MML/EM calibration, bootstrap inference) · experiment design under a pre-registered plan · LLM reliability engineering (repair ladders, schema enforcement, resumability) · adversarial and fairness evaluation · and the discipline to retract a headline finding when a later phase invalidated it.
 
 ---
 
@@ -12,20 +31,20 @@ Most "AI interviewer" demos show you a transcript. This one asks a narrower and 
 
 | | Question | Answer |
 |---|---|---|
-| **Q1** | **Efficiency** — does an expected-information-gain policy reach target confidence in fewer questions than a fixed script, at equal accuracy? | **Yes on efficiency, not established on accuracy.** `eig` resolves 98.1% of competencies against the LLM chooser's 80.4% (paired 95% CI on the difference: +0.120 to +0.233). The recovery-accuracy difference is +0.016 and **includes zero**. |
-| **Q2** | **Grader reliability** — what is the grader's test–retest variance, position bias, and self-consistency? | Test–retest SD **0.321** rubric levels, exact agreement 81.3% across 5 seeds, **position bias +0.30** — the same answer scores a third of a level higher late in an interview than early. Cohen's **κ = 0.676** against an independent rater. But the credible intervals are **overconfident**: nominal 80% intervals cover 66–72%. |
+| **Q1** | **Efficiency** — does an expected-information-gain policy reach target confidence in fewer questions than a fixed script, at equal accuracy? | **Yes on efficiency, not established on accuracy.** `eig` resolves 98.1% of competencies against the LLM chooser's 80.4% (paired 95% CI on the difference: +0.120 to +0.233), in fewer questions and at lower cost. The recovery-accuracy difference is +0.016 and **includes zero**. ✅ **Replicated on Claude Haiku 4.5** — [see below](#live-validation-on-claude-haiku-45). |
+| **Q2** | **Grader reliability** — what is the grader's test–retest variance, position bias, and self-consistency? | Offline: test–retest SD **0.321** rubric levels, **position bias +0.30**, Cohen's **κ = 0.676** against an independent rater. **On a live model the position bias vanishes (0.00)** — the harness transferred, the parameter did not, and that is the honest answer to Q2. Credible intervals are **overconfident** either way: nominal 80% intervals cover 66–72%. |
 | **Q3** | **Style invariance** — how much does surface style move a score at fixed ability, and can the drift be engineered down? | Mean absolute drift falls **0.326 → 0.239** (27%) with the content–style intervention. Name-swap is exactly invariant. The residual is the non-native-phrasing slice at 0.446, and it is a different bug than the one the intervention fixes. |
 
 ---
 
 ## What this is not
 
-Stated before the results, because it changes how you should read every number below.
+Stated before the results, because it changes how you should read every number below. A project that only reports its wins is a project you cannot trust the wins of.
 
-**No real language model produced these traces.** The committed runs use `SimLLM` — a deterministic, seeded generative model of each model role. It is not a mock returning canned strings: ability propagates into the *content* of an answer via a graded-response model, the grader reads only the text, and recovery is genuinely earned. But it means:
+**The main results table is a simulation study.** The committed runs use `SimLLM` — a deterministic, seeded generative model of each model role. It is not a mock returning canned strings: ability propagates into the *content* of an answer via a graded-response model, the grader reads only the text, and recovery is genuinely earned. It is also what makes `make eval` reproducible to the byte at zero cost. But it means:
 
-- **Q1 is a simulation study.** That is the standard way computerized-adaptive-testing research validates a selection policy, and the psychometric machinery is real. It is not evidence about interviewing with a real LLM.
-- **Q2 and Q3 measure parameters chosen here.** Grader noise, position bias and the style sensitivity are knobs in `probe/sim/llm_sim.py`. Their *values* are mine; the *machinery* that measures them would transfer unchanged. `--backend anthropic` is wired and tested; supplying an API key replaces the simulated cells with measured ones.
+- **Q1's headline is a simulation result**, of the kind computerized-adaptive-testing research uses to validate a selection policy. The [live replication](#live-validation-on-claude-haiku-45) is what turns it into evidence about a real model — and it is reported separately rather than merged in, because the two come from different measurement instruments.
+- **Q2 and Q3 measure parameters chosen here.** Grader noise, position bias and style sensitivity are knobs in `probe/sim/llm_sim.py`. Their *values* are mine; the *machinery* that measures them transfers unchanged, which the live run demonstrates.
 
 **No human graded the anchor set.** `PLAN.md` called for 60–100 blind human labels — the scarcest artefact in a repo like this. The released set was produced by an *independent estimator*, not a person. Calling it a human gold set would be a lie the rest of this repo does not survive, so the deliverable is recorded as **unmet** rather than redefined. What it does establish is that the release format and the κ pipeline work end to end.
 
@@ -71,6 +90,39 @@ The `heuristic` arm is the one that matters. Beating a fixed script proves nothi
 Where the mechanism shows: `eig` terminates on confidence 90% of the time and `eig+corr` 100%, against 17% for the fixed script — which mostly exhausts its wall-clock budget (44%), because it draws long items indiscriminately while the EIG objective divides information by expected answer time. Budget-awareness is a term in the objective and it is doing visible work.
 
 `eig` is also **cheaper** than the LLM chooser ($0.0160 vs $0.0270), which was not guaranteed: the chooser sends a transcript and a shortlist to the model every turn, while EIG computes its objective locally.
+
+### Live validation on Claude Haiku 4.5
+
+The whole sweep re-run against a real model — real answers, real grading, real JSON parsing — to test whether the finding survives contact with something that was not built to be predictable.
+
+**It replicated on the first attempt.** 96/96 interviews completed, zero failures, $3.35.
+
+> ⚠️ **These are not the same numbers as the table above, and must not be read against it.** The item difficulties were fitted against *simulated* responses, so they are miscalibrated for a live grader and absolute recovery is depressed for reasons that have nothing to do with Haiku's competence. That penalty lands on all four arms equally, which is why the **contrast** transfers and the **levels** do not. Both runs below are the neutral style only, so the backend is the single thing that differs.
+
+**`eig` vs `heuristic` — the comparison the whole project rests on:**
+
+| paired contrast | offline (`SimLLM`) | live (Haiku 4.5) | replicated |
+|---|---|---|---|
+| resolved fraction | **+0.188** [+0.132, +0.250] ✅ | **+0.215** [+0.174, +0.257] ✅ | ✅ same sign, same significance |
+| mean posterior SD | **−0.086** [−0.116, −0.055] ✅ | **−0.178** [−0.197, −0.159] ✅ | ✅ larger effect live |
+| recovery ρ | +0.043 [−0.026, +0.111] ❌ | +0.071 [−0.076, +0.231] ❌ | ✅ *including* the null result |
+
+The last row is the one worth pausing on: the **negative** result replicated too. A harness that only reproduced its wins would be the more worrying outcome.
+
+**Live arm table** (24 personas × 4 arms, neutral style, τ=0.80, budget 12):
+
+| arm | recovery ρ | resolved (SD < τ) | ECE | $/interview |
+|---|---|---|---|---|
+| `fixed` | 0.555 [0.370, 0.684] | 0.354 | 0.075 | $0.0296 |
+| `heuristic` | 0.651 [0.488, 0.755] | 0.542 | 0.082 | $0.0367 |
+| `eig` | 0.722 [0.596, 0.809] | 0.757 | 0.190 | $0.0261 |
+| `eig+corr` | **0.715** [0.541, 0.821] | **1.000** | 0.281 | **$0.0192** |
+
+The arm *ordering* is preserved end to end, and `eig` is cheaper than the LLM chooser live as well as offline.
+
+**What got worse, and it is the interesting part.** Calibration degrades sharply under a real grader: ECE for `eig` goes 0.107 → **0.190**, and `eig+corr` 0.086 → **0.281**. The overconfidence documented as a known defect is *worse* with a live model, and worst in the arm that is most confident. Outside `eig+corr`, most live runs never reach τ inside the 12-question budget, so questions-to-confidence is not measurable at this budget — the efficiency claim rests on resolved fraction and posterior SD, which are measurable.
+
+**Getting there cost four bug fixes**, every one invisible offline — including an evidence-span check that rejected **100% of otherwise-good live grades** because it required the model to count characters. Full account in [`results-log.md`](results-log.md); it is the most instructive part of this repo.
 
 ### 2. Accuracy vs. budget — the centrepiece
 
@@ -119,6 +171,21 @@ Each of 120 real answers from the committed traces, re-graded under varied condi
 | Schema violation / repair success | 1.2% / 97.0% | Measured by the repair ladder actually being walked |
 
 Position bias is the finding here. It is small enough to miss on any single answer and large enough to matter across an interview — and it is exactly the kind of thing that only shows up if you deliberately re-grade the same answer at different points in a transcript.
+
+**…except it does not reproduce on a real model, and that is the more valuable result.**
+
+Re-running the same suite against Claude Haiku 4.5 on 40 live answers:
+
+| property | offline (`SimLLM`) | live (Haiku 4.5) | verdict |
+|---|---|---|---|
+| **Position bias** | **+0.30** | **0.00** | ❌ **does not replicate** — the simulated grader's positional drift is a parameter I chose, and the real one does not have it |
+| Anchor-order disagreement | 0.000 | **0.000** | ✅ confirmed on a real model |
+| Span→score entailment | 1.000 | **0.925** | ⚠️ live is *worse* — 3 of 40 grades cite text naming no anchor concept |
+| Test–retest SD | 0.321 | **not measurable** | see below |
+
+This is exactly what the "Q2 measures parameters chosen here" caveat was warning about, now with evidence attached. The *machinery* transferred perfectly — the same suite, unmodified, ran against a live grader and produced a verdict. The *value* did not, because it was mine to begin with. The honest summary of Q2 is that position bias is a real thing worth measuring, this harness measures it correctly, and Haiku 4.5 does not exhibit it.
+
+**Why test–retest is reported as not measurable rather than as a spectacular win.** The first live run returned a test–retest SD of **0.014** against the offline grader's 0.321 — a twenty-fold reliability improvement. It was an artefact. The seed is an RNG knob on the offline backends; the Messages API has no seed parameter, and the grader runs at temperature 0, so the five "retest seeds" were five byte-identical requests and the metric was measuring provider nondeterminism. The suite now checks whether the backend can resample at all and reports `null` when it cannot. Measuring grader noise on a live model needs temperature-based resampling, which is [next on the list](#what-i-would-do-next-in-order).
 
 ### Robustness
 
@@ -236,7 +303,15 @@ cp .env.example .env
 make experiment BACKEND=anthropic MODEL=haiku
 ```
 
-`--model` takes `haiku`, `sonnet`, `opus` or a full model id, and defaults to `PROBE_MODEL` then to Sonnet. Every live run prints a token and USD estimate and waits for confirmation before spending anything; the estimate is priced for the model actually selected. The committed traces are **not** live traces, and re-running the sweep this way overwrites them with a different provenance stamp — point `TRACES` somewhere else to keep both.
+`--model` takes `haiku`, `sonnet`, `opus` or a full model id, and defaults to `PROBE_MODEL` then to Sonnet. Every live run prints a token and USD estimate and waits for confirmation before spending anything; the estimate is priced for the model actually selected.
+
+The live run reported above is reproducible with:
+
+```bash
+uv run probe experiment --backend anthropic --model haiku --styles neutral --traces traces/probe-haiku.duckdb
+```
+
+Point `--traces` and `--out` somewhere other than the defaults, as above, so the committed offline traces and the figure drawn from them survive.
 
 | Target | What it does |
 |---|---|
@@ -260,7 +335,8 @@ make experiment BACKEND=anthropic MODEL=haiku
 | [`probe/runtime/`](probe/runtime) | Interview loop, repair ladder, budgets, DuckDB tracing, provider boundary |
 | [`probe/sim/`](probe/sim) | Persona generator — the measurement plane |
 | [`evals/`](evals) | Six metric families, bootstrap intervals, `make eval` |
-| [`analysis/results/`](analysis/results) | Generated result files — the source of every number above |
+| [`analysis/results/`](analysis/results) | Generated result files — the source of every offline number above |
+| [`analysis/results-haiku/`](analysis/results-haiku) | The live Claude Haiku 4.5 run, kept separate on purpose |
 | [`results-log.md`](results-log.md) | The lab notebook, including everything that went wrong |
 
 **Stack:** Python 3.11, Pydantic, NumPy/SciPy, DuckDB, matplotlib, pytest + Hypothesis, Typer, `uv`. No agent framework — the control flow *is* the interview policy, and it has to be explainable line by line.
@@ -269,19 +345,20 @@ make experiment BACKEND=anthropic MODEL=haiku
 
 ## What I would do next, in order
 
-1. **Fix the overconfident intervals.** Add a noise-inflation parameter to the likelihood, fitted from observed grader variance. This is the largest correctness gap in the repo.
-2. **Fuzzy concept matching**, to close the non-native-phrasing fairness residual.
-3. **Score bluffing correctly**, not just detect it — penalise off-competency vocabulary instead of giving it partial credit.
-4. **Run the real-LLM slice.** Fidelity gate, grader reliability and κ are *per-answer* costs, not per-interview: roughly $3–8 converts Q2 from simulated to measured.
-5. **Collect actual human labels** and retire the stand-in anchor set.
+1. **Recalibrate the item bank against live responses.** The live run reuses difficulties fitted on simulated answers, which is why absolute recovery is depressed there. A live calibration split would make the two tables directly comparable — the single highest-value next step.
+2. **Measure grader noise on a live model properly** — temperature-based resampling instead of seed-based, since a provider API has no seed. Currently reported as not-measurable rather than guessed at.
+3. **Fix the overconfident intervals.** Add a noise-inflation parameter to the likelihood, fitted from observed grader variance. The largest correctness gap in the repo, and the live run shows it is *worse* with a real model, not better.
+4. **Fuzzy concept matching**, to close the non-native-phrasing fairness residual.
+5. **Score bluffing correctly**, not just detect it — penalise off-competency vocabulary instead of giving it partial credit.
+6. **Collect actual human labels** and retire the stand-in anchor set.
 
 ---
 
 ## An honest note on process
 
-[`results-log.md`](results-log.md) is the lab notebook, and it is worth more than this page. It records the fidelity gate failing twice before it passed, a retraction that cost the previous phase's headline finding, an injection metric that was wrong twice, a fairness suite that spent a whole phase measuring content variance it had mislabelled as style, and a diagnosis that was simply wrong (an "upward bias" that turned out to be sampling noise, chased through an optimiser swap that changed nothing).
+[`results-log.md`](results-log.md) is the lab notebook, and it is worth more than this page. It records the fidelity gate failing twice before it passed, a retraction that cost the previous phase's headline finding, an injection metric that was wrong twice, a fairness suite that spent a whole phase measuring content variance it had mislabelled as style, a diagnosis that was simply wrong (an "upward bias" that turned out to be sampling noise, chased through an optimiser swap that changed nothing), and the four defects that only appeared the first time a real model was put behind the same interface.
 
-Every one of those was found by a test that had been written to fail. That is the actual claim of this repository.
+Every one of those was found by a test or a gate that had been written to fail. That is the actual claim of this repository: not that the policy wins, but that you can check whether it does — and that when the answer was no, it says so.
 
 ---
 

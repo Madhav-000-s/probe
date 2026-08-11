@@ -210,6 +210,66 @@ def test_readme_numbers_match_the_generated_artefacts(readme):
     assert f"{gold['cohens_kappa']:.3f}" in readme
 
 
+LIVE_RESULTS = ROOT / "analysis" / "results-haiku"
+
+
+def test_live_results_are_committed_separately_from_the_offline_ones():
+    """Two measurement instruments, two directories. Merging them would put a
+    live number and an offline number in the same column, which is the one
+    thing the live section says not to do."""
+    live = json.loads((LIVE_RESULTS / "main-table.json").read_text(encoding="utf-8"))
+    offline = json.loads((RESULTS_DIR / "main-table.json").read_text(encoding="utf-8"))
+    assert live["arms"] != offline["arms"], "the live table is a copy of the offline one"
+
+    reliability = json.loads((LIVE_RESULTS / "reliability.json").read_text(encoding="utf-8"))
+    assert reliability["provenance"]["grader_backend"] == "anthropic"
+    assert "haiku" in reliability["provenance"]["grader_model"]
+
+
+def test_readme_quotes_the_live_numbers_it_actually_generated(readme):
+    """Same contract as the offline table: every live figure in the README has
+    to come from a committed artefact."""
+    live = json.loads((LIVE_RESULTS / "main-table.json").read_text(encoding="utf-8"))
+    for row in live["arms"]:
+        rho = row["recovery_rho"]["point"]
+        assert f"{rho:.3f}" in readme, f"README does not quote live {row['arm']} rho {rho:.3f}"
+
+    reliability = json.loads((LIVE_RESULTS / "reliability.json").read_text(encoding="utf-8"))
+    assert f"{reliability['span_entailment_rate']:.3f}" in readme
+
+
+def test_readme_reports_the_finding_that_failed_to_replicate(readme):
+    """The live position bias is 0.00 against the offline +0.30. A README that
+    kept quoting +0.30 as 'the finding' without the correction would be
+    presenting a parameter I chose as a measured property of graders."""
+    live = json.loads((LIVE_RESULTS / "reliability.json").read_text(encoding="utf-8"))
+    assert live["position_bias"] == 0.0, "the live position bias changed; rewrite the section"
+
+    lowered = readme.lower()
+    assert "does not replicate" in lowered or "not replicate" in lowered, (
+        "the README does not report that the position-bias finding failed to replicate"
+    )
+
+
+def test_unmeasurable_cells_are_reported_as_null_not_as_wins(readme):
+    """Test-retest against a seedless backend measured provider nondeterminism
+    and returned a twenty-fold 'improvement'. It must stay unreported."""
+    live = json.loads((LIVE_RESULTS / "reliability.json").read_text(encoding="utf-8"))
+    assert live["retest_is_meaningful"] is False
+    assert live["test_retest_sd"] is None
+    assert live["exact_agreement"] is None
+
+    # The number may appear — explaining why a flattering result was discarded
+    # is worth more than pretending it never happened. What it may not do is
+    # appear as a finding, so it has to be within a paragraph of the retraction.
+    for match in re.finditer(r"0\.014", readme):
+        window = readme[max(0, match.start() - 400) : match.end() + 400].lower()
+        assert "artefact" in window or "not measurable" in window, (
+            "the README quotes the artefactual test-retest SD as though it were a result"
+        )
+    assert "not measurable" in readme.lower()
+
+
 def test_readme_links_resolve(readme):
     """No broken relative links on the front page."""
     broken = []
